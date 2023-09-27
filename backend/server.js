@@ -238,29 +238,36 @@ app.post("/api/learning", async (req, res) => {
 
 app.get("/api/learners", async (req, res) => {
   try {
-    const param = req.query.username;
+    const course_id = req.query.course_id;
+    const username=req.query.username
+    console.log("course_id:", course_id);
 
-    const some = await Accounts.findOne({ where: { username: param } }).then(
-      async (users) => {
-         console.log("User:",users.id);
-        const details = await CourseDetails.findOne({
-          where:{user_id:users.id}
-        }).then(async (courses) => {
-          console.log("CourseID:",courses.id);
-         const smy= await Student_Purchases.findAll({
-            where: { course_id: courses.id },
-          }).then((purchase) => {
-            console.log("Purchase:", purchase);
-            res.json(purchase);
-          });
-        });
-      }
+    // Find the account based on the username (replace with dynamic username retrieval)
+    const user = await Accounts.findOne({ where: { username: username } });
 
-      // console.log(details);
-      // res.json(details);
-    );
-  } catch (error) {
-    console.log(req.query.username);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    console.log("User:", user.id);
+
+    // Find all student purchases for the user
+    const userPurchases = await Student_Purchases.findAndCountAll({
+      where: { student_id: user.id },
+    });
+
+    // Find student purchases for the specific course_id
+    const specificCoursePurchases = await Student_Purchases.findAll({
+      where: { course_id },
+    });
+
+    console.log("Purchase:", specificCoursePurchases);
+
+    // Send the specific course purchases as a JSON response
+    return res.json(specificCoursePurchases);
+  
+}
+ catch (error) {
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }

@@ -16,7 +16,7 @@ const UploadCourse = () => {
   const queryParams = {
     username: username,
   };
-  var count=0;
+  var count = 0;
   // console.log(username);
   const [newCourse, setNewCourse] = useState({
     name: "",
@@ -25,8 +25,6 @@ const UploadCourse = () => {
     video_url: "",
     username: username,
   });
-
-  
 
   const fetchcourses = async () => {
     try {
@@ -45,18 +43,15 @@ const UploadCourse = () => {
     fetchcourses();
   }, []);
   const handleAddCourse = async () => {
-  try {
-    fetchcourses();
-    await axios.post(`${config.endpoint}/courses`, newCourse);
-    setNewCourse({ name: "", description: "", price: "", video_url: ""});
-  fetchcourses();
-
-    
-  } catch (error) {
-    console.error("Error adding a Course:", error);
-  }
-};
-
+    try {
+      fetchcourses();
+      await axios.post(`${config.endpoint}/courses`, newCourse);
+      setNewCourse({ name: "", description: "", price: "", video_url: "" });
+      fetchcourses();
+    } catch (error) {
+      console.error("Error adding a Course:", error);
+    }
+  };
 
   const handleDeleteCourse = async (id) => {
     try {
@@ -98,7 +93,7 @@ const UploadCourse = () => {
         />
         <input
           type="text"
-          placeholder="Video URL"
+          placeholder="Image URL"
           value={newCourse.video_url}
           onChange={(e) =>
             setNewCourse({ ...newCourse, video_url: e.target.value })
@@ -112,7 +107,14 @@ const UploadCourse = () => {
             setNewCourse({ ...newCourse, video_url: e.target.value })
           }
         /> */}
-        <button onClick={handleAddCourse}>Add course</button>
+        <button
+          onClick={() => {
+            window.location.reload();
+            handleAddCourse();
+          }}
+        >
+          Add course
+        </button>
       </div>
       <h2>Courses</h2>
       <div className="row mx-2">
@@ -120,7 +122,12 @@ const UploadCourse = () => {
           <div key={course.id}>
             <div className="row my-2 mx-2">
               <div className="card mb-3 course-card" style={{ width: "18rem" }}>
-                <VideoPlayer source={course.video_url} />
+                <img
+                  src={course.video_url}
+                  alt="Image"
+                  width="100%"
+                  height="200px"
+                />
                 <div class="card-body">
                   <h5 class="card-title">{course.name}</h5>
                   <p class="card-text">{course.description}</p>
@@ -129,7 +136,12 @@ const UploadCourse = () => {
                 <button onClick={() => navigate("/CourseDetails")}>
                   View Course
                 </button>
-                <button onClick={() => handleDeleteCourse(course.id)}>
+                <button
+                  onClick={() => {
+                    window.location.reload();
+                    handleDeleteCourse(course.id);
+                  }}
+                >
                   Delete
                 </button>
               </div>

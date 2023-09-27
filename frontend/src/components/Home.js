@@ -51,11 +51,19 @@ const Home = () => {
     <div>
       <Header prop={inst} />
       <div className="row mx-2 my-2">
+        <h3>Welcome {username}</h3>
+      </div>
+      <div className="row mx-2 my-2">
         {courses.map((course) => (
           <div key={course.id}>
-            <div className="row mx-2">
+            <div className="row mx-2 my-2">
               <div className="card mb-3 course-card" style={{ width: "18rem" }}>
-                <VideoPlayer source={course.video_url} />
+                <img
+                  src={course.video_url}
+                  alt="Image"
+                  width="100%"
+                  height="200px"
+                />
                 <div class="card-body">
                   <h5 class="card-title">{course.name}</h5>
                   <p class="card-text">{course.description}</p>
@@ -67,8 +75,8 @@ const Home = () => {
                 {username ? (
                   <button
                     onClick={() => {
+                      window.location.reload();
                       handlePurchase(course);
-                      navigate("/coursedetails");
                     }}
                   >
                     Purchase course

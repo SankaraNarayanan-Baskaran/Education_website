@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import toast, { Toaster } from "react-hot-toast";
 import Course from "./Course";
+
 const Header = ({ isAuthorised, prop, student }) => {
   const navigate = useNavigate();
   const user = localStorage.getItem("username");
@@ -28,24 +29,36 @@ const Header = ({ isAuthorised, prop, student }) => {
         </div>
         <div>
           {isAuthorised ? (
-            <button
-              class="btn btn-outline-light mx-2 my-sm-0"
-              type="submit"
-              onClick={() => {
-                navigate("/");
-              }}
-            >
-              Home
-            </button>
+            <>
+              <button
+                class="btn btn-outline-light mx-2 my-sm-0"
+                type="submit"
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
+                Home
+              </button>
+              {user ? (
+                <button
+                  class="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0"
+                  onClick={() => {
+                    localStorage.clear();
+                    navigate("/");
+                  }}
+                >
+                  LOG OUT
+                </button>
+              ) : (
+                <></>
+              )}
+            </>
           ) : (
             <>
               {prop ? (
                 <>
                   {!student ? (
                     <>
-                      <button className="btn rounded-button btn-outline-light mx-lg-2 mx-sm-1 my-sm-0">
-                        {`${user}`}
-                      </button>
                       <button
                         class="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0"
                         onClick={() => {
@@ -61,6 +74,9 @@ const Header = ({ isAuthorised, prop, student }) => {
                         }}
                       >
                         My Learning
+                      </button>
+                      <button className="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0">
+                        {`${user}`}
                       </button>
                       <button
                         class="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0"
@@ -82,14 +98,23 @@ const Header = ({ isAuthorised, prop, student }) => {
                       >
                         Student
                       </button>
-                      
+
                       <button
                         class="btn btn-outline-light mx-2 my-sm-0"
                         onClick={() => {
-                          navigate("/",{state:{isLogged:"true"}});
+                          navigate("/", { state: { isLogged: "true" } });
                         }}
                       >
                         Home
+                      </button>
+                      <button
+                        class="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0"
+                        onClick={() => {
+                          localStorage.clear();
+                          navigate("/");
+                        }}
+                      >
+                        LOG OUT
                       </button>
                     </>
                   )}

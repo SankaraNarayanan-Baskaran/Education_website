@@ -32,15 +32,15 @@ const Course = () => {
   
   return (
     <>
-    <Header isAuthorised={true}/>
+    <Header isAuthorised={false} prop student/>
       <div className="row mx-2 my-2">
-      <h1>Course List</h1>
+      <h2>Purchased Courses</h2>
       <br/><br/><br/>
         {courses.map((course) => (
           <div key={course.id}>
             <div className="row mx-2">
               <div className="card mb-3 course-card" style={{ width: "18rem" }}>
-                <VideoPlayer source={course.video_url} />
+                <img src={course.video_url} alt="Image" width="200px" height="200px" />
                 <div class="card-body">
                   <h5 class="card-title">{course.course_name}</h5>
                   <p class="card-text">{course.course_description}</p>
