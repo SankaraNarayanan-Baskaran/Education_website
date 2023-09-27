@@ -2,3 +2,40 @@
     background-color:#D5C37E;
     border: 2px solid black;
 }
+
+
+.form-container {
+    width:50%;
+    height: 60%;
+    margin: 10rem 10rem;
+    padding: 2rem;
+    border: 1px solid #DBDAD7;
+    border-radius: 5px;
+    background-color: #5D6D7E;
+  }
+  
+  .input-container {
+    margin-bottom: 1rem;
+  }
+  
+  .input-container input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  .form-button {
+    padding: 0.5rem 3rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .form-button:hover {
+    background-color: #0056b3;
+  }
+  

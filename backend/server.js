@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const { Sequelize, DataTypes } = require("sequelize");
 const coursedetails = require("./models/coursedetails");
+
 app.use(bodyParser.json());
 // app.use(express.json());
 app.use(cors());
@@ -36,6 +37,14 @@ const Student_Purchases = sequelize.define("Student_Purchases", {
   student_name: DataTypes.STRING,
   course_id: DataTypes.INTEGER,
 });
+
+const Course_Section=sequelize.define("Course_Section",{
+  section_name:DataTypes.STRING,
+  section_description:DataTypes.TEXT,
+  img_url:DataTypes.STRING,
+  Course_id:DataTypes.INTEGER,
+  Course_name:DataTypes.STRING
+})
 
 sequelize.sync();
 app.post("/api/adduser", async (req, res) => {
@@ -147,7 +156,7 @@ app.post("/api/courses", async (req, res) => {
 
 app.get("/api/courses", async (req, res) => {
   try {
-    console.log("Request:", req.body);
+    
     const param = req.query.username;
     // console.log("Param:", param);
     const some = await Accounts.findOne({ where: { username: param } }).then(
@@ -157,7 +166,7 @@ app.get("/api/courses", async (req, res) => {
           
           where: { user_id: users.id },
         }).then((course) => {
-          // console.log("Course:", course);
+          console.log("Course:", course);
           res.json(course);
         });
       }
@@ -268,6 +277,55 @@ app.get("/api/learners", async (req, res) => {
   
 }
  catch (error) {
+    console.error("Error fetching details:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/api/section", async (req, res) => {
+  try {
+    const { section_name, section_description, img_url,course_name,username} =
+      req.body;
+    Accounts.findOne({ where: { username: username } }).then(async (user) => {
+      await CourseDetails.findOne({ where: { name: course_name } }).then(async (course) => {
+        await Course_Section.create({
+          section_name,
+          section_description,
+          img_url,
+          Course_id:course.id,
+          Course_name:course_name
+        });
+      });
+
+      // console.log(userId);
+    });
+
+    // res = newCourse;
+  } catch (error) {
+    console.error("Error creating a CourseDetails:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/api/section", async (req, res) => {
+  try {
+    // console.log("Request:", req.body);
+    const param = req.query.username;
+    // console.log("Param:", param);
+    const some = await CourseDetails.findOne({ where: {name:"xwxe" } }).then(
+      async (course) => {
+        // console.log("Userd:",users);
+         await Course_Section.findAll().then((section) => {
+          // console.log("Course:", course);
+          res.json(section);
+        });
+      }
+
+      // console.log(details);
+      // res.json(details);
+    );
+  } catch (error) {
+    console.log(req.query.username);
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }

@@ -6,9 +6,11 @@ import { config } from "../App";
 import toast, { Toaster } from "react-hot-toast";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { LoginSocialGoogle } from "reactjs-social-login";
+import { useSnackbar } from "notistack";
 import Footer from "./Footer";
 const Register = () => {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -17,23 +19,23 @@ const Register = () => {
   });
   const validateInput = (data) => {
     if (data.username === "") {
-      toast("Username cannot be empty");
+      enqueueSnackbar("Username cannot be empty",{variant:"error"});
       return false;
     }
     if (data.username.length < 6) {
-      toast("Username should have atleast 6 characters");
+      enqueueSnackbar("Username should have atleast 6 characters",{variant:"error"});
       return false;
     }
     if (data.password === "") {
-      toast("Password cannot be empty");
+      enqueueSnackbar("Password cannot be empty",{variant:"error"});
       return false;
     }
     if (data.password.length < 6) {
-      toast("Password should have atleast 6 characters");
+      enqueueSnackbar("Password should have atleast 6 characters",{variant:"error"});
       return false;
     }
     if (data.password != data.confirmPassword) {
-      toast("Passwords do not match");
+      enqueueSnackbar("Passwords do not match",{variant:"error"});
       return false;
     }
     return true;
@@ -65,7 +67,7 @@ const Register = () => {
           // toast("Registered Successfully");
         } else if (response.status === 302) {
           console.log("User already exists");
-          toast("User already exists");
+          
         }
       } catch (error) {
         console.log(error);
@@ -150,7 +152,9 @@ const Register = () => {
             <button
               className="login-button"
               onClick={() => {
+                
                 navigate("/login");
+                enqueueSnackbar("Registered Successfully",{variant:"success"})
               }}
             >
               Already have an account?

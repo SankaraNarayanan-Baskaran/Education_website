@@ -69,52 +69,58 @@ const UploadCourse = () => {
       <h1>Course Management</h1>
       <h2>Add a course</h2>
       <div className="mx-2">
-        <input
-          type="text"
-          placeholder="Name"
-          value={newCourse.name}
-          onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={newCourse.description}
-          onChange={(e) =>
-            setNewCourse({ ...newCourse, description: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Price"
-          value={newCourse.price}
-          onChange={(e) =>
-            setNewCourse({ ...newCourse, price: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Image URL"
-          value={newCourse.video_url}
-          onChange={(e) =>
-            setNewCourse({ ...newCourse, video_url: e.target.value })
-          }
-        />
-        {/* <input
-          type="file"
-          placeholder="video"
-          value={newCourse.video_url}
-          onChange={(e) =>
-            setNewCourse({ ...newCourse, video_url: e.target.value })
-          }
-        /> */}
-        <button
-          onClick={() => {
-            window.location.reload();
-            handleAddCourse();
-          }}
-        >
-          Add course
-        </button>
+      <center>
+    
+        <form className="form-container">
+        <h5>Course Structure Details:</h5>
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder="Name"
+              value={newCourse.name}
+              onChange={(e) =>
+                setNewCourse({ ...newCourse, name: e.target.value })
+              }
+            />
+
+            <input
+              type="text"
+              placeholder="Description"
+              value={newCourse.description}
+              onChange={(e) =>
+                setNewCourse({ ...newCourse, description: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Price"
+              value={newCourse.price}
+              onChange={(e) =>
+                setNewCourse({ ...newCourse, price: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={newCourse.video_url}
+              onChange={(e) =>
+                setNewCourse({ ...newCourse, video_url: e.target.value })
+              }
+            />
+            <center>
+            <button
+              className="form-button my-3"
+              onClick={() => {
+                window.location.reload();
+                handleAddCourse();
+              }}
+            >
+              Add course
+            </button>
+            </center>
+          </div>
+        </form>
+        </center>
       </div>
       <h2>Courses</h2>
       <div className="row mx-2">

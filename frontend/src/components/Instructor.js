@@ -9,17 +9,42 @@ import axios from "axios";
 import { config } from "../App";
 import VideoPlayer from "./Video";
 const Instructor = () => {
-  const navigate = useNavigate();
   const username = localStorage.getItem("username");
+  const [newCourse, setNewCourse] = useState({
+    name: "",
+    description: "",
+    price: "",
+    video_url: "",
+    username: username,
+  });
+  const handleAddCourse = async () => {
+    try {
+      await axios.post(`${config.endpoint}/courses`, newCourse);
+      setNewCourse({ name: "", description: "", price: "", video_url: "" });
+      fetchcourses();
+    } catch (error) {
+      console.error("Error adding a Course:", error);
+    }
+  };
+
+  const handleDeleteCourse = async (id) => {
+    try {
+      await axios.delete(`${config.endpoint}/courses/${id}`);
+      // Fetch the updated list of courses after deleting
+      fetchcourses();
+    } catch (error) {
+      console.error("Error deleting a Course:", error);
+    }
+  };
+
+  const navigate = useNavigate();
+
   const [courses, setCourses] = useState([]);
   const [isSelected, setIsSelected] = useState(false);
   const queryParams = {
     username: username,
   };
-  useEffect(() => {
-    // Fetch all courses when the component mounts
-    fetchcourses();
-  }, []);
+
   const handleSelect = async (courseid) => {
     try {
       console.log(courseid);
@@ -36,15 +61,22 @@ const Instructor = () => {
 
   const fetchcourses = async () => {
     try {
-      const response = await axios.get(`${config.endpoint}/courses`, {
+      const response = await axios.get(`${config.endpoint}/student`, {
         params: queryParams,
       });
-      console.log(response.data);
+      console.log("Response:", response.data);
       setCourses(response.data);
       console.log("Courses:", courses);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
+  };
+  useEffect(() => {
+    // Fetch all courses when the component mounts
+    fetchcourses();
+  }, []);
+  const handleCreateCourse = () => {
+    return <div></div>;
   };
 
   return (
@@ -55,33 +87,92 @@ const Instructor = () => {
         <button
           className="btn btn-outline-dark mx-6 mr-2 my-2 my-sm-0"
           onClick={() => {
-            navigate("/UploadCourse");
+            setIsSelected(true);
           }}
         >
           Create Your Course
         </button>
-      </div>
+        <button
+          className="btn btn-outline-dark mx-6 mr-2 my-2 my-sm-0"
+          onClick={() => {
+            // window.location.reload();
+            navigate("/section");
+          }}
+        >
+          My Courses
+        </button>
 
+        {/* {fetchcourses()} */}
+      </div>
       {isSelected ? (
         <>
-          <div className="row mx-2 my-2">
-            {courses.map((course) => (
-              <div key={course.id}>
-                <div className="row mx-2">
-                  <div
-                    className="card mb-3 course-card"
-                    style={{ width: "18rem" }}
-                  >
-                    <div class="card-body">
-                      <h5 class="card-title">{course.course_name}</h5>
-                        <p class="card-text">{course.course_description}</p>
-                      <h6>{course.student_name}</h6>
-                    </div>
-                  </div>
+          <div className="mx-2">
+            <center>
+              <form className="form-container">
+                <h5>Course Structure Details:</h5>
+                <div className="input-container">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={newCourse.name}
+                    onChange={(e) =>
+                      setNewCourse({ ...newCourse, name: e.target.value })
+                    }
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    value={newCourse.description}
+                    onChange={(e) =>
+                      setNewCourse({
+                        ...newCourse,
+                        description: e.target.value,
+                      })
+                    }
+                  />
+                  <input
+                    type="text"
+                    placeholder="Price"
+                    value={newCourse.price}
+                    onChange={(e) =>
+                      setNewCourse({ ...newCourse, price: e.target.value })
+                    }
+                  />
+                  <input
+                    type="text"
+                    placeholder="Image URL"
+                    value={newCourse.video_url}
+                    onChange={(e) =>
+                      setNewCourse({
+                        ...newCourse,
+                        video_url: e.target.value,
+                      })
+                    }
+                  />
+                  <center>
+                    <button
+                      className="form-button my-3"
+                      onClick={() => {
+                        window.location.reload();
+                        handleAddCourse();
+                      }}
+                    >
+                      Add course
+                    </button>
+                  </center>
                 </div>
-              </div>
-            ))}
+              </form>
+            </center>
           </div>
+        </>
+      ) : (
+        <></>
+      )}
+
+      {/* {isSelected ? (
+        <>
+          
         </>
       ) : (
         <>
@@ -104,19 +195,21 @@ const Instructor = () => {
                         <h5 class="card-title">{course.name}</h5>
                         <p class="card-text">{course.description}</p>
                         <p>{course.price}</p>
-                        
                       </div>
-                      <button onClick={()=>{
-                         setIsSelected(true);
-                         handleSelect(course.id);
-                      }}>View Students</button>
                       <button
                         onClick={() => {
-                          
-                          // navigate("/CourseDetails");
+                          setIsSelected(true);
+                          handleSelect(course.id);
                         }}
                       >
-                        View Course
+                        View Students
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate("/Section");
+                        }}
+                      >
+                        Add Contents
                       </button>
                     </div>
                   </div>
@@ -125,7 +218,7 @@ const Instructor = () => {
             </div>
           </div>
         </>
-      )}
+      )} */}
     </div>
   );
 };

@@ -33,8 +33,9 @@ const Course = () => {
   return (
     <>
     <Header isAuthorised={false} prop student/>
+    <h4>Purchased Courses</h4>
       <div className="row mx-2 my-2">
-      <h2>Purchased Courses</h2>
+      
       <br/><br/><br/>
         {courses.map((course) => (
           <div key={course.id}>
@@ -45,7 +46,7 @@ const Course = () => {
                   <h5 class="card-title">{course.course_name}</h5>
                   <p class="card-text">{course.course_description}</p>
                 </div>
-                <button onClick={() => navigate("/CourseDetails")}>
+                <button onClick={() => navigate("/coursedetails")}>
                   View Course
                 </button>
               </div>
