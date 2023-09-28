@@ -20,10 +20,11 @@ const CourseDetails = () => {
     return storedCompletedCourses ? JSON.parse(storedCompletedCourses) : {};
   });
 
-  const fetchcourses = async () => {
+  const fetchcourses = async (courseId) => {
     try {
       const response = await axios.get(`${config.endpoint}/section`, {
         params: queryParams,
+        course_id:courseId
       });
       setCourses(response.data);
     } catch (error) {
@@ -41,7 +42,7 @@ const CourseDetails = () => {
     const totalCourses = courses.length;
     const newProgress = Math.trunc((completedCount * 100) / totalCourses);
     setProgress(newProgress);
-    localStorage.setItem("completedCourses", JSON.stringify(completedCourses));
+     localStorage.setItem("completedCourses", JSON.stringify(completedCourses));
   }, [completedCourses, courses]);
 
 
@@ -58,6 +59,7 @@ const CourseDetails = () => {
       <div className="rounded-element">
         <h3>Your Progress: {progress}%</h3>
       </div>
+      
       {courses.map((course) => (
         <div key={course.id}>
           <div className="row mx-2 my-2">

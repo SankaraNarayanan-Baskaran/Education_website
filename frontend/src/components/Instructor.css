@@ -3,4 +3,10 @@
     margin: 2rem 3rem;
     border: 2px solid;
     box-shadow: 5px 10px  #888888;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+}
+.structure{
+    /* position: fixed; */
 }

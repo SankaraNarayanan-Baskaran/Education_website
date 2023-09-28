@@ -91,6 +91,15 @@ const Header = ({ isAuthorised, prop, student }) => {
                   ) : (
                     <>
                       <button
+                        className="btn btn-outline-light mx-6 mr-2 my-2 my-sm-0"
+                        onClick={() => {
+                          // window.location.reload();
+                          navigate("/section");
+                        }}
+                      >
+                        My Courses
+                      </button>
+                      <button
                         class="btn btn-outline-light mx-2 my-sm-0"
                         onClick={() => {
                           navigate("/", { state: { isLogged: "true" } });

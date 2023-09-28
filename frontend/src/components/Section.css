@@ -27,6 +27,8 @@
     border: none;
     border-radius: 3px;
     cursor: pointer;
+    align-items: center;
+    justify-content: center;
   }
   
   .section-button:hover {

@@ -307,16 +307,43 @@ app.post("/api/section", async (req, res) => {
   }
 });
 
-app.get("/api/section", async (req, res) => {
+app.get("/api/purchased", async (req, res) => {
   try {
     // console.log("Request:", req.body);
     const param = req.query.username;
     // console.log("Param:", param);
-    const some = await CourseDetails.findOne({ where: {name:"xwxe" } }).then(
+    const some = await CourseDetails.findOne({ where: {name: ""} }).then(
       async (course) => {
         // console.log("Userd:",users);
          await Course_Section.findAll().then((section) => {
           // console.log("Course:", course);
+          res.json(section);
+        });
+      }
+
+      // console.log(details);
+      // res.json(details);
+    );
+  } catch (error) {
+    console.log(req.query.username);
+    console.error("Error fetching details:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+app.get("/api/section", async (req, res) => {
+  try {
+    // console.log("Request:", req.body);
+    const param = req.query.course_id;
+    console.log("Param:", param);
+    const some = Student_Purchases.findOne({ where: {id:param } }).then(
+      async (course) => {
+        console.log("CourseID:",course.id);
+         await Course_Section.findAll({
+          where:{Course_id:course.course_id}
+         }).then((section) => {
+         console.log("Section:",section)
           res.json(section);
         });
       }

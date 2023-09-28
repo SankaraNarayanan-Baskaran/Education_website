@@ -17,6 +17,12 @@ const Register = () => {
     email: "",
     address: "",
   });
+  const [borderColor, setBorderColor] = useState("");
+  const [focus,setFocus]=useState(false);
+  const handleClick = () => {
+    setFocus(true)
+    setBorderColor("red");
+  };
   const validateInput = (data) => {
     if (data.username === "") {
       enqueueSnackbar("Username cannot be empty",{variant:"error"});
@@ -98,12 +104,17 @@ const Register = () => {
           <h2>Register</h2>
           <div className="input-container">
             <input
+              style={{ 
+               border:`2px solid ${focus?borderColor:""}`
+          
+        }}
               type="text"
               placeholder="Username"
               value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
+              onChange={(e) =>{
+                setFormData({ ...formData, username: e.target.value })}
               }
+              onClick={handleClick}
             />
             <input
               type="password"
@@ -144,6 +155,7 @@ const Register = () => {
             className="login-button"
             onClick={() => {
               Credentials(formData);
+              enqueueSnackbar("Registered successfully",{variant:"success"})
             }}
           >
             Register
@@ -152,9 +164,8 @@ const Register = () => {
             <button
               className="login-button"
               onClick={() => {
-                
                 navigate("/login");
-                enqueueSnackbar("Registered Successfully",{variant:"success"})
+               
               }}
             >
               Already have an account?

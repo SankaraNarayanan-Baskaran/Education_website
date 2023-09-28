@@ -1,0 +1,3 @@
+.focused-input {
+    border: 2px solid red; /* Change the border color to red when focused */
+  }

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { config } from "../App";
 import VideoPlayer from "./Video";
+import { enqueueSnackbar } from "notistack";
 const Instructor = () => {
   const username = localStorage.getItem("username");
   const [newCourse, setNewCourse] = useState({
@@ -82,7 +83,8 @@ const Instructor = () => {
   return (
     <div>
       <Header isAuthorised={false} prop student />
-      <div className="mx-2 my-2">
+      <center>
+      <div className="mx-2 my-2 container">
         <h2>Jump into Course creation</h2>
         <button
           className="btn btn-outline-dark mx-6 mr-2 my-2 my-sm-0"
@@ -92,15 +94,7 @@ const Instructor = () => {
         >
           Create Your Course
         </button>
-        <button
-          className="btn btn-outline-dark mx-6 mr-2 my-2 my-sm-0"
-          onClick={() => {
-            // window.location.reload();
-            navigate("/section");
-          }}
-        >
-          My Courses
-        </button>
+        
 
         {/* {fetchcourses()} */}
       </div>
@@ -154,7 +148,7 @@ const Instructor = () => {
                     <button
                       className="form-button my-3"
                       onClick={() => {
-                        window.location.reload();
+                       enqueueSnackbar("Course Created",{variant:"success"})
                         handleAddCourse();
                       }}
                     >
@@ -169,56 +163,7 @@ const Instructor = () => {
       ) : (
         <></>
       )}
-
-      {/* {isSelected ? (
-        <>
-          
-        </>
-      ) : (
-        <>
-          <div className="container">
-            <div className="row mx-2 my-2">
-              {courses.map((course) => (
-                <div key={course.id}>
-                  <div className="row mx-2">
-                    <div
-                      className="card mb-3 course-card"
-                      style={{ width: "18rem" }}
-                    >
-                      <img
-                        src={course.video_url}
-                        alt="Image"
-                        width="100%"
-                        height="200px"
-                      />
-                      <div class="card-body">
-                        <h5 class="card-title">{course.name}</h5>
-                        <p class="card-text">{course.description}</p>
-                        <p>{course.price}</p>
-                      </div>
-                      <button
-                        onClick={() => {
-                          setIsSelected(true);
-                          handleSelect(course.id);
-                        }}
-                      >
-                        View Students
-                      </button>
-                      <button
-                        onClick={() => {
-                          navigate("/Section");
-                        }}
-                      >
-                        Add Contents
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </>
-      )} */}
+      </center>
     </div>
   );
 };
