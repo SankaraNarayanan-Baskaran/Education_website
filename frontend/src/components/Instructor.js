@@ -9,6 +9,7 @@ import axios from "axios";
 import { config } from "../App";
 import VideoPlayer from "./Video";
 import { enqueueSnackbar } from "notistack";
+import Section from "./Section";
 const Instructor = () => {
   const username = localStorage.getItem("username");
   const [newCourse, setNewCourse] = useState({
@@ -98,6 +99,7 @@ const Instructor = () => {
 
         {/* {fetchcourses()} */}
       </div>
+      
       {isSelected ? (
         <>
           <div className="mx-2">
@@ -161,7 +163,9 @@ const Instructor = () => {
           </div>
         </>
       ) : (
-        <></>
+        <>
+        <Section/>
+        </>
       )}
       </center>
     </div>

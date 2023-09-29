@@ -1,3 +1,7 @@
 .focused-input {
     border: 2px solid red; /* Change the border color to red when focused */
   }
+  .clicked-input {
+    outline-color: red; /* Change this to the desired outline color */
+  }
+  

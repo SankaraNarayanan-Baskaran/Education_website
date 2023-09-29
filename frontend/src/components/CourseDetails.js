@@ -7,11 +7,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { config } from "../App";
 
-const CourseDetails = () => {
+const CourseDetails = (courseid) => {
   const [courses, setCourses] = useState([]);
   const [progress, setProgress] = useState(0);
   const username = localStorage.getItem("username");
-  const queryParams = {};
+  const queryParams = {
+    course_id:courseid
+  };
   const navigate = useNavigate();
 
   
@@ -20,12 +22,14 @@ const CourseDetails = () => {
     return storedCompletedCourses ? JSON.parse(storedCompletedCourses) : {};
   });
 
-  const fetchcourses = async (courseId) => {
+  const fetchcourses = async (courseid) => {
     try {
       const response = await axios.get(`${config.endpoint}/section`, {
-        params: queryParams,
-        course_id:courseId
+        params:{course_id:courseid}
+       
+        
       });
+      console.log("Query:",queryParams);
       setCourses(response.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -55,7 +59,7 @@ const CourseDetails = () => {
 
   return (
     <div>
-      <Header isAuthorised={false} prop inst />
+      {/* <Header isAuthorised={false} prop inst /> */}
       <div className="rounded-element">
         <h3>Your Progress: {progress}%</h3>
       </div>

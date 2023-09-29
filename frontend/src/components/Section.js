@@ -3,6 +3,7 @@ import { config } from "../App";
 import axios from "axios";
 import Header from "./Header";
 import "./Section.css";
+import Instructor from "./Instructor";
 import { enqueueSnackbar } from "notistack";
 const Section = () => {
   const [addSection, setAddSection] = useState(false);
@@ -54,7 +55,7 @@ const Section = () => {
 
   return (
     <div>
-      <Header isAuthorised={false} prop student />
+      {/* <Header isAuthorised={false} prop student /> */}
 
       <div className="mx-2 my-3">
         <div className="my-2 mx-2"></div>
@@ -116,6 +117,7 @@ const Section = () => {
                           enqueueSnackbar("Section Added", {
                             variant: "success",
                           });
+                          setAddSection(false);
                           window.location.reload();
                         }}
                       >
@@ -149,6 +151,7 @@ const Section = () => {
                       </div>
                       <button
                         onClick={() => {
+                          
                           setAddSection(true);
                         }}
                       >

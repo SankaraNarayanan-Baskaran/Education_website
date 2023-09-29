@@ -43,19 +43,23 @@ const Login = () => {
   }
 
   const logged = async (formData) => {
-    if (validateInput(formData)) {
-      try {
-        const res = await axios.post(config.endpoint + "/loginuser", {
-          username: formData.username,
-          password: formData.password,
-        });
-        if (res.status === 201) {
-          localStorage.setItem("username", formData.username);
-          navigate("/", { state: { isLogged: "true" } });
-        }
-      } catch (error) {
-        console.log(error);
+    try {
+      const res = await axios.post(config.endpoint + "/loginuser", {
+        username: formData.username,
+        password: formData.password,
+      });
+      if (res.status === 201) {
+        localStorage.setItem("username", formData.username);
+        enqueueSnackbar("Logged in Successfully",{variant:"success"})
+        navigate("/", { state: { isLogged: "true" } });
+       
       }
+      
+    } catch (error) {
+     
+        enqueueSnackbar("Invalid Credentials",{variant:"error"})
+      
+      console.log(error);
     }
   };
 
@@ -76,8 +80,6 @@ const Login = () => {
   };
 
   const navigate = useNavigate();
-
- 
 
   return (
     <div>
@@ -106,8 +108,10 @@ const Login = () => {
           <button
             className="login-button mb-3"
             onClick={() => {
-              enqueueSnackbar("Logged in successfully",{variant:"success"})
-              logged(formData);
+              if (validateInput(formData)) {
+               logged(formData)
+                
+              }
             }}
           >
             Login
@@ -128,7 +132,9 @@ const Login = () => {
                   email: email,
                 };
                 handleggl(userData);
-                enqueueSnackbar("Logged in successfully",{variant:"success"})
+                enqueueSnackbar("Logged in successfully", {
+                  variant: "success",
+                });
               }}
               onReject={(err) => {
                 console.log(err);

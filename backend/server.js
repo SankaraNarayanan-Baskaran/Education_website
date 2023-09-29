@@ -89,7 +89,7 @@ app.post("/api/loginuser", async (req, res) => {
         success: "true",
       });
     } else
-      return res.status(404).json({
+      return res.status(500).json({
         success: "false",
       });
   } catch (error) {
