@@ -165,6 +165,7 @@ const Instructor = () => {
       ) : (
         <>
         <Section/>
+
         </>
       )}
       </center>

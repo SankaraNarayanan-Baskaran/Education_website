@@ -20,6 +20,7 @@ const Register = () => {
   });
   const [isClicked, setIsClicked] = useState(false);
   const [isPasswordClicked, setIsPasswordClicked] = useState(false);
+  const [isConfirmClicked, setIsConfirmClicked] = useState(false);
   const handleCriteria = () => {
     return formData.username.length < 6
       ? "Username should have atleast 6 characters"
@@ -27,6 +28,9 @@ const Register = () => {
   };
   const handleClick = () => {
     setIsClicked(true);
+  };
+  const handleCheck = () => {
+    setIsConfirmClicked(true);
   };
   const handlePasswordClick = () => {
     setIsPasswordClicked(true);
@@ -183,9 +187,28 @@ const Register = () => {
               value={formData.confirmPassword}
               onChange={(e) => {
                 setFormData({ ...formData, confirmPassword: e.target.value });
+                handleCheck();
               }}
               // onClick={handleCriteria}
             />
+             {isConfirmClicked ? (
+              formData.password !== formData.confirmPassword ? (
+                <>
+                  <div
+                    style={{
+                      color: "red",
+                      textAlign: "left",
+                    }}
+                  >
+                    <p>*Passwords do not match</p>
+                  </div>
+                </>
+              ) : (
+                ""
+              )
+            ) : (
+              ""
+            )}
             <input
               type="email"
               placeholder="Email-Address"

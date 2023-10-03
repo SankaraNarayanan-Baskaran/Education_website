@@ -1,13 +1,13 @@
-import React from "react";
-import image from "../Images/bgimage.jpg";
-import "./Course.css";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import VideoPlayer from "./Video";
-import Footer from "./Footer";
-import axios from "axios";
-import { config } from "../App";
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { config } from "../App";
+import Footer from "./Footer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { ProgressBar } from "react-bootstrap"; // Import Bootstrap's ProgressBar
+import "./Course.css";
 const Course = () => {
   const [progress, setProgress] = useState(0);
   const [completedCourses, setCompletedCourses] = useState(() => {
@@ -17,25 +17,39 @@ const Course = () => {
   const [courses, setCourses] = useState([]);
   const username = localStorage.getItem("username");
   const [section, setSection] = useState(false);
+  const [completedSections, setCompletedSections] = useState({});
+  const [completedCourseId, setCompletedCourseId] = useState(null);
+
   const queryParams = {
     username: username,
   };
   const navigate = useNavigate();
   useEffect(() => {
+    const lastCompletedSectionId = localStorage.getItem(
+      "lastCompletedSectionId"
+    );
+    if (lastCompletedSectionId) {
+      setCompletedCourseId(parseInt(lastCompletedSectionId));
+    }
+  }, []);
+  useEffect(() => {
     const completedCount =
-      Object.values(completedCourses).filter(Boolean).length;
-    const totalCourses = courses.length;
-    const newProgress = Math.trunc((completedCount * 100) / totalCourses);
+      Object.values(completedSections).filter(Boolean).length; // Count completed sections for the current course
+    const totalSections = courses.length; // Total sections in the current course
+    const newProgress = Math.trunc((completedCount * 100) / totalSections);
     setProgress(newProgress);
     localStorage.setItem("completedCourses", JSON.stringify(completedCourses));
-  }, [completedCourses, courses]);
+  }, [completedSections, courses]);
 
   const markCourseAsDone = (courseId) => {
-    setCompletedCourses((prevCompletedCourses) => ({
-      ...prevCompletedCourses,
+    setCompletedCourseId(courseId);
+
+    setCompletedSections((prevCompletedSections) => ({
+      ...prevCompletedSections,
       [courseId]: true,
     }));
   };
+
   const fetchcourses = async () => {
     try {
       const response = await axios.get(`${config.endpoint}/learning`, {
@@ -48,6 +62,7 @@ const Course = () => {
       console.error("Error fetching courses:", error);
     }
   };
+
   const fetchsections = async (courseId) => {
     try {
       const response = await axios.get(`${config.endpoint}/section`, {
@@ -57,9 +72,10 @@ const Course = () => {
       });
       setCourses(response.data);
     } catch (error) {
-      console.error("Error fetching courses:", error);
+      console.error("Error fetching sections:", error);
     }
   };
+
   useEffect(() => {
     // Fetch all courses when the component mounts
     fetchcourses();
@@ -72,81 +88,84 @@ const Course = () => {
       {section ? (
         <>
           <h3>Your Progress: {progress}%</h3>
-          <h4>Course Sections:</h4>{" "}
+
+          <h4>Course Sections:</h4>
+          {courses.map((course) => (
+            <div key={course.id} className="row mx-2 my-2">
+              <div className="col-lg-8 my-2">
+                {completedCourseId === course.id && (
+                  <img
+                    src={course.img_url}
+                    alt="Image"
+                    width="500px"
+                    height="500px"
+                  />
+                )}
+              </div>
+              <div className="col-lg-4">
+                <div className="card course-card">
+                  <div className="card-body">
+                    <h5 className="card-title">{course.section_name}</h5>
+                    <p className="card-text">{course.section_description}</p>
+                    {completedCourseId === course.id ? (
+                      <span>
+                        <FontAwesomeIcon icon={faCheck} /> Section Completed
+                      </span>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => markCourseAsDone(course.id)}
+                          className="btn btn-primary"
+                        >
+                          View Section
+                        </button>
+                        {completedSections[course.id] && (
+                          <span>
+                            <FontAwesomeIcon icon={faCheck} /> Section Completed
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </>
       ) : (
-        <h4>Purchased Courses</h4>
-      )}
-      <div className="row mx-2 my-2">
-        <br />
-        <br />
-        <br />
-        {courses.map((course) => (
-          <div key={course.id}>
-            {section ? (
-              <>
-                <div>
-                  <div className="row mx-2 my-2">
-                    <div
-                      className="card mb-3 course-card"
-                      style={{ width: "18rem", height: "22rem" }}
-                    >
-                      <img
-                        src={course.img_url}
-                        alt="Image"
-                        width="100%"
-                        height="200px"
-                      />
-                      <div className="card-body">
-                        <h5 className="card-title">{course.section_name}</h5>
-                        <p className="card-text">
-                          {course.section_description}
-                        </p>
-                        {/* {!completedCourses[course.id] ? (
-                          <button onClick={() => markCourseAsDone(course.id)}>
-                            Mark as Done
-                          </button>
-                        ) : null} */}
-                      </div>
-                      <button onClick={() => markCourseAsDone(course.id)}>
-                        Mark as Done
-                      </button>
-                    </div>
+        <>
+          <h4>Purchased Courses</h4>
+          <div className="row mx-2 my-2">
+            {courses.map((course) => (
+              <div key={course.id} className="col-lg-4">
+                <div
+                  className="card mb-3 course-card"
+                  style={{ width: "18rem" }}
+                >
+                  <img
+                    src={course.video_url}
+                    alt="Image"
+                    width="200px"
+                    height="200px"
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">{course.course_name}</h5>
+                    <p className="card-text">{course.course_description}</p>
                   </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="row mx-2">
-                  <div
-                    className="card mb-3 course-card"
-                    style={{ width: "18rem" }}
+                  <button
+                    onClick={() => {
+                      fetchsections(course.id);
+                      setSection(true);
+                    }}
                   >
-                    <img
-                      src={course.video_url}
-                      alt="Image"
-                      width="200px"
-                      height="200px"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">{course.course_name}</h5>
-                      <p class="card-text">{course.course_description}</p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        fetchsections(course.id);
-                        setSection(true);
-                      }}
-                    >
-                      View Course
-                    </button>
-                  </div>
+                    View Course
+                  </button>
                 </div>
-              </>
-            )}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </>
   );
 };

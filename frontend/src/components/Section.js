@@ -5,7 +5,7 @@ import Header from "./Header";
 import "./Section.css";
 import Instructor from "./Instructor";
 import { enqueueSnackbar } from "notistack";
-const Section = () => {
+const Section = ({ courseName }) => {
   const [addSection, setAddSection] = useState(false);
   const [courses, setCourses] = useState([]);
   const username = localStorage.getItem("username");
@@ -16,7 +16,7 @@ const Section = () => {
     section_name: "",
     section_description: "",
     img_url: "",
-    course_name: "",
+    course_name:"",
     username: username,
   });
 
@@ -27,6 +27,7 @@ const Section = () => {
   const [sections, setSections] = useState([]);
   const handleSection = async () => {
     try {
+      console.log("SEction",newSection);
       await axios.post(`${config.endpoint}/section`, newSection);
       setAddSection({
         section_name: "",
@@ -98,17 +99,7 @@ const Section = () => {
                         })
                       }
                     />
-                    <input
-                      type="text"
-                      placeholder="Course_Name"
-                      value={newSection.course_name}
-                      onChange={(e) =>
-                        setnewSection({
-                          ...newSection,
-                          course_name: e.target.value,
-                        })
-                      }
-                    />
+                   
                     <center>
                       <button
                         className="section-button my-4"
@@ -118,7 +109,7 @@ const Section = () => {
                             variant: "success",
                           });
                           setAddSection(false);
-                          window.location.reload();
+                          
                         }}
                       >
                         Add Section
@@ -132,7 +123,9 @@ const Section = () => {
         ) : (
           <>
             <div className="row mx-2 my-2">
+            {console.log("SEC:",sections)}
               {sections.map((section) => (
+                
                 <div key={section.id}>
                   <div className="row mx-2">
                     <div
@@ -151,7 +144,7 @@ const Section = () => {
                       </div>
                       <button
                         onClick={() => {
-                          
+                          setnewSection({...newSection,course_name:section.name})
                           setAddSection(true);
                         }}
                       >
