@@ -30,8 +30,13 @@ const Course = () => {
     );
     if (lastCompletedSectionId) {
       setCompletedCourseId(parseInt(lastCompletedSectionId));
+    } else {
+      // Set the first course as completedCourseId by default
+      if (courses.length > 0) {
+        setCompletedCourseId(courses[0].id);
+      }
     }
-  }, []);
+  }, [courses]);
   useEffect(() => {
     const completedCount =
       Object.values(completedSections).filter(Boolean).length; // Count completed sections for the current course
@@ -154,7 +159,7 @@ const Course = () => {
                   </div>
                   <button
                     onClick={() => {
-                      fetchsections(course.id);
+                      fetchsections(course.course_id);
                       setSection(true);
                     }}
                   >

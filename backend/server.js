@@ -219,26 +219,47 @@ app.get("/api/learning", async (req, res) => {
 
 app.post("/api/learning", async (req, res) => {
   try {
-    const { course_name, course_description, video_url, student_name } =
-      req.body;
-    Accounts.findOne({ where: { username: student_name } }).then((user) => {
-      // Create an order associated with the user
-      console.log("UserID:", user.id);
-      CourseDetails.findOne({ where: { name: course_name } }).then((course) => {
-        Student_Purchases.create({
-          course_name,
-          course_description,
-          video_url,
-          student_id: user.id,
-          student_name,
-          course_id: course.id,
-        });
-      });
+    const { course_name, course_description, video_url, student_name } = req.body;
+    
+    // First, find the user based on their username
+    const user = await Accounts.findOne({ where: { username: student_name } });
 
-      // console.log(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Next, find the course based on its name
+    const course = await CourseDetails.findOne({ where: { name: course_name } });
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    // Check if the user has already purchased this course
+    const existingPurchase = await Student_Purchases.findOne({
+      where: {
+        student_id: user.id,
+        course_id: course.id,
+      },
     });
 
-    // res = newCourse;
+    if (existingPurchase) {
+      // Course has already been purchased by the user
+      return res.status(200).json({ message: "Course already purchased" });
+    }
+
+    // If the user hasn't purchased the course, create a new purchase record
+    await Student_Purchases.create({
+      course_name,
+      course_description,
+      video_url,
+      student_id: user.id,
+      student_name,
+      course_id: course.id,
+    });
+
+    // Return a success response
+    return res.status(201).json({ message: "Course purchased successfully" });
   } catch (error) {
     console.error("Error creating a CourseDetails:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -337,7 +358,7 @@ app.get("/api/section", async (req, res) => {
     // console.log("Request:", req.body);
     const param = req.query.course_id;
     console.log("Param:", param);
-    const some = Student_Purchases.findOne({ where: {id:param } }).then(
+    const some = Student_Purchases.findOne({ where: {course_id:param } }).then(
       async (course) => {
         console.log("CourseID:",course.id);
          await Course_Section.findAll({
