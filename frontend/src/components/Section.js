@@ -19,6 +19,13 @@ const Section = ({ courseName }) => {
     course_name:"",
     username: username,
   });
+  const [editSection, setEditSection] = useState({
+    section_name: "",
+    section_description: "",
+    img_url: "",
+    course_name:"",
+    username: username,
+  });
 
   useEffect(() => {
     // Fetch all courses when the component mounts
@@ -56,7 +63,7 @@ const Section = ({ courseName }) => {
 
   return (
     <div>
-      <Header isAuthorised={false} prop student />
+      {/* <Header isAuthorised={false} prop student /> */}
 
       <div className="mx-2 my-3">
         <div className="my-2 mx-2"></div>
@@ -140,7 +147,9 @@ const Section = ({ courseName }) => {
                       />
                       <div class="card-body">
                         <h5 class="card-title">{section.name}</h5>
-                        <button>Edit Section</button>
+                        <button onClick={()=>{
+                          setEditSection({...editSection})
+                        }}>Edit Section</button>
                       </div>
                       
                       <button

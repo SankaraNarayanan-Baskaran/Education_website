@@ -83,6 +83,7 @@ const Instructor = () => {
 
   return (
     <div>
+    
       <Header isAuthorised={false} prop student />
       <center>
       <div className="mx-2 my-2 container">

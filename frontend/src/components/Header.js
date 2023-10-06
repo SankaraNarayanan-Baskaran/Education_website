@@ -1,37 +1,59 @@
-import React from "react";
+import React,{useState} from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import toast, { Toaster } from "react-hot-toast";
 import Course from "./Course";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons"; 
 
 const Header = ({ isAuthorised, prop, student }) => {
   const navigate = useNavigate();
   const user = localStorage.getItem("username");
+  const [searchQuery, setSearchQuery] = useState("");
+  const handleSearch = (e) => {
+    e.preventDefault();
+  
+    if (searchQuery.trim() !== "") {
+
+      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+    }
+  }
   return (
     <div className="header">
-      <nav class="navbar navbar-dark bg-dark justify-content-between">
-        <h2 className="title">EduWeb</h2>
+      <nav class="navbar justify-content-between" style={{
+        backgroundColor:"#0077b6",
+        color:"#fca311 !important"
+      }}>
+      <div>
+        <h4 className="title" style={{
+          margin:"10px"
+        }}>EduWeb</h4>
+        </div>
         <div>
-          <form class="form-inline">
+          <form className="form-inline title">
             <input
-              class="form-control mr-sm-2"
+              class="form-control mr-sm-2 search"
               type="search"
               placeholder="Search"
               aria-label="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button
-              class="btn btn-outline-light mx-6 mr-2 my-2 my-sm-0"
+            {/* <button
+              className="btn btn-outline-light mx-6 mr-2 my-2 my-sm-0 title"
               type="submit"
             >
               Search
-            </button>
+            </button> */}
+            <FontAwesomeIcon icon={faSearch} style={{color: "#fca311",}} />
           </form>
         </div>
         <div>
           {isAuthorised ? (
             <>
               <button
-                class="btn btn-outline-light mx-2 my-sm-0"
+                class="btn mx-2 my-sm-0 title"
                 type="submit"
                 onClick={() => {
                   navigate("/");
@@ -41,7 +63,7 @@ const Header = ({ isAuthorised, prop, student }) => {
               </button>
               {user ? (
                 <button
-                  class="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0"
+                  class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                   onClick={() => {
                     localStorage.clear();
                     navigate("/");
@@ -60,7 +82,7 @@ const Header = ({ isAuthorised, prop, student }) => {
                   {!student ? (
                     <>
                       <button
-                        class="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0"
+                        class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
                           navigate("/instructor");
                         }}
@@ -68,18 +90,18 @@ const Header = ({ isAuthorised, prop, student }) => {
                         Instructor
                       </button>
                       <button
-                        class="btn btn-outline-light mx-2 my-sm-0"
+                        class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
                           navigate("/course");
                         }}
                       >
                         My Learning
                       </button>
-                      <button className="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0">
+                      <button className="btn  mx-lg-2 mx-sm-1 my-sm-0 title">
                         {`${user}`}
                       </button>
                       <button
-                        class="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0"
+                        class="btn  mx-lg-2 mx-sm-1 my-sm-0 title" 
                         onClick={() => {
                           localStorage.clear();
                           navigate("/");
@@ -91,7 +113,7 @@ const Header = ({ isAuthorised, prop, student }) => {
                   ) : (
                     <>
                       <button
-                        className="btn btn-outline-light mx-6 mr-2 my-2 my-sm-0"
+                        className="btn  mx-6 mr-2 my-2 my-sm-0 title"
                         onClick={() => {
                           // window.location.reload();
                           navigate("/section");
@@ -100,7 +122,7 @@ const Header = ({ isAuthorised, prop, student }) => {
                         My Courses
                       </button>
                       <button
-                        class="btn btn-outline-light mx-2 my-sm-0"
+                        class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
                           navigate("/", { state: { isLogged: "true" } });
                         }}
@@ -109,7 +131,7 @@ const Header = ({ isAuthorised, prop, student }) => {
                       </button>
 
                       <button
-                        class="btn btn-outline-light mx-2 my-sm-0"
+                        class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
                           navigate("/", { state: { isLogged: "true" } });
                         }}
@@ -117,7 +139,7 @@ const Header = ({ isAuthorised, prop, student }) => {
                         Home
                       </button>
                       <button
-                        class="btn btn-outline-light mx-lg-2 mx-sm-1 my-sm-0"
+                        class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
                           localStorage.clear();
                           navigate("/");
@@ -131,7 +153,7 @@ const Header = ({ isAuthorised, prop, student }) => {
               ) : (
                 <>
                   <button
-                    class="btn btn-outline-light mx-2 my-sm-0"
+                    class="btn btn-outline-light mx-2 my-sm-0 "
                     type="submit"
                     onClick={() => {
                       navigate("/login");

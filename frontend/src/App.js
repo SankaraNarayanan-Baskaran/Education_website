@@ -17,7 +17,7 @@ export const config = {
 function App() {
   
   return (
-    <div >
+    <div className="font-color font" >
     <SnackbarProvider>
       <Routes>
         <Route exact path="/" element={<Home/>} />

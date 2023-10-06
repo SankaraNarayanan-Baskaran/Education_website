@@ -1,3 +1,17 @@
 .design{
     border: 1px dotted black;
 }
+
+.card-cost{
+    margin: 0 !important;
+}
+
+.card-body{
+    padding: 10px 0 10px 10px !important;
+}
+.card-img{
+    border-radius: 20px 20px 0 0 !important;
+}
+.btn{
+    background-color: none;
+}

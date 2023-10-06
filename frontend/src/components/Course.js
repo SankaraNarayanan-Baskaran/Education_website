@@ -9,7 +9,15 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { ProgressBar } from "react-bootstrap"; // Import Bootstrap's ProgressBar
 import "./Course.css";
 const Course = () => {
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(() => {
+    
+    const storedProgress = localStorage.getItem("courseProgress");
+    return storedProgress ? parseInt(storedProgress, 10) : 0;
+  });
+  const updateProgress = (newProgress) => {
+    setProgress(newProgress);
+    localStorage.setItem("courseProgress", newProgress.toString());
+  };
   const [completedCourses, setCompletedCourses] = useState(() => {
     const storedCompletedCourses = localStorage.getItem("completedCourses");
     return storedCompletedCourses ? JSON.parse(storedCompletedCourses) : {};
@@ -139,7 +147,7 @@ const Course = () => {
                     ) : (
                       <>
                         <button
-                          onClick={() => markCourseAsDone(course.id)}
+                          onClick={() =>{ markCourseAsDone(course.id);}}
                           className="btn btn-primary"
                         >
                           View Section

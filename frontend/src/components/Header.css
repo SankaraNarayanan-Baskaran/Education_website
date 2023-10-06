@@ -25,10 +25,14 @@
 }
 
 .title {
-  font-size:xx-large;
+  /* font-size:xx-large; */
   font-weight: 600;
-  color: aliceblue;
+  color:#14213d !important
 }
 .rounded-button{
   border-radius: 35%;
+}
+
+.search{
+  border-radius: 20px;
 }
