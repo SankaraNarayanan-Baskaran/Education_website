@@ -36,3 +36,7 @@
 .search{
   border-radius: 20px;
 }
+
+.title:hover{
+  background-color: aliceblue;
+}

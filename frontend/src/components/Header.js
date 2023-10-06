@@ -153,7 +153,7 @@ const Header = ({ isAuthorised, prop, student }) => {
               ) : (
                 <>
                   <button
-                    class="btn btn-outline-light mx-2 my-sm-0 "
+                    class="btn mx-2 my-sm-0 title"
                     type="submit"
                     onClick={() => {
                       navigate("/login");
@@ -162,7 +162,7 @@ const Header = ({ isAuthorised, prop, student }) => {
                     LOGIN
                   </button>
                   <button
-                    class="btn btn-outline-light mx-2 my-2 my-sm-0"
+                    class=" btn mx-2 my-2 my-sm-0 title"
                     type="submit"
                     onClick={() => {
                       navigate("/register");
