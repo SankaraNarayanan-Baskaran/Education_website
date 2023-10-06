@@ -1,4 +1,5 @@
 const express = require("express");
+const nodemailer=require("nodemailer")
 const cors = require("cors");
 const pool = require("./config/database");
 const PORT = 3001;
@@ -14,6 +15,32 @@ const sequelize = new Sequelize({
   dialect: "postgres",
   ...require("./config/config.json")["development"],
 });
+const transporter = nodemailer.createTransport({
+  service: "Gmail", 
+  auth: {
+    user: "sankaran879@gmail.com",
+    pass: "nvix fmvk ekfz sboa",
+  },
+});
+
+
+const sendWelcomeEmail = (username, email, generatedPassword) => {
+  const mailOptions = {
+    from: "YourEmailAddress",
+    to: email,
+    subject: "Welcome to Your App",
+    text: `Hello ${username},\n\nWelcome to Your App! Your username is: ${username}\nYour password is: ${generatedPassword}\n\nPlease change your password after logging in for security.`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Error sending email:", error);
+    } else {
+      console.log("Email sent:", info.response);
+    }
+  });
+};
+
 const CourseDetails = sequelize.define("CourseDetails", {
   name: DataTypes.STRING,
   description: DataTypes.TEXT,
@@ -100,7 +127,9 @@ app.post("/api/loginuser", async (req, res) => {
 
 app.post("/api/google", async (req, res) => {
   try {
+    
     const { username, password, email, address } = req.body;
+    sendWelcomeEmail(username, email,password);
     const userExists = await Accounts.findOne({
       where: {
         username: username,

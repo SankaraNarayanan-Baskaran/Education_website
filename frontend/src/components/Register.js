@@ -15,12 +15,14 @@ const Register = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
+    confirmPassword:"",
     email: "",
     address: "",
   });
   const [isClicked, setIsClicked] = useState(false);
   const [isPasswordClicked, setIsPasswordClicked] = useState(false);
   const [isConfirmClicked, setIsConfirmClicked] = useState(false);
+  const [isEmailClicked,setIsEmailClicked]=useState(false);
   const handleCriteria = () => {
     return formData.username.length < 6
       ? "Username should have atleast 6 characters"
@@ -34,6 +36,22 @@ const Register = () => {
   };
   const handlePasswordClick = () => {
     setIsPasswordClicked(true);
+  };
+  const handleEmailClick=()=>{
+    setIsEmailClicked(true);
+  }
+
+  const validateEmail = (email) => {
+   
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+    if (!emailPattern.test(email)) {
+    
+      return false;
+    }
+
+  
+    return true;
   };
   const validateInput = (data) => {
     if (data.username === "") {
@@ -182,6 +200,7 @@ const Register = () => {
               ""
             )}
             <input
+            className={formData.confirmPassword.length < 6 ? "clicked-input" : ""}
               type="password"
               placeholder="Confirm password"
               value={formData.confirmPassword}
@@ -210,13 +229,35 @@ const Register = () => {
               ""
             )}
             <input
+            className={validateEmail(formData.emailaddress)?"":"clicked-input"}
               type="email"
               placeholder="Email-Address"
               value={formData.emailaddress}
-              onChange={(e) =>
+              onChange={(e) =>{
+                handleEmailClick()
                 setFormData({ ...formData, emailaddress: e.target.value })
-              }
+                
+              }}
             />
+            {isEmailClicked ? (
+             validateEmail(formData.emailaddress) ? (
+                ""
+              ) : (
+                <>
+                  <div
+                    style={{
+                      color: "red",
+                      textAlign: "left",
+                    }}
+                  >
+                    <p>*Invalid Email Address</p>
+                  </div>
+                </>
+              )
+            ) : (
+              ""
+            )}
+            
             <textarea
               className="col-sm-12"
               rows={5}

@@ -56,7 +56,7 @@ const Section = ({ courseName }) => {
 
   return (
     <div>
-      {/* <Header isAuthorised={false} prop student /> */}
+      <Header isAuthorised={false} prop student />
 
       <div className="mx-2 my-3">
         <div className="my-2 mx-2"></div>
@@ -140,8 +140,9 @@ const Section = ({ courseName }) => {
                       />
                       <div class="card-body">
                         <h5 class="card-title">{section.name}</h5>
-                        <p class="card-text">{section.description}</p>
+                        <button>Edit Section</button>
                       </div>
+                      
                       <button
                         onClick={() => {
                           setnewSection({...newSection,course_name:section.name})
@@ -150,7 +151,9 @@ const Section = ({ courseName }) => {
                       >
                         +Section
                       </button>
+                   
                     </div>
+                    <div></div>
                   </div>
                 </div>
               ))}

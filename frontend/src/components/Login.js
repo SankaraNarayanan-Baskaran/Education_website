@@ -116,33 +116,7 @@ const Login = () => {
           >
             Login
           </button>
-          <div>
-            <LoginSocialGoogle
-              client_id="450692513840-1ujucbe7nonf99hu09ss6b9b4ptajjs6.apps.googleusercontent.com"
-              scope="openid profile email"
-              discoveryDocs="claims_supported"
-              access_type="offline"
-              onResolve={({ provider, data }) => {
-                const name = data.name;
-                const email = data.email;
-                const password = generateRandomPassword(10);
-                const userData = {
-                  username: name,
-                  password: password,
-                  email: email,
-                };
-                handleggl(userData);
-                enqueueSnackbar("Logged in successfully", {
-                  variant: "success",
-                });
-              }}
-              onReject={(err) => {
-                console.log(err);
-              }}
-            >
-              <GoogleLoginButton />
-            </LoginSocialGoogle>
-          </div>
+         
         </div>
       </center>
       <Footer />

@@ -92,7 +92,18 @@ const Course = () => {
 
       {section ? (
         <>
-          <h3>Your Progress: {progress}%</h3>
+        <ProgressBar
+        now={progress}
+        label={`${progress}%`}
+        style={{
+          position: "fixed",
+          right:"3px",
+          top:"70px",
+          width: "10%",
+          borderRadius: "20px",
+          zIndex: "1",
+        }}
+      />
 
           <h4>Course Sections:</h4>
           {courses.map((course) => (
@@ -100,10 +111,19 @@ const Course = () => {
               <div className="col-lg-8 my-2">
                 {completedCourseId === course.id && (
                   <img
+                  style={{
+          position: "fixed",
+          left:"10px",
+         top:"100px",
+        
+          
+          
+        }}
                     src={course.img_url}
                     alt="Image"
-                    width="500px"
-                    height="500px"
+                    width="50%px"
+                    height="300px"
+                    
                   />
                 )}
               </div>
