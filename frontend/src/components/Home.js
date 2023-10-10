@@ -27,6 +27,7 @@ const Home = () => {
   const inst = location.state;
   const navigate = useNavigate();
   const username = localStorage.getItem("username");
+  const [chay, setChay] = useState(false);
   const [courses, setCourses] = useState([]);
   const [details, setDetails] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -80,7 +81,7 @@ const Home = () => {
         video_url: course.video_url,
         student_name: username,
       });
-      console.log("Course Purchased:", course.name);
+
       if (res.status === 200) {
         enqueueSnackbar("Course already purchased", { variant: "info" });
       } else {
@@ -88,9 +89,15 @@ const Home = () => {
           variant: "success",
         });
       }
+
       setSelectedCourse(null);
-      setPurchasedCourses([...purchasedCourses, course.id]);
-      console.log("Purchased:", purchasedCourses);
+
+      setPurchasedCourses([...purchasedCourses, course]);
+
+      localStorage.setItem(
+        "purchasedCourses",
+        JSON.stringify([...purchasedCourses, course.id])
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -113,6 +120,10 @@ const Home = () => {
     fetchCourses();
   }, []);
 
+  useEffect(() => {
+    const storedPurchasedCourses = JSON.parse(localStorage.getItem("purchasedCourses")) || [];
+    setPurchasedCourses(storedPurchasedCourses);
+  }, []);
   return (
     <div>
       <Header prop={inst}>
@@ -126,7 +137,9 @@ const Home = () => {
               endAdornment: (
                 <InputAdornment position="end">
                   <SearchIcon
-                    onClick={handleSearch}
+                    onClick={() => {
+                      handleSearch();
+                    }}
                     style={{ cursor: "pointer" }}
                   />
                 </InputAdornment>
@@ -167,6 +180,10 @@ const Home = () => {
               </div>
             ))}
           </div>
+        ) : searchQuery.trim() !== "" ? (
+          <center>
+            <p>No courses found</p>
+          </center>
         ) : (
           <>
             {!details ? (
@@ -182,7 +199,6 @@ const Home = () => {
             )}
             {!details ? (
               <>
-                
                 <div className="product-card">
                   {courses.map((course) => (
                     <div key={course.id}>
@@ -217,20 +233,26 @@ const Home = () => {
                           </button>
                           {username ? (
                             <>
-                              {purchasedCourses.includes(course.id) ? (
-                                <></>
-                              ) : (
-                                <>
-                                  <button
-                              className="det mb-10 mx-1"
-                              onClick={() => {
-                                handlePurchase(course);
-                              }}
-                            >
-                              Purchase course
-                            </button>
-                                </>
-                              )}
+                              {/* <button
+                                onClick={() => {
+                                  handlePurchase(course);
+                                }}
+                              >
+                                Purchase course
+                              </button> */}
+                              {console.log("PRS:",purchasedCourses)}
+                              {purchasedCourses.map((purchase) => (
+                                
+                                <div key={purchase.id}>
+                                  {purchasedCourses.includes(purchase.id) ? (
+                                    <></>
+                                  ) : (
+                                    <>
+                                      <button>Purchase Course</button>
+                                    </>
+                                  )}
+                                </div>
+                              ))}
                             </>
                           ) : (
                             <></>
@@ -249,29 +271,25 @@ const Home = () => {
                     <button>Click me</button>
                   </center>
                 </div>
-                <div className="product-card">
-            {sections.map((section) => (
-              <div key={section.id}>
-                <div className="card mb-3 course-card card">
-                  
-                  <div class="content">
-                    <h5 className="card-title">{section.section_name}</h5>
-                    <div
-                      style={{
-                        height: "60px",
-                      }}
-                    >
-                      {" "}
-                      <p className="card-text">
-                        {section.section_description}
-                      </p>{" "}
+
+                <div>
+                  {sections.map((section) => (
+                    <div key={section.id} className="row mx-2 my-2">
+                      <div className="col">
+                        <div className="card course-card">
+                          <div className="card-body">
+                            <h5 className="card-title">
+                              {section.section_name}
+                            </h5>
+                            <p className="card-text">
+                              {section.section_description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    
-                  </div>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
               </>
             )}
           </>

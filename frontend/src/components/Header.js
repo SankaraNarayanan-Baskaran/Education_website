@@ -16,7 +16,7 @@ const Header = ({ isAuthorised, prop, student, children }) => {
   return (
     <div className="header">
       <nav
-        class="navbar justify-content-between"
+        class="navbar navbar-expand-lg justify-content-between"
         style={{
           backgroundColor:"#0077b6",
           borderRadius: "0 2px 2px rgba(0,0,0.2)",

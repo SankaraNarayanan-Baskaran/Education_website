@@ -148,7 +148,6 @@ const Section = ({ courseName }) => {
                       <div class="card-body">
                         <h5 class="card-title">{section.name}</h5>
                         <button onClick={()=>{
-                          setEditSection({...editSection})
                         }}>Edit Section</button>
                       </div>
                       

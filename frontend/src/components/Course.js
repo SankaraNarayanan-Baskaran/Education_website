@@ -109,6 +109,7 @@ const Course = () => {
               width: "10%",
               borderRadius: "20px",
               zIndex: "1",
+             backgroundColor:"beige"
             }}
           />
 
