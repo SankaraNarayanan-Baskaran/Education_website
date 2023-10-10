@@ -1,54 +1,42 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import toast, { Toaster } from "react-hot-toast";
 import Course from "./Course";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons"; 
-
-const Header = ({ isAuthorised, prop, student }) => {
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { config } from "../App";
+import axios from "axios";
+import "./Home.css";
+const Header = ({ isAuthorised, prop, student, children }) => {
   const navigate = useNavigate();
   const user = localStorage.getItem("username");
-  const [searchQuery, setSearchQuery] = useState("");
-  const handleSearch = (e) => {
-    e.preventDefault();
-  
-    if (searchQuery.trim() !== "") {
 
-      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
-    }
-  }
   return (
     <div className="header">
-      <nav class="navbar justify-content-between" style={{
-        backgroundColor:"#0077b6",
-        color:"#fca311 !important"
-      }}>
-      <div>
-        <h4 className="title" style={{
-          margin:"10px"
-        }}>EduWeb</h4>
-        </div>
+      <nav
+        class="navbar justify-content-between"
+        style={{
+          backgroundColor:"#0077b6",
+          borderRadius: "0 2px 2px rgba(0,0,0.2)",
+    color: "#fca311 !important",
+    boxShadow: "0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)"
+        }}
+      >
         <div>
-          <form className="form-inline title">
-            <input
-              class="form-control mr-sm-2 search"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {/* <button
-              className="btn btn-outline-light mx-6 mr-2 my-2 my-sm-0 title"
-              type="submit"
-            >
-              Search
-            </button> */}
-            <FontAwesomeIcon icon={faSearch} style={{color: "#fca311",}} />
-          </form>
+          <h4
+            className="title"
+            style={{
+              margin: "10px",
+            }}
+          >
+            EduWeb
+          </h4>
         </div>
+
+        {children}
+
         <div>
           {isAuthorised ? (
             <>
@@ -101,7 +89,7 @@ const Header = ({ isAuthorised, prop, student }) => {
                         {`${user}`}
                       </button>
                       <button
-                        class="btn  mx-lg-2 mx-sm-1 my-sm-0 title" 
+                        class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
                           localStorage.clear();
                           navigate("/");

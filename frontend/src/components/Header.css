@@ -1,5 +1,5 @@
 .header {
- background-color: aquamarine;
+ /* background-color: aquamarine; */
 }
 
 .logo img {
@@ -35,6 +35,8 @@
 
 .search{
   border-radius: 20px;
+  font-weight: 400;
+  color:#14213d !important
 }
 
 .title:hover{

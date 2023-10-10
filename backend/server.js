@@ -408,6 +408,23 @@ app.get("/api/section", async (req, res) => {
   }
 });
 
+app.get("/api/search",async(req,res)=>{
+  try {
+   
+    const results = await CourseDetails.findAll({
+      where: {
+        name: {
+          [Sequelize.Op.iLike]: `%${req.query.query}%`, 
+        },
+      },
+    });
+    console.log("Query:",results)
+    res.json(results); 
+  }  catch (error) {
+    console.log("Error:",error);
+  }
+})
+
 app.delete("/api/courses/:id", async (req, res) => {
   try {
     const { id } = req.params;

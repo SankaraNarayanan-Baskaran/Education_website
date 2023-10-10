@@ -10,7 +10,6 @@ import { ProgressBar } from "react-bootstrap"; // Import Bootstrap's ProgressBar
 import "./Course.css";
 const Course = () => {
   const [progress, setProgress] = useState(() => {
-    
     const storedProgress = localStorage.getItem("courseProgress");
     return storedProgress ? parseInt(storedProgress, 10) : 0;
   });
@@ -100,18 +99,18 @@ const Course = () => {
 
       {section ? (
         <>
-        <ProgressBar
-        now={progress}
-        label={`${progress}%`}
-        style={{
-          position: "fixed",
-          right:"3px",
-          top:"70px",
-          width: "10%",
-          borderRadius: "20px",
-          zIndex: "1",
-        }}
-      />
+          <ProgressBar
+            now={progress}
+            label={`${progress}%`}
+            style={{
+              position: "fixed",
+              right: "3px",
+              top: "70px",
+              width: "10%",
+              borderRadius: "20px",
+              zIndex: "1",
+            }}
+          />
 
           <h4>Course Sections:</h4>
           {courses.map((course) => (
@@ -119,19 +118,16 @@ const Course = () => {
               <div className="col-lg-8 my-2">
                 {completedCourseId === course.id && (
                   <img
-                  style={{
-          position: "fixed",
-          left:"10px",
-         top:"100px",
-        
-          
-          
-        }}
+                    className="img-Bx"
+                    style={{
+                      position: "fixed",
+                      left: "10px",
+                      top: "100px",
+                    }}
                     src={course.img_url}
                     alt="Image"
                     width="50%px"
                     height="300px"
-                    
                   />
                 )}
               </div>
@@ -147,7 +143,9 @@ const Course = () => {
                     ) : (
                       <>
                         <button
-                          onClick={() =>{ markCourseAsDone(course.id);}}
+                          onClick={() => {
+                            markCourseAsDone(course.id);
+                          }}
                           className="btn btn-primary"
                         >
                           View Section
@@ -168,31 +166,32 @@ const Course = () => {
       ) : (
         <>
           <h4>Purchased Courses</h4>
-          <div className="row mx-2 my-2">
+          <div className="product-card">
             {courses.map((course) => (
-              <div key={course.id} className="col-lg-4">
-                <div
-                  className="card mb-3 course-card"
-                  style={{ width: "18rem" }}
-                >
-                  <img
-                    src={course.video_url}
-                    alt="Image"
-                    width="200px"
-                    height="200px"
-                  />
-                  <div className="card-body">
+              <div key={course.id}>
+                <div className="card mb-3 course-card card">
+                  <img className="imgBx" src={course.video_url} alt="Image" />
+                  <div class="content">
                     <h5 className="card-title">{course.course_name}</h5>
-                    <p className="card-text">{course.course_description}</p>
+                    <div
+                      style={{
+                        height: "60px",
+                      }}
+                    >
+                      {" "}
+                      <p className="card-text">
+                        {course.course_description}
+                      </p>{" "}
+                    </div>
+                    <button
+                      onClick={() => {
+                        fetchsections(course.course_id);
+                        setSection(true);
+                      }}
+                    >
+                      View Course
+                    </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      fetchsections(course.course_id);
-                      setSection(true);
-                    }}
-                  >
-                    View Course
-                  </button>
                 </div>
               </div>
             ))}
