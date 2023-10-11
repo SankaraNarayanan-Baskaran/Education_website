@@ -44,22 +44,28 @@ const Course = () => {
       }
     }
   }, [courses]);
-  useEffect(() => {
-    const completedCount =
-      Object.values(completedSections).filter(Boolean).length; // Count completed sections for the current course
-    const totalSections = courses.length; // Total sections in the current course
-    const newProgress = Math.trunc((completedCount * 100) / totalSections);
-    setProgress(newProgress);
-    localStorage.setItem("completedCourses", JSON.stringify(completedCourses));
-  }, [completedSections, courses]);
+  // useEffect(() => {
+  //   const completedCount =
+  //     Object.values(completedSections).filter(Boolean).length; // Count completed sections for the current course
+  //   const totalSections = courses.length; // Total sections in the current course
+  //   const newProgress = Math.trunc((completedCount * 100) / totalSections);
+  //   setProgress(newProgress);
+  //   localStorage.setItem("completedCourses", JSON.stringify(completedCourses));
+  // }, [completedSections, courses]);
 
   const markCourseAsDone = (courseId) => {
     setCompletedCourseId(courseId);
-
+console.log("ID:",completedCourseId);
     setCompletedSections((prevCompletedSections) => ({
       ...prevCompletedSections,
       [courseId]: true,
     }));
+    const completedCount =
+    Object.values(completedSections).filter(Boolean).length; // Count completed sections for the current course
+  const totalSections = courses.length; // Total sections in the current course
+  const newProgress = Math.trunc((completedCount * 100) / totalSections);
+  setProgress(newProgress);
+    console.log("cmp",completedSections)
   };
 
   const fetchcourses = async () => {
@@ -137,7 +143,7 @@ const Course = () => {
                   <div className="card-body">
                     <h5 className="card-title">{course.section_name}</h5>
                     <p className="card-text">{course.section_description}</p>
-                    {completedCourseId === course.id ? (
+                    {/* {completedCourseId === course.id ? (
                       <span>
                         <FontAwesomeIcon icon={faCheck} /> Section Completed
                       </span>
@@ -157,7 +163,10 @@ const Course = () => {
                           </span>
                         )}
                       </>
-                    )}
+                    )} */}
+                    <button onClick={()=>{
+                      markCourseAsDone(course.id)
+                    }}>View Section</button>
                   </div>
                 </div>
               </div>

@@ -63,6 +63,7 @@ const Student_Purchases = sequelize.define("Student_Purchases", {
   student_id: DataTypes.INTEGER,
   student_name: DataTypes.STRING,
   course_id: DataTypes.INTEGER,
+  Progress:DataTypes.INTEGER
 });
 
 const Course_Section=sequelize.define("Course_Section",{
@@ -232,6 +233,7 @@ app.get("/api/learning", async (req, res) => {
           where: { student_id: users.id },
         }).then((course) => {
           // console.log("Course:", course);
+          res.status(200);
           res.json(course);
         });
       }
@@ -359,27 +361,31 @@ app.post("/api/section", async (req, res) => {
 
 app.get("/api/purchased", async (req, res) => {
   try {
-    // console.log("Request:", req.body);
-    const param = req.query.username;
-    // console.log("Param:", param);
-    const some = await CourseDetails.findOne({ where: {name: ""} }).then(
-      async (course) => {
-        // console.log("Userd:",users);
-         await Course_Section.findAll().then((section) => {
-          // console.log("Course:", course);
-          res.json(section);
-        });
-      }
+    const username = req.query.student_name;
 
-      // console.log(details);
-      // res.json(details);
-    );
+    const courseName = req.query.course_name;
+
+    // Try to find the course
+    const purchasedCourse = await Student_Purchases.findOne({
+      where: {
+        course_name: courseName,
+        username: username,
+      },
+    });
+
+    if (purchasedCourse) {
+      // Course exists in the database
+      res.status(200).json({ message: "Success" });
+    } else {
+      // Course doesn't exist
+      res.status(404).json({ message: "Course not found" });
+    }
   } catch (error) {
-    console.log(req.query.username);
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 
 app.get("/api/section", async (req, res) => {
@@ -425,6 +431,38 @@ app.get("/api/search",async(req,res)=>{
   }
 })
 
+app.put("/api/updatePass",async(req,res)=>{
+  try {
+    const {oldPassword,newPassword}=req.body;
+    await Accounts.update({
+      password:newPassword
+    },
+    {
+      where:{
+        password:oldPassword
+      }
+    }).then(()=>{
+      res.status(201).json({message:"Success"})
+    })
+  } catch (error) {
+    console.log("Error",error);
+  }
+})
+
+app.put("/api/progress",async(req,res)=>{
+  try {
+    const {newProgress}=req.body;
+    await Student_Purchases.update({
+      Progress:newProgress
+    },{
+      where:{
+        course_name:"samp"
+      }
+    })
+  } catch (error) {
+    console.log("Error:",error);
+  }
+})
 app.delete("/api/courses/:id", async (req, res) => {
   try {
     const { id } = req.params;

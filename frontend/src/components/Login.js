@@ -16,6 +16,12 @@ const Login = () => {
     username: "",
     password: "",
   });
+  const [changePassword, setChangePassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [changePass, setChangePass] = useState(false);
 
   const validateInput = (data) => {
     if (data.username === "") {
@@ -50,15 +56,30 @@ const Login = () => {
       });
       if (res.status === 201) {
         localStorage.setItem("username", formData.username);
-        enqueueSnackbar("Logged in Successfully",{variant:"success"})
+        enqueueSnackbar("Logged in Successfully", { variant: "success" });
         navigate("/", { state: { isLogged: "true" } });
-       
       }
-      
     } catch (error) {
-     
-        enqueueSnackbar("Invalid Credentials",{variant:"error"})
-      
+      enqueueSnackbar("Invalid Credentials", { variant: "error" });
+
+      console.log(error);
+    }
+  };
+
+  const handleChangePassword = async (changePassword) => {
+    try {
+      const res = await axios.put(config.endpoint + "/updatePass", {
+       oldPassword:changePassword.oldPassword,
+       newPassword:changePassword.newPassword
+      });
+      if (res.status === 201) {
+       
+        enqueueSnackbar("Password Changed Successfully", { variant: "success" });
+        navigate("/login");
+      }
+    } catch (error) {
+      enqueueSnackbar("Invalid Credentials", { variant: "error" });
+
       console.log(error);
     }
   };
@@ -85,39 +106,99 @@ const Login = () => {
     <div>
       <Header isAuthorised />
       <center>
-        <div className="login-container">
-          <h2>Login</h2>
-          <div className="input-container">
-            <input
-              type="text"
-              placeholder="Username"
-              value={formData.username}
-              onChange={(e) => {
-                setFormData({ ...formData, username: e.target.value });
-              }}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={(e) => {
-                setFormData({ ...formData, password: e.target.value });
-              }}
-            />
-          </div>
-          <button
-            className="login-button mb-3"
-            onClick={() => {
-              if (validateInput(formData)) {
-               logged(formData)
-                
-              }
-            }}
-          >
-            Login
-          </button>
-         
-        </div>
+        {changePass ? (
+          <>
+            <div className="login-container">
+              <h2>Change Password</h2>
+              <div className="input-container">
+                <input
+                  type="password"
+                  placeholder="Old Password"
+                  value={changePassword.oldPassword}
+                  onChange={(e) => {
+                    setChangePassword({
+                      ...changePassword,
+                      oldPassword: e.target.value,
+                    });
+                  }}
+                />
+                <input
+                  type="password"
+                  placeholder="New Password"
+                  value={changePassword.newPassword}
+                  onChange={(e) => {
+                    setChangePassword({
+                      ...changePassword,
+                      newPassword: e.target.value,
+                    });
+                  }}
+                />
+                <input
+                  type="password"
+                  placeholder="Confirm New Password"
+                  value={changePassword.confirmPassword}
+                  onChange={(e) => {
+                    setChangePassword({
+                      ...changePassword,
+                      confirmPassword: e.target.value,
+                    });
+                  }}
+                />
+                <button
+                className="login-button mb-3"
+                onClick={() => {
+                  handleChangePassword(changePassword)
+                }}
+              >
+               Confirm
+              </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="login-container">
+              <h2>Login</h2>
+              <div className="input-container">
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={formData.username}
+                  onChange={(e) => {
+                    setFormData({ ...formData, username: e.target.value });
+                  }}
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={(e) => {
+                    setFormData({ ...formData, password: e.target.value });
+                  }}
+                />
+              </div>
+              <button
+             
+                className="login-button mb-3 mx-3"
+                onClick={() => {
+                  setChangePass(true)
+                }}
+              >
+                Change Password
+              </button>
+              <button
+                className="login-button mx-3 mb-3"
+                onClick={() => {
+                  if (validateInput(formData)) {
+                    logged(formData);
+                  }
+                }}
+              >
+                Login
+              </button>
+            </div>
+          </>
+        )}
       </center>
       <Footer />
     </div>

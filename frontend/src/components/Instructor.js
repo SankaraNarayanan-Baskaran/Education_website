@@ -21,6 +21,7 @@ const Instructor = () => {
   });
   const handleAddCourse = async () => {
     try {
+      console.log("INST:",newCourse);
       await axios.post(`${config.endpoint}/courses`, newCourse);
       setNewCourse({ name: "", description: "", price: "", video_url: "" });
       fetchcourses();

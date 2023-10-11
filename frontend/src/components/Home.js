@@ -27,7 +27,7 @@ const Home = () => {
   const inst = location.state;
   const navigate = useNavigate();
   const username = localStorage.getItem("username");
-  const [chay, setChay] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [courses, setCourses] = useState([]);
   const [details, setDetails] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -35,7 +35,10 @@ const Home = () => {
   const [sections, setSections] = useState([]);
   const [completedSections, setCompletedSections] = useState({});
   const [completedCourseId, setCompletedCourseId] = useState(null);
-
+// const queryParams={
+//   username:username,
+//   course_name:cou
+// }
   const fetchCourses = async () => {
     try {
       const response = await axios.get(`${config.endpoint}/student`);
@@ -71,16 +74,37 @@ const Home = () => {
       console.error("Error fetching courses:", error);
     }
   };
+  const handleBought=async(course)=>{
+    try {
+      const res=await axios.get(`${config.endpoint}/purchased`,{params:{
+       student_name:username,
+       course_name:course
+      }})
+      if(res.status===200){
+        setSuccess(true);
+      }
+      else{
+        setSuccess(false)
+      }
+    } catch (error) {
+      console.log("Error:",error);
+    }
+  }
 
   const handlePurchase = async (course) => {
     try {
       setSelectedCourse(course);
+      console.log("SEL:", selectedCourse);
       const res = await axios.post(`${config.endpoint}/learning`, {
         course_name: course.name,
         course_description: course.description,
         video_url: course.video_url,
         student_name: username,
       });
+      // const resp=await axios.get(`${config.endpoint}/purchased`,{params:{
+      //   student_name:username,
+      //   course_name:course.name
+      //  }})
 
       if (res.status === 200) {
         enqueueSnackbar("Course already purchased", { variant: "info" });
@@ -88,16 +112,20 @@ const Home = () => {
         enqueueSnackbar("Course purchased successfully", {
           variant: "success",
         });
+
       }
 
       setSelectedCourse(null);
+      setPurchasedCourses(prevPurchasedCourses => [...prevPurchasedCourses, course]);
 
-      setPurchasedCourses([...purchasedCourses, course]);
 
-      localStorage.setItem(
-        "purchasedCourses",
-        JSON.stringify([...purchasedCourses, course.id])
-      );
+      console.log("COURSE:", course);
+      console.log("PRS:", purchasedCourses);
+
+      // localStorage.setItem(
+      //   "purchasedCourses",
+      //   JSON.stringify([...purchasedCourses, course.id])
+      // );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -121,7 +149,8 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const storedPurchasedCourses = JSON.parse(localStorage.getItem("purchasedCourses")) || [];
+    const storedPurchasedCourses =
+      JSON.parse(localStorage.getItem("purchasedCourses")) || [];
     setPurchasedCourses(storedPurchasedCourses);
   }, []);
   return (
@@ -232,27 +261,17 @@ const Home = () => {
                             More Details
                           </button>
                           {username ? (
-                            <>
-                              {/* <button
+                            <> 
+                                                      
+                                <button
                                 onClick={() => {
+                                  
                                   handlePurchase(course);
+                                  
                                 }}
                               >
                                 Purchase course
-                              </button> */}
-                              {console.log("PRS:",purchasedCourses)}
-                              {purchasedCourses.map((purchase) => (
-                                
-                                <div key={purchase.id}>
-                                  {purchasedCourses.includes(purchase.id) ? (
-                                    <></>
-                                  ) : (
-                                    <>
-                                      <button>Purchase Course</button>
-                                    </>
-                                  )}
-                                </div>
-                              ))}
+                              </button>
                             </>
                           ) : (
                             <></>
