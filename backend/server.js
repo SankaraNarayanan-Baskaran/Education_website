@@ -74,6 +74,11 @@ const Course_Section=sequelize.define("Course_Section",{
   Course_name:DataTypes.STRING
 })
 
+const Progress=sequelize.define("Progress",{
+  student_id:DataTypes.INTEGER,
+  course_id:DataTypes.INTEGER,
+  progress:DataTypes.INTEGER
+})
 sequelize.sync();
 app.post("/api/adduser", async (req, res) => {
   try {
@@ -338,6 +343,7 @@ app.post("/api/section", async (req, res) => {
   try {
     const { section_name, section_description, img_url,course_name,username} =
       req.body;
+      console.log(course_name)
     Accounts.findOne({ where: { username: username } }).then(async (user) => {
       await CourseDetails.findOne({ where: { name: course_name } }).then(async (course) => {
         await Course_Section.create({
@@ -449,20 +455,99 @@ app.put("/api/updatePass",async(req,res)=>{
   }
 })
 
-app.put("/api/progress",async(req,res)=>{
+app.put("/api/forgotPass",async(req,res)=>{
   try {
-    const {newProgress}=req.body;
-    await Student_Purchases.update({
-      Progress:newProgress
-    },{
+    const {username,newPassword}=req.body;
+    await Accounts.update({
+      password:newPassword
+    },
+    {
       where:{
-        course_name:"samp"
+      username:username
       }
+    }).then(()=>{
+      res.status(201).json({message:"Success"})
     })
   } catch (error) {
-    console.log("Error:",error);
+    console.log("Error",error);
   }
 })
+
+app.post("/api/progress", async (req, res) => {
+  try {
+    const { sectionId, progress, username } = req.body;
+    const user = await Accounts.findOne({ where: { username: username } });
+
+    console.log("User:", user);
+
+    if (user) {
+      const section = await Course_Section.findOne({ where: { id: sectionId } });
+
+      if (section) {
+        const purchase = await Student_Purchases.findOne({
+          where: { course_id: section.Course_id, student_id: user.id },
+        });
+
+        if (purchase) {
+          const prog=await Progress.findOne({where:{student_id:purchase.student_id}})
+          if(prog){
+            Progress.update({
+              progress:progress
+            },{
+              where:{
+                student_id:purchase.student_id
+              }
+            })
+          }
+          else{
+            Progress.create({
+              student_id: purchase.student_id,
+              course_id:purchase.course_id,
+              progress: progress,
+            });
+          }
+          
+
+          res.status(200).send("Progress recorded successfully");
+        }
+         else {
+          res.status(404).send("Purchase not found");
+        }
+      } else {
+        res.status(404).send("Section not found");
+      }
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get("/api/getProgress",async (req,res)=>{
+  try {
+    const username=req.query.username;
+    const course=req.query.course_id;
+    const user=await Accounts.findOne({where:{
+      username:username
+    }})
+    if(user){
+      const progress=await Progress.findOne({where:{
+        student_id:user.id,
+        course_id:course
+      }})
+      if(progress){
+        res.json(progress)
+      
+      }
+    }
+    
+  } catch (error) {
+    console.log("error:",error)
+  }
+})
+
 app.delete("/api/courses/:id", async (req, res) => {
   try {
     const { id } = req.params;

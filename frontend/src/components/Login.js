@@ -21,6 +21,12 @@ const Login = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  const [forgotPass, setForgotPass] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState({
+    username: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [changePass, setChangePass] = useState(false);
 
   const validateInput = (data) => {
@@ -69,12 +75,33 @@ const Login = () => {
   const handleChangePassword = async (changePassword) => {
     try {
       const res = await axios.put(config.endpoint + "/updatePass", {
-       oldPassword:changePassword.oldPassword,
-       newPassword:changePassword.newPassword
+        oldPassword: changePassword.oldPassword,
+        newPassword: changePassword.newPassword,
       });
       if (res.status === 201) {
-       
-        enqueueSnackbar("Password Changed Successfully", { variant: "success" });
+        enqueueSnackbar("Password Changed Successfully", {
+          variant: "success",
+        });
+        navigate("/login");
+      }
+    } catch (error) {
+      enqueueSnackbar("Invalid Credentials", { variant: "error" });
+
+      console.log(error);
+    }
+  };
+
+  const handleForgotPassword = async (forgotPassword) => {
+    try {
+      const res = await axios.put(config.endpoint + "/forgotPass", {
+        username: forgotPassword.username,
+
+        newPassword: forgotPassword.newPassword,
+      });
+      if (res.status === 201) {
+        enqueueSnackbar("Password Changed Successfully", {
+          variant: "success",
+        });
         navigate("/login");
       }
     } catch (error) {
@@ -106,6 +133,58 @@ const Login = () => {
     <div>
       <Header isAuthorised />
       <center>
+        {forgotPass ? (
+          <>
+            <div className="login-container">
+              <h2>Change Password</h2>
+              <div className="input-container">
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={forgotPassword.username}
+                  onChange={(e) => {
+                    setForgotPassword({
+                      ...forgotPassword,
+                      username: e.target.value,
+                    });
+                  }}
+                />
+                <input
+                  type="password"
+                  placeholder="New Password"
+                  value={forgotPassword.newPassword}
+                  onChange={(e) => {
+                    setForgotPassword({
+                      ...forgotPassword,
+                      newPassword: e.target.value,
+                    });
+                  }}
+                />
+                <input
+                  type="password"
+                  placeholder="Confirm New Password"
+                  value={forgotPassword.confirmPassword}
+                  onChange={(e) => {
+                    setForgotPassword({
+                      ...forgotPassword,
+                      confirmPassword: e.target.value,
+                    });
+                  }}
+                />
+                <button
+                  className="login-button mb-3"
+                  onClick={() => {
+                    handleForgotPassword(forgotPassword);
+                  }}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
         {changePass ? (
           <>
             <div className="login-container">
@@ -145,13 +224,13 @@ const Login = () => {
                   }}
                 />
                 <button
-                className="login-button mb-3"
-                onClick={() => {
-                  handleChangePassword(changePassword)
-                }}
-              >
-               Confirm
-              </button>
+                  className="login-button mb-3"
+                  onClick={() => {
+                    handleChangePassword(changePassword);
+                  }}
+                >
+                  Confirm
+                </button>
               </div>
             </div>
           </>
@@ -178,13 +257,20 @@ const Login = () => {
                 />
               </div>
               <button
-             
                 className="login-button mb-3 mx-3"
                 onClick={() => {
-                  setChangePass(true)
+                  setChangePass(true);
                 }}
               >
                 Change Password
+              </button>
+              <button
+                className="login-button mb-3 mx-3"
+                onClick={() => {
+                  setForgotPass(true);
+                }}
+              >
+                Forgot Password
               </button>
               <button
                 className="login-button mx-3 mb-3"

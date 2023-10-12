@@ -4,33 +4,38 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { config } from "../App";
 import Footer from "./Footer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { ProgressBar } from "react-bootstrap"; // Import Bootstrap's ProgressBar
+import { ProgressBar } from "react-bootstrap";
 import "./Course.css";
+
 const Course = () => {
   const [progress, setProgress] = useState(() => {
     const storedProgress = localStorage.getItem("courseProgress");
     return storedProgress ? parseInt(storedProgress, 10) : 0;
   });
-  const updateProgress = (newProgress) => {
-    setProgress(newProgress);
-    localStorage.setItem("courseProgress", newProgress.toString());
-  };
+  const [courseProgressVisible, setCourseProgressVisible] = useState([]);
+  const [courseProgress, setCourseProgress] = useState(() => {
+    const storedCourseProgress = JSON.parse(localStorage.getItem("courseProgress"));
+    return storedCourseProgress ? storedCourseProgress : {};
+  });
+  
   const [completedCourses, setCompletedCourses] = useState(() => {
-    const storedCompletedCourses = localStorage.getItem("completedCourses");
-    return storedCompletedCourses ? JSON.parse(storedCompletedCourses) : {};
+    const storedCompletedCourses = JSON.parse(localStorage.getItem("completedCourses"));
+    return storedCompletedCourses ? storedCompletedCourses : {};
   });
   const [courses, setCourses] = useState([]);
   const username = localStorage.getItem("username");
   const [section, setSection] = useState(false);
-  const [completedSections, setCompletedSections] = useState({});
+  const [completedSections, setCompletedSections] = useState(() => {
+    const storedCompletedSections = JSON.parse(localStorage.getItem("completedSections"));
+    return storedCompletedSections ? storedCompletedSections : {};
+  });
   const [completedCourseId, setCompletedCourseId] = useState(null);
 
   const queryParams = {
     username: username,
   };
   const navigate = useNavigate();
+
   useEffect(() => {
     const lastCompletedSectionId = localStorage.getItem(
       "lastCompletedSectionId"
@@ -38,34 +43,79 @@ const Course = () => {
     if (lastCompletedSectionId) {
       setCompletedCourseId(parseInt(lastCompletedSectionId));
     } else {
-      // Set the first course as completedCourseId by default
       if (courses.length > 0) {
-        setCompletedCourseId(courses[0].id);
       }
     }
   }, [courses]);
-  // useEffect(() => {
-  //   const completedCount =
-  //     Object.values(completedSections).filter(Boolean).length; // Count completed sections for the current course
-  //   const totalSections = courses.length; // Total sections in the current course
-  //   const newProgress = Math.trunc((completedCount * 100) / totalSections);
-  //   setProgress(newProgress);
-  //   localStorage.setItem("completedCourses", JSON.stringify(completedCourses));
-  // }, [completedSections, courses]);
 
-  const markCourseAsDone = (courseId) => {
-    setCompletedCourseId(courseId);
-console.log("ID:",completedCourseId);
+  useEffect(() => {
+    const completedCount = Object.values(completedSections).filter(Boolean)
+      .length;
+    
+    
+    // Calculate the progress for the current course
+    const totalSections = courses.length; // Total sections in the current course
+    const newProgress = Math.trunc((completedCount * 100) / totalSections);
+    
+    // Update the progress state
+    setProgress(newProgress);
+  }, [completedSections, courses]);
+
+  const fetchProgress = async (courseId) => {
+    try {
+      const res = await axios.get(`${config.endpoint}/getProgress`, {
+        params: {
+          username: username,
+          course_id: courseId,
+        },
+      });
+      if (res) {
+        setCourseProgress({
+          ...courseProgress,
+          [courseId]: res.data.progress,
+        });
+      } else {
+        setCourseProgress({
+          ...courseProgress,
+          [courseId]: 0,
+        });
+      }
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
+  const markCourseAsDone = async (sectionId, courseId) =>{
+    setCompletedCourseId(sectionId);
     setCompletedSections((prevCompletedSections) => ({
       ...prevCompletedSections,
-      [courseId]: true,
+      [sectionId]: true,
     }));
-    const completedCount =
-    Object.values(completedSections).filter(Boolean).length; // Count completed sections for the current course
-  const totalSections = courses.length; // Total sections in the current course
-  const newProgress = Math.trunc((completedCount * 100) / totalSections);
-  setProgress(newProgress);
-    console.log("cmp",completedSections)
+    const completedCount = Object.values(completedSections).filter(Boolean)
+      .length;
+    
+    // Calculate the progress for the current course
+    const totalSections = courses.length; // Total sections in the current course
+    const newProgress = Math.trunc((completedCount * 100) / totalSections);
+    
+    // Update the progress state and store it in localStorage
+    setProgress(newProgress);
+    localStorage.setItem("courseProgress", newProgress.toString());
+    
+    // Update the course progress in localStorage
+    const updatedCourseProgress = {
+      ...courseProgress,
+      [courseId]: newProgress,
+    };
+    setCourseProgress(updatedCourseProgress);
+    localStorage.setItem("courseProgress", JSON.stringify(updatedCourseProgress));
+    
+    await axios.post(`${config.endpoint}/progress`, {
+      sectionId: sectionId,
+      courseId: courseId,
+      progress: newProgress,
+      username: username,
+    });
   };
 
   const fetchcourses = async () => {
@@ -73,9 +123,8 @@ console.log("ID:",completedCourseId);
       const response = await axios.get(`${config.endpoint}/learning`, {
         params: queryParams,
       });
-      console.log(response.data);
       setCourses(response.data);
-      console.log("Courses:", courses);
+      setCourseProgressVisible(new Array(response.data.length).fill(false));
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -95,7 +144,6 @@ console.log("ID:",completedCourseId);
   };
 
   useEffect(() => {
-    // Fetch all courses when the component mounts
     fetchcourses();
   }, []);
 
@@ -105,25 +153,11 @@ console.log("ID:",completedCourseId);
 
       {section ? (
         <>
-          <ProgressBar
-            now={progress}
-            label={`${progress}%`}
-            style={{
-              position: "fixed",
-              right: "3px",
-              top: "70px",
-              width: "10%",
-              borderRadius: "20px",
-              zIndex: "1",
-             backgroundColor:"beige"
-            }}
-          />
-
           <h4>Course Sections:</h4>
-          {courses.map((course) => (
-            <div key={course.id} className="row mx-2 my-2">
+          {courses.map((section) => (
+            <div key={section.id} className="row mx-2 my-2">
               <div className="col-lg-8 my-2">
-                {completedCourseId === course.id && (
+                {completedCourseId === section.id && (
                   <img
                     className="img-Bx"
                     style={{
@@ -131,7 +165,7 @@ console.log("ID:",completedCourseId);
                       left: "10px",
                       top: "100px",
                     }}
-                    src={course.img_url}
+                    src={section.img_url}
                     alt="Image"
                     width="50%px"
                     height="300px"
@@ -141,32 +175,16 @@ console.log("ID:",completedCourseId);
               <div className="col-lg-4">
                 <div className="card course-card">
                   <div className="card-body">
-                    <h5 className="card-title">{course.section_name}</h5>
-                    <p className="card-text">{course.section_description}</p>
-                    {/* {completedCourseId === course.id ? (
-                      <span>
-                        <FontAwesomeIcon icon={faCheck} /> Section Completed
-                      </span>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => {
-                            markCourseAsDone(course.id);
-                          }}
-                          className="btn btn-primary"
-                        >
-                          View Section
-                        </button>
-                        {completedSections[course.id] && (
-                          <span>
-                            <FontAwesomeIcon icon={faCheck} /> Section Completed
-                          </span>
-                        )}
-                      </>
-                    )} */}
-                    <button onClick={()=>{
-                      markCourseAsDone(course.id)
-                    }}>View Section</button>
+                    <h5 className="card-title">{section.section_name}</h5>
+                    <p className="card-text">{section.section_description}</p>
+
+                    <button
+                      onClick={() => {
+                        markCourseAsDone(section.id, section.Course_id);
+                      }}
+                    >
+                      View Section
+                    </button>
                   </div>
                 </div>
               </div>
@@ -177,22 +195,46 @@ console.log("ID:",completedCourseId);
         <>
           <h4>Purchased Courses</h4>
           <div className="product-card">
-            {courses.map((course) => (
+            {courses.map((course, index) => (
               <div key={course.id}>
                 <div className="card mb-3 course-card card">
                   <img className="imgBx" src={course.video_url} alt="Image" />
-                  <div class="content">
+                  <div className="content">
                     <h5 className="card-title">{course.course_name}</h5>
-                    <div
-                      style={{
-                        height: "60px",
-                      }}
-                    >
-                      {" "}
-                      <p className="card-text">
-                        {course.course_description}
-                      </p>{" "}
+                    <div style={{ height: "60px" }}>
+                      <p className="card-text">{course.course_description}</p>
                     </div>
+                    {!courseProgressVisible[index] ? (
+                      <>
+                        <button
+                          onClick={() => {
+                            const newVisibility = [...courseProgressVisible];
+                            newVisibility[index] = true;
+                            setCourseProgressVisible(newVisibility);
+                            fetchProgress(course.course_id);
+                          }}
+                        >
+                          View Progress
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <ProgressBar
+                          now={courseProgress[course.course_id] || 0}
+                          label={`${courseProgress[course.course_id] || 0}%`}
+                          style={{
+                            position: "fixed",
+                            right: "3px",
+                            top: "70px",
+                            width: "10%",
+                            borderRadius: "20px",
+                            zIndex: "1",
+                            backgroundColor: "beige",
+                          }}
+                        />
+                        {console.log("Progress:", progress)}
+                      </>
+                    )}
                     <button
                       onClick={() => {
                         fetchsections(course.course_id);
