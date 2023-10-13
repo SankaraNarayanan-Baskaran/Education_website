@@ -8,25 +8,39 @@ import { ProgressBar } from "react-bootstrap";
 import "./Course.css";
 
 const Course = () => {
+  const isSectionCompleted = (sectionId, courseId) => {
+    const progress = courseProgress[courseId];
+    return progress > 0 && completedSections[sectionId];
+  };
   const [progress, setProgress] = useState(() => {
     const storedProgress = localStorage.getItem("courseProgress");
     return storedProgress ? parseInt(storedProgress, 10) : 0;
   });
   const [courseProgressVisible, setCourseProgressVisible] = useState([]);
   const [courseProgress, setCourseProgress] = useState(() => {
-    const storedCourseProgress = JSON.parse(localStorage.getItem("courseProgress"));
+    const storedCourseProgress = JSON.parse(
+      localStorage.getItem("courseProgress")
+    );
     return storedCourseProgress ? storedCourseProgress : {};
   });
-  
+  const [completedCount, setCompletedCount] = useState(() => {
+    const storedCompletedCount = localStorage.getItem("completedCount");
+    return storedCompletedCount ? parseInt(storedCompletedCount, 10) : 0;
+  });
+
   const [completedCourses, setCompletedCourses] = useState(() => {
-    const storedCompletedCourses = JSON.parse(localStorage.getItem("completedCourses"));
+    const storedCompletedCourses = JSON.parse(
+      localStorage.getItem("completedCourses")
+    );
     return storedCompletedCourses ? storedCompletedCourses : {};
   });
   const [courses, setCourses] = useState([]);
   const username = localStorage.getItem("username");
   const [section, setSection] = useState(false);
   const [completedSections, setCompletedSections] = useState(() => {
-    const storedCompletedSections = JSON.parse(localStorage.getItem("completedSections"));
+    const storedCompletedSections = JSON.parse(
+      localStorage.getItem("completedSections")
+    );
     return storedCompletedSections ? storedCompletedSections : {};
   });
   const [completedCourseId, setCompletedCourseId] = useState(null);
@@ -49,14 +63,13 @@ const Course = () => {
   }, [courses]);
 
   useEffect(() => {
-    const completedCount = Object.values(completedSections).filter(Boolean)
-      .length;
-    
-    
+    const completedCount =
+      Object.values(completedSections).filter(Boolean).length;
+
     // Calculate the progress for the current course
     const totalSections = courses.length; // Total sections in the current course
     const newProgress = Math.trunc((completedCount * 100) / totalSections);
-    
+
     // Update the progress state
     setProgress(newProgress);
   }, [completedSections, courses]);
@@ -70,10 +83,15 @@ const Course = () => {
         },
       });
       if (res) {
+        console.log(res.data.Completed_Sections)
         setCourseProgress({
           ...courseProgress,
           [courseId]: res.data.progress,
         });
+        // setCompletedCount({
+        //   ...completedCount,[count]:res.data.Completed_Count
+        // })
+        console.log("COurse Progress:", courseProgress);
       } else {
         setCourseProgress({
           ...courseProgress,
@@ -85,37 +103,49 @@ const Course = () => {
     }
   };
 
-  const markCourseAsDone = async (sectionId, courseId) =>{
-    setCompletedCourseId(sectionId);
-    setCompletedSections((prevCompletedSections) => ({
-      ...prevCompletedSections,
-      [sectionId]: true,
-    }));
-    const completedCount = Object.values(completedSections).filter(Boolean)
-      .length;
+  const markCourseAsDone = async (sectionId, courseId) => {
+    const totalSections = courses.length;
+
+    // fetchProgress(courseId);
+    // console.log("course progress", courseProgress);
     
-    // Calculate the progress for the current course
-    const totalSections = courses.length; // Total sections in the current course
-    const newProgress = Math.trunc((completedCount * 100) / totalSections);
+      setCompletedCourseId(sectionId);
+      setCompletedSections((prevCompletedSections) => ({
+        ...prevCompletedSections,
+        [sectionId]: true,
+      }));
+     
+      if (completedCount <= totalSections) {
+        setCompletedCount((prevCompletedCount) => prevCompletedCount + 1);
+
+        localStorage.setItem("completedCount", (completedCount + 1).toString());
+
+        const newProgress = Math.trunc((completedCount * 100) / totalSections);
+
+        if (newProgress <= 100) {
+          setProgress(newProgress);
+          localStorage.setItem("courseProgress", newProgress.toString());
+        }
+
+        const updatedCourseProgress = {
+          ...courseProgress,
+          [courseId]: newProgress,
+        };
+        setCourseProgress(updatedCourseProgress);
+        localStorage.setItem(
+          "courseProgress",
+          JSON.stringify(updatedCourseProgress)
+        );
+
+        await axios.post(`${config.endpoint}/progress`, {
+          sectionId: sectionId,
+          courseId: courseId,
+          progress: newProgress,
+          username: username,
+          count:completedCount
+        });
+      }
     
-    // Update the progress state and store it in localStorage
-    setProgress(newProgress);
-    localStorage.setItem("courseProgress", newProgress.toString());
-    
-    // Update the course progress in localStorage
-    const updatedCourseProgress = {
-      ...courseProgress,
-      [courseId]: newProgress,
-    };
-    setCourseProgress(updatedCourseProgress);
-    localStorage.setItem("courseProgress", JSON.stringify(updatedCourseProgress));
-    
-    await axios.post(`${config.endpoint}/progress`, {
-      sectionId: sectionId,
-      courseId: courseId,
-      progress: newProgress,
-      username: username,
-    });
   };
 
   const fetchcourses = async () => {
@@ -146,6 +176,7 @@ const Course = () => {
   useEffect(() => {
     fetchcourses();
   }, []);
+ 
 
   return (
     <>

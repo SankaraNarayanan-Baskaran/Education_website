@@ -77,7 +77,9 @@ const Course_Section=sequelize.define("Course_Section",{
 const Progress=sequelize.define("Progress",{
   student_id:DataTypes.INTEGER,
   course_id:DataTypes.INTEGER,
-  progress:DataTypes.INTEGER
+  progress:DataTypes.INTEGER,
+  Completed_Sections:DataTypes.ARRAY(DataTypes.INTEGER),
+  Completed_Count:DataTypes.INTEGER
 })
 sequelize.sync();
 app.post("/api/adduser", async (req, res) => {
@@ -475,10 +477,8 @@ app.put("/api/forgotPass",async(req,res)=>{
 
 app.post("/api/progress", async (req, res) => {
   try {
-    const { sectionId, progress, username } = req.body;
+    const { sectionId, progress, username ,count} = req.body;
     const user = await Accounts.findOne({ where: { username: username } });
-
-    console.log("User:", user);
 
     if (user) {
       const section = await Course_Section.findOne({ where: { id: sectionId } });
@@ -489,28 +489,43 @@ app.post("/api/progress", async (req, res) => {
         });
 
         if (purchase) {
-          const prog=await Progress.findOne({where:{student_id:purchase.student_id}})
-          if(prog){
-            Progress.update({
-              progress:progress
-            },{
-              where:{
-                student_id:purchase.student_id
+          const prog = await Progress.findOne({ where: { student_id: purchase.student_id } });
+
+          if (prog) {
+            
+            let completedSections = prog.Completed_Sections || [];
+
+           
+            if (!completedSections.includes(sectionId)) {
+              completedSections.push(sectionId);
+            }
+
+           
+            Progress.update(
+              {
+                progress: progress,
+                Completed_Sections: completedSections,
+                Completed_Count:count
+              },
+              {
+                where: {
+                  student_id: purchase.student_id,
+                },
               }
-            })
-          }
-          else{
+            );
+          } else {
+         
             Progress.create({
               student_id: purchase.student_id,
-              course_id:purchase.course_id,
+              course_id: purchase.course_id,
               progress: progress,
+              Completed_Sections: [sectionId],
+              
             });
           }
-          
 
           res.status(200).send("Progress recorded successfully");
-        }
-         else {
+        } else {
           res.status(404).send("Purchase not found");
         }
       } else {
@@ -524,6 +539,7 @@ app.post("/api/progress", async (req, res) => {
     res.status(500).send("Internal server error");
   }
 });
+
 
 app.get("/api/getProgress",async (req,res)=>{
   try {
