@@ -81,6 +81,12 @@ const Progress=sequelize.define("Progress",{
   Completed_Sections:DataTypes.ARRAY(DataTypes.INTEGER),
   Completed_Count:DataTypes.INTEGER
 })
+
+const Instructor=sequelize.define("Instructor",{
+  name:DataTypes.STRING,
+  password:DataTypes.STRING,
+  mail:DataTypes.STRING
+})
 sequelize.sync();
 app.post("/api/adduser", async (req, res) => {
   try {
@@ -212,7 +218,7 @@ app.get("/api/courses", async (req, res) => {
       // res.json(details);
     );
   } catch (error) {
-    console.log(req.query.username);
+    console.log("ERR:",req.query.username);
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -249,7 +255,7 @@ app.get("/api/learning", async (req, res) => {
       // res.json(details);
     );
   } catch (error) {
-    console.log(req.query.username);
+    console.log("EEEE",req.query.username);
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -416,7 +422,7 @@ app.get("/api/section", async (req, res) => {
       // res.json(details);
     );
   } catch (error) {
-    console.log(req.query.username);
+    console.log("EEWW",req.query.username);
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -477,7 +483,7 @@ app.put("/api/forgotPass",async(req,res)=>{
 
 app.post("/api/progress", async (req, res) => {
   try {
-    const { sectionId, progress, username ,count} = req.body;
+    const { sectionId, username, count } = req.body;
     const user = await Accounts.findOne({ where: { username: username } });
 
     if (user) {
@@ -492,20 +498,24 @@ app.post("/api/progress", async (req, res) => {
           const prog = await Progress.findOne({ where: { student_id: purchase.student_id } });
 
           if (prog) {
-            
+            // Get the current completed sections and update it
             let completedSections = prog.Completed_Sections || [];
-
-           
+         
+          
+            // If the sectionId is not already in the completedSections, add it
             if (!completedSections.includes(sectionId)) {
               completedSections.push(sectionId);
             }
 
-           
-            Progress.update(
+            // Update the progress and completed sections
+            const completedCount=prog.Completed_Sections.length;
+            const progress=Math.trunc(completedCount*100/count);
+            await Progress.update(
               {
+                
                 progress: progress,
                 Completed_Sections: completedSections,
-                Completed_Count:count
+                
               },
               {
                 where: {
@@ -514,15 +524,28 @@ app.post("/api/progress", async (req, res) => {
               }
             );
           } else {
-         
-            Progress.create({
+            // If there is no progress record, create one
+          
+           
+           const first= await Progress.create({
               student_id: purchase.student_id,
               course_id: purchase.course_id,
-              progress: progress,
-              Completed_Sections: [sectionId],
-              
+             
+              Completed_Sections: [sectionId], 
             });
+            if(first){
+              const completedCount=prog.Completed_Sections.length;
+              const progress=Math.trunc((completedCount*100)/count)
+              await Progress.update({
+                student_id: purchase.student_id,
+                course_id: purchase.course_id,
+                progress: progress,
+                
+              })
+            }
+            
           }
+          
 
           res.status(200).send("Progress recorded successfully");
         } else {
@@ -539,6 +562,7 @@ app.post("/api/progress", async (req, res) => {
     res.status(500).send("Internal server error");
   }
 });
+
 
 
 app.get("/api/getProgress",async (req,res)=>{
@@ -563,6 +587,33 @@ app.get("/api/getProgress",async (req,res)=>{
     console.log("error:",error)
   }
 })
+
+app.get("/api/userProgress", async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    const user = await Accounts.findOne({ where: { username } });
+
+    if (user) {
+      // Retrieve user's progress data from the database
+      const userProgress = await Progress.findOne({
+        where: { student_id: user.id },
+        attributes: ["courseProgress", "completedSections", "completedCount"],
+      });
+
+      if (userProgress) {
+        res.json(userProgress);
+      } else {
+        res.status(404).send("User progress not found");
+      }
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).send("Internal server error");
+  }
+});
 
 app.delete("/api/courses/:id", async (req, res) => {
   try {

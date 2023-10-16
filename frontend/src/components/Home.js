@@ -27,6 +27,9 @@ const Home = () => {
   const inst = location.state;
   const navigate = useNavigate();
   const username = localStorage.getItem("username");
+
+  const [purchased, setPurchased] = useState([]);
+
   const [success, setSuccess] = useState(false);
   const [courses, setCourses] = useState([]);
   const [details, setDetails] = useState(false);
@@ -34,11 +37,13 @@ const Home = () => {
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [sections, setSections] = useState([]);
   const [completedSections, setCompletedSections] = useState({});
+  const [purchasedLoaded, setPurchasedLoaded] = useState(false);
   const [completedCourseId, setCompletedCourseId] = useState(null);
-// const queryParams={
-//   username:username,
-//   course_name:cou
-// }
+  const [load, setLoad] = useState(false);
+  // const queryParams={
+  //   username:username,
+  //   course_name:cou
+  // }
   const fetchCourses = async () => {
     try {
       const response = await axios.get(`${config.endpoint}/student`);
@@ -51,14 +56,7 @@ const Home = () => {
       console.error("Error fetching courses:", error);
     }
   };
-  const markCourseAsDone = (courseId) => {
-    setCompletedCourseId(courseId);
 
-    setCompletedSections((prevCompletedSections) => ({
-      ...prevCompletedSections,
-      [courseId]: true,
-    }));
-  };
   const fetchsections = async (id) => {
     try {
       console.log("ID:", id);
@@ -74,22 +72,24 @@ const Home = () => {
       console.error("Error fetching courses:", error);
     }
   };
-  const handleBought=async(course)=>{
+
+  const handleBought = async (course) => {
     try {
-      const res=await axios.get(`${config.endpoint}/purchased`,{params:{
-       student_name:username,
-       course_name:course
-      }})
-      if(res.status===200){
+      const res = await axios.get(`${config.endpoint}/purchased`, {
+        params: {
+          student_name: username,
+          course_name: course,
+        },
+      });
+      if (res.status === 200) {
         setSuccess(true);
-      }
-      else{
-        setSuccess(false)
+      } else {
+        setSuccess(false);
       }
     } catch (error) {
-      console.log("Error:",error);
+      console.log("Error:", error);
     }
-  }
+  };
 
   const handlePurchase = async (course) => {
     try {
@@ -101,23 +101,19 @@ const Home = () => {
         video_url: course.video_url,
         student_name: username,
       });
-      // const resp=await axios.get(`${config.endpoint}/purchased`,{params:{
-      //   student_name:username,
-      //   course_name:course.name
-      //  }})
+   
 
-      if (res.status === 200) {
-        enqueueSnackbar("Course already purchased", { variant: "info" });
-      } else {
-        enqueueSnackbar("Course purchased successfully", {
+      if (res) {
+        enqueueSnackbar("Purchased Course successfully", {
           variant: "success",
         });
-
+       navigate("/course")
       }
-
       setSelectedCourse(null);
-      setPurchasedCourses(prevPurchasedCourses => [...prevPurchasedCourses, course]);
-
+      setPurchasedCourses((prevPurchasedCourses) => [
+        ...prevPurchasedCourses,
+        course,
+      ]);
 
       console.log("COURSE:", course);
       console.log("PRS:", purchasedCourses);
@@ -132,6 +128,33 @@ const Home = () => {
   };
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    if(username){
+
+    }
+    else{
+      const fetchPurchased = async () => {
+        try {
+          const res = await axios.get(`${config.endpoint}/learning`, {
+            params: {
+              username: username,
+            },
+          });
+          if (res.status === 200) {
+            setPurchased(res.data);
+            setPurchasedLoaded(true);
+          }
+        } catch (error) {
+          console.log("error", error);
+        }
+      };
+  
+      fetchPurchased();
+    }
+    
+  }, []);
+
   const handleSearch = async () => {
     if (searchQuery.trim() !== "") {
       console.log("Search:", searchQuery);
@@ -148,11 +171,8 @@ const Home = () => {
     fetchCourses();
   }, []);
 
-  useEffect(() => {
-    const storedPurchasedCourses =
-      JSON.parse(localStorage.getItem("purchasedCourses")) || [];
-    setPurchasedCourses(storedPurchasedCourses);
-  }, []);
+  
+
   return (
     <div>
       <Header prop={inst}>
@@ -249,9 +269,15 @@ const Home = () => {
                               {course.description}
                             </p>{" "}
                           </div>
-                          <p className="card-cost">${course.price}</p>
+                          {/* <p className="card-cost">${course.price}</p> */}
 
                           <button
+                          style={{
+                          width:"100px",
+                          height:"60px",
+                          fontSize:"13px",
+                          marginRight:"8px"
+                        }}
                             className="det mb-4"
                             onClick={() => {
                               fetchsections(course.id);
@@ -260,18 +286,31 @@ const Home = () => {
                           >
                             More Details
                           </button>
+
                           {username ? (
-                            <> 
-                                                      
-                                <button
-                                onClick={() => {
+                            <>
+                              {purchased.some(
+                                (item) => item.course_name === course.name
+                              ) ? (
+                                <></>
+                              ) : (
+                                <>
+                                  <button
+                                  style={{
+                          width:"100px",
+                          height:"60px",
+                          fontSize:"13px",
+                          marginRight:"8px"
+                        }}
+                                    onClick={() => {
+                                      handlePurchase(course);
                                   
-                                  handlePurchase(course);
-                                  
-                                }}
-                              >
-                                Purchase course
-                              </button>
+                                    }}
+                                  >
+                                    Purchase course
+                                  </button>
+                                </>
+                              )}
                             </>
                           ) : (
                             <></>
@@ -313,7 +352,13 @@ const Home = () => {
             )}
           </>
         )}
+
       </div>
+      {/* <div>
+      <p>Want to be an Instructor?</p>
+        <button onClick={navigate("/register")}>Register</button>
+        <button onClick={navigate("/login")}>Login</button>
+      </div> */}
 
       <Footer />
     </div>

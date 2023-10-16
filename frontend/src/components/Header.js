@@ -91,7 +91,7 @@ const Header = ({ isAuthorised, prop, student, children }) => {
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
-                          localStorage.clear();
+                          localStorage.clear()
                           navigate("/");
                         }}
                       >
@@ -129,8 +129,9 @@ const Header = ({ isAuthorised, prop, student, children }) => {
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
-                          localStorage.clear();
+                          localStorage.clear()
                           navigate("/");
+                        
                         }}
                       >
                         LOG OUT

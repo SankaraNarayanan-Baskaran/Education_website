@@ -23,6 +23,7 @@ const Register = () => {
   const [isPasswordClicked, setIsPasswordClicked] = useState(false);
   const [isConfirmClicked, setIsConfirmClicked] = useState(false);
   const [isEmailClicked,setIsEmailClicked]=useState(false);
+  const [instructor,setInstructor]=useState(false);
   const handleCriteria = () => {
     return formData.username.length < 6
       ? "Username should have atleast 6 characters"
@@ -257,8 +258,9 @@ const Register = () => {
             ) : (
               ""
             )}
-            
-            <textarea
+            {
+              instructor?(<></>):(<>
+                <textarea
               className="col-sm-12"
               rows={5}
               cols={74}
@@ -268,6 +270,9 @@ const Register = () => {
                 setFormData({ ...formData, address: e.target.value })
               }
             ></textarea>
+              </>)
+            }
+            
           </div>
           <button
             className="login-button"
@@ -316,6 +321,7 @@ const Register = () => {
               >
                 <GoogleLoginButton />
               </LoginSocialGoogle>
+              <button className="login-button" onClick={setInstructor(true)}>Instructor?</button>
             </div>
           </div>
 

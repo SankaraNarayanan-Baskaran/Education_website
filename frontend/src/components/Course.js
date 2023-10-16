@@ -49,6 +49,15 @@ const Course = () => {
     username: username,
   };
   const navigate = useNavigate();
+  useEffect(() => {
+   
+  }, []);
+  
+
+
+
+  // Function to update the progress and completed sections
+  
 
   useEffect(() => {
     const lastCompletedSectionId = localStorage.getItem(
@@ -63,16 +72,28 @@ const Course = () => {
   }, [courses]);
 
   useEffect(() => {
-    const completedCount =
-      Object.values(completedSections).filter(Boolean).length;
+    
+  }, []);
 
-    // Calculate the progress for the current course
-    const totalSections = courses.length; // Total sections in the current course
-    const newProgress = Math.trunc((completedCount * 100) / totalSections);
+  // Function to update the progress and completed sections
+  
 
-    // Update the progress state
-    setProgress(newProgress);
-  }, [completedSections, courses]);
+  useEffect(() => {
+    const lastCompletedSectionId = localStorage.getItem(
+      "lastCompletedSectionId"
+    );
+    if (lastCompletedSectionId) {
+      setCompletedCourseId(parseInt(lastCompletedSectionId));
+    } else {
+      if (courses.length > 0) {
+      }
+    }
+  }, [courses]);
+
+  useEffect(() => {
+    fetchcourses()
+  },
+   []);
 
   const fetchProgress = async (courseId) => {
     try {
@@ -81,71 +102,32 @@ const Course = () => {
           username: username,
           course_id: courseId,
         },
+        
       });
-      if (res) {
-        console.log(res.data.Completed_Sections)
-        setCourseProgress({
-          ...courseProgress,
-          [courseId]: res.data.progress,
-        });
-        // setCompletedCount({
-        //   ...completedCount,[count]:res.data.Completed_Count
-        // })
-        console.log("COurse Progress:", courseProgress);
-      } else {
-        setCourseProgress({
-          ...courseProgress,
-          [courseId]: 0,
-        });
-      }
+      if(res){setCourseProgress({
+        ...courseProgress,
+        [courseId]: res.data.progress,
+      });}
+      
     } catch (error) {
       console.log("Error:", error);
     }
   };
+ 
+ 
 
   const markCourseAsDone = async (sectionId, courseId) => {
-    const totalSections = courses.length;
-
-    // fetchProgress(courseId);
-    // console.log("course progress", courseProgress);
-    
-      setCompletedCourseId(sectionId);
-      setCompletedSections((prevCompletedSections) => ({
-        ...prevCompletedSections,
-        [sectionId]: true,
-      }));
-     
-      if (completedCount <= totalSections) {
-        setCompletedCount((prevCompletedCount) => prevCompletedCount + 1);
-
-        localStorage.setItem("completedCount", (completedCount + 1).toString());
-
-        const newProgress = Math.trunc((completedCount * 100) / totalSections);
-
-        if (newProgress <= 100) {
-          setProgress(newProgress);
-          localStorage.setItem("courseProgress", newProgress.toString());
-        }
-
-        const updatedCourseProgress = {
-          ...courseProgress,
-          [courseId]: newProgress,
-        };
-        setCourseProgress(updatedCourseProgress);
-        localStorage.setItem(
-          "courseProgress",
-          JSON.stringify(updatedCourseProgress)
-        );
-
-        await axios.post(`${config.endpoint}/progress`, {
-          sectionId: sectionId,
-          courseId: courseId,
-          progress: newProgress,
-          username: username,
-          count:completedCount
-        });
-      }
-    
+    setCompletedCourseId(sectionId);
+    setCompletedSections((prevCompletedSections) => ({
+      ...prevCompletedSections,
+      [sectionId]: true,
+    }));
+    await axios.post(`${config.endpoint}/progress`,{
+      sectionId:sectionId,
+      courseId:courseId,
+      username:username,
+      count:courses.length
+    })
   };
 
   const fetchcourses = async () => {
@@ -174,8 +156,9 @@ const Course = () => {
   };
 
   useEffect(() => {
-    fetchcourses();
+   
   }, []);
+  
  
 
   return (
@@ -199,7 +182,7 @@ const Course = () => {
                     src={section.img_url}
                     alt="Image"
                     width="50%px"
-                    height="300px"
+                    height="350px"
                   />
                 )}
               </div>
@@ -212,6 +195,7 @@ const Course = () => {
                     <button
                       onClick={() => {
                         markCourseAsDone(section.id, section.Course_id);
+                       
                       }}
                     >
                       View Section
@@ -235,9 +219,16 @@ const Course = () => {
                     <div style={{ height: "60px" }}>
                       <p className="card-text">{course.course_description}</p>
                     </div>
+                    
                     {!courseProgressVisible[index] ? (
                       <>
                         <button
+                        style={{
+                          width:"100px",
+                          height:"60px",
+                          fontSize:"13px",
+                          marginRight:"8px"
+                        }}
                           onClick={() => {
                             const newVisibility = [...courseProgressVisible];
                             newVisibility[index] = true;
@@ -255,18 +246,22 @@ const Course = () => {
                           label={`${courseProgress[course.course_id] || 0}%`}
                           style={{
                             position: "fixed",
-                            right: "3px",
-                            top: "70px",
-                            width: "10%",
-                            borderRadius: "20px",
+                            top: "105px",
+                            width: "85%",
                             zIndex: "1",
-                            backgroundColor: "beige",
+                           
                           }}
                         />
                         {console.log("Progress:", progress)}
                       </>
                     )}
                     <button
+                   style={{
+                          width:"100px",
+                          height:"60px",
+                          fontSize:"13px",
+                          marginRight:"8px"
+                        }}
                       onClick={() => {
                         fetchsections(course.course_id);
                         setSection(true);
@@ -274,6 +269,7 @@ const Course = () => {
                     >
                       View Course
                     </button>
+                    
                   </div>
                 </div>
               </div>
