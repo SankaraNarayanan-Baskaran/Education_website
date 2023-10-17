@@ -105,7 +105,38 @@ app.post("/api/adduser", async (req, res) => {
         username,
         password,
         email,
-        address,
+        address
+      
+      });
+      return res.status(201).json({
+        success: "true",
+        message: "Google account",
+      });
+    }
+  } catch (error) {
+    console.error("Error creating User:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/api/inst", async (req, res) => {
+  try {
+    const { username, password, email} = req.body;
+    const userExists = await Instructor.findOne({
+      where: {
+        name: username,
+      },
+    });
+    if (userExists) {
+      return res.status(302).json({
+        success: "true",
+      });
+    } else {
+      const newUser = await Instructor.create({
+        name:username,
+        password,
+        mail:email
+        
       });
       return res.status(201).json({
         success: "true",
@@ -124,6 +155,28 @@ app.post("/api/loginuser", async (req, res) => {
     // console.log(username,password);
     const user = await Accounts.findOne({
       where: { username: username, password: password },
+    });
+    if (user) {
+      return res.status(201).json({
+        success: "true",
+      });
+    } else
+      return res.status(500).json({
+        success: "false",
+      });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/api/logininst", async (req, res) => {
+  try {
+    // console.log(req.body.username);
+    const { username, password } = req.body;
+    // console.log(username,password);
+    const user = await Instructor.findOne({
+      where: { name: username, password: password },
     });
     if (user) {
       return res.status(201).json({

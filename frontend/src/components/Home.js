@@ -73,23 +73,7 @@ const Home = () => {
     }
   };
 
-  const handleBought = async (course) => {
-    try {
-      const res = await axios.get(`${config.endpoint}/purchased`, {
-        params: {
-          student_name: username,
-          course_name: course,
-        },
-      });
-      if (res.status === 200) {
-        setSuccess(true);
-      } else {
-        setSuccess(false);
-      }
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
+  
 
   const handlePurchase = async (course) => {
     try {
@@ -131,9 +115,6 @@ const Home = () => {
 
   useEffect(() => {
     if(username){
-
-    }
-    else{
       const fetchPurchased = async () => {
         try {
           const res = await axios.get(`${config.endpoint}/learning`, {
@@ -151,6 +132,9 @@ const Home = () => {
       };
   
       fetchPurchased();
+    }
+    else{
+     
     }
     
   }, []);
@@ -251,25 +235,29 @@ const Home = () => {
                 <div className="product-card">
                   {courses.map((course) => (
                     <div key={course.id}>
-                      <div className="card mb-3 course-card card">
+                      <div className="card mb-3  card">
                         <img
                           className="imgBx"
                           src={course.video_url}
                           alt="Image"
                         />
-                        <div class="content">
+                        <div style={{
+                          marginLeft:"5px"
+                        }}>
                           <h5 className="card-title">{course.name}</h5>
+                         
                           <div
                             style={{
                               height: "60px",
                             }}
+                            clas
                           >
                             {" "}
                             <p className="card-text">
                               {course.description}
                             </p>{" "}
                           </div>
-                          {/* <p className="card-cost">${course.price}</p> */}
+                          <p className="card-cost">${course.price}</p>
 
                           <button
                           style={{

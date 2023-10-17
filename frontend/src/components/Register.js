@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,7 @@ const Register = () => {
   const [isConfirmClicked, setIsConfirmClicked] = useState(false);
   const [isEmailClicked,setIsEmailClicked]=useState(false);
   const [instructor,setInstructor]=useState(false);
+  const [type,setType]=useState("adduser")
   const handleCriteria = () => {
     return formData.username.length < 6
       ? "Username should have atleast 6 characters"
@@ -104,11 +105,14 @@ const Register = () => {
   const Credentials = async (formData) => {
    
       try {
-        const response = await axios.post(config.endpoint + "/adduser", {
+       const type=localStorage.getItem("type");
+       console.log(type);
+        const response = await axios.post(`${config.endpoint}/${type}`, {
           username: formData.username,
           password: formData.password,
           email: formData.emailaddress,
-          address: formData.address,
+          address:formData.address
+          
         });
         console.log(response);
         if (response.status === 201) {
@@ -144,6 +148,9 @@ const Register = () => {
         <div className="login-container">
           <h2>Register</h2>
           <div className="input-container">
+          {
+            instructor?(<></>):(<></>)
+          }
             <input
               className={formData.username.length < 6 ? "clicked-input" : ""}
               type="text"
@@ -258,9 +265,10 @@ const Register = () => {
             ) : (
               ""
             )}
-            {
-              instructor?(<></>):(<>
-                <textarea
+           {
+            instructor?(<></>):(<>
+            {localStorage.setItem("type","adduser")}
+              <textarea
               className="col-sm-12"
               rows={5}
               cols={74}
@@ -270,13 +278,17 @@ const Register = () => {
                 setFormData({ ...formData, address: e.target.value })
               }
             ></textarea>
-              </>)
-            }
+            </>)
+           }
+                
+              
+            
             
           </div>
           <button
             className="login-button"
             onClick={() => {
+              
               if(validateInput(formData)){
                 Credentials(formData);
               enqueueSnackbar("Registered successfully", {
@@ -321,7 +333,16 @@ const Register = () => {
               >
                 <GoogleLoginButton />
               </LoginSocialGoogle>
-              <button className="login-button" onClick={setInstructor(true)}>Instructor?</button>
+              {
+                instructor?(<></>):(<>
+                  <button className="login-button" onClick={()=>{
+                 localStorage.setItem("type","inst")
+                 console.log(localStorage.getItem("type"))
+                setInstructor(true)
+             }}>Instructor?</button>
+                </>)
+              }
+              
             </div>
           </div>
 

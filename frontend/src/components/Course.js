@@ -94,6 +94,7 @@ const Course = () => {
     fetchcourses()
   },
    []);
+  
 
   const fetchProgress = async (courseId) => {
     try {
@@ -113,7 +114,11 @@ const Course = () => {
       console.log("Error:", error);
     }
   };
- 
+  useEffect(() => {
+    courses.forEach((course) => {
+      fetchProgress(course.course_id);
+    });
+  }, [courses]);
  
 
   const markCourseAsDone = async (sectionId, courseId) => {
@@ -220,7 +225,7 @@ const Course = () => {
                       <p className="card-text">{course.course_description}</p>
                     </div>
                     
-                    {!courseProgressVisible[index] ? (
+                    {/* {!courseProgressVisible[index] ? (
                       <>
                         <button
                         style={{
@@ -239,11 +244,11 @@ const Course = () => {
                           View Progress
                         </button>
                       </>
-                    ) : (
+                    ) : ( */}
                       <>
                         <ProgressBar
                           now={courseProgress[course.course_id] || 0}
-                          label={`${courseProgress[course.course_id] || 0}%`}
+                          label={`Progress:${courseProgress[course.course_id] ||0}% `}
                           style={{
                             position: "fixed",
                             top: "105px",
@@ -254,7 +259,7 @@ const Course = () => {
                         />
                         {console.log("Progress:", progress)}
                       </>
-                    )}
+                    {/* )} */}
                     <button
                    style={{
                           width:"100px",

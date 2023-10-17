@@ -28,6 +28,7 @@ const Login = () => {
     confirmPassword: "",
   });
   const [changePass, setChangePass] = useState(false);
+  const [instructor,setInstructor]=useState(false);
 
   const validateInput = (data) => {
     if (data.username === "") {
@@ -282,6 +283,15 @@ const Login = () => {
               >
                 Login
               </button>
+              {
+                instructor?(<></>):(<>
+                  <button className="login-button" onClick={()=>{
+                    localStorage.setItem("user","inst")
+                setInstructor(true);
+              }}>Login as Instructor?</button>
+                </>)
+              }
+              
             </div>
           </>
         )}
