@@ -229,8 +229,8 @@ app.post("/api/courses", async (req, res) => {
       req.body;
     console.log("Username:", username);
 
-    Accounts.findOne({ where: { username: username } }).then((user) => {
-      // Create an order associated with the user
+   Instructor.findOne({ where: { name: username } }).then((user) => {
+      
       console.log("UserID:", user.id);
 
       CourseDetails.create({
@@ -255,7 +255,7 @@ app.get("/api/courses", async (req, res) => {
     
     const param = req.query.username;
     // console.log("Param:", param);
-    const some = await Accounts.findOne({ where: { username: param } }).then(
+    const some = await Instructor.findOne({ where: { name: param } }).then(
       async (users) => {
         // console.log("Userd:",users);
         const details = await CourseDetails.findAll({

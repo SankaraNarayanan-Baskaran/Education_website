@@ -72,7 +72,23 @@ const Login = () => {
       console.log(error);
     }
   };
+  const loggedInst = async (formData) => {
+    try {
+      const res = await axios.post(config.endpoint + "/logininst", {
+        username: formData.username,
+        password: formData.password,
+      });
+      if (res.status === 201) {
+        localStorage.setItem("username", formData.username);
+        enqueueSnackbar("Logged in Successfully", { variant: "success" });
+        navigate("/instructor");
+      }
+    } catch (error) {
+      enqueueSnackbar("Invalid Credentials", { variant: "error" });
 
+      console.log(error);
+    }
+  };
   const handleChangePassword = async (changePassword) => {
     try {
       const res = await axios.put(config.endpoint + "/updatePass", {
@@ -273,7 +289,18 @@ const Login = () => {
               >
                 Forgot Password
               </button>
-              <button
+              {
+                instructor?(<><button
+                className="login-button mx-3 mb-3"
+                onClick={() => {
+                  if (validateInput(formData)) {
+                    loggedInst(formData);
+                  }
+                }}
+              >
+                Login
+              </button></>):(<>
+                  <button
                 className="login-button mx-3 mb-3"
                 onClick={() => {
                   if (validateInput(formData)) {
@@ -283,6 +310,9 @@ const Login = () => {
               >
                 Login
               </button>
+                </>)
+              }
+              
               {
                 instructor?(<></>):(<>
                   <button className="login-button" onClick={()=>{

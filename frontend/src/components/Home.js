@@ -40,6 +40,8 @@ const Home = () => {
   const [purchasedLoaded, setPurchasedLoaded] = useState(false);
   const [completedCourseId, setCompletedCourseId] = useState(null);
   const [load, setLoad] = useState(false);
+  const [selectedCourseDescription, setSelectedCourseDescription] = useState("");
+  const [description,setDescription]=useState(false);
   // const queryParams={
   //   username:username,
   //   course_name:cou
@@ -235,45 +237,61 @@ const Home = () => {
                 <div className="product-card">
                   {courses.map((course) => (
                     <div key={course.id}>
-                      <div className="card mb-3  card">
+                      <div className="card mb-3 card">
                         <img
                           className="imgBx"
                           src={course.video_url}
                           alt="Image"
                         />
                         <div style={{
-                          marginLeft:"5px"
+                          // marginLeft:"5px"
                         }}>
-                          <h5 className="card-title">{course.name}</h5>
+                          <h5 className="card-title" style={{
+                            marginLeft:"5px"
+                          }}>{course.name}</h5>
                          
-                          <div
+                          
+                          <p  style={{
+                            marginLeft:"5px"
+                          }}>${course.price}</p>
+                            {
+                              selectedCourseDescription === course.name?(<>
+                                <div
                             style={{
                               height: "60px",
                             }}
-                            clas
+                            
                           >
                             {" "}
-                            <p className="card-text">
+                            <p className="card-text" style={{
+                            marginLeft:"5px"
+                          }}>
                               {course.description}
                             </p>{" "}
                           </div>
-                          <p className="card-cost">${course.price}</p>
-
-                          <button
+                              </>):(<>
+                                <button
                           style={{
                           width:"100px",
                           height:"60px",
                           fontSize:"13px",
-                          marginRight:"8px"
+                          marginRight:"8px",
+                          
+                            marginLeft:"5px"
+                          
                         }}
                             className="det mb-4"
                             onClick={() => {
                               fetchsections(course.id);
-                              setDetails(true);
+                              setSelectedCourseDescription(course.name);
+                              
                             }}
                           >
                             More Details
                           </button>
+                              </>)
+                            }
+                          
 
                           {username ? (
                             <>
@@ -285,10 +303,11 @@ const Home = () => {
                                 <>
                                   <button
                                   style={{
-                          width:"100px",
-                          height:"60px",
+                          width:"298.5px",
+                        
+                          
                           fontSize:"13px",
-                          marginRight:"8px"
+                          
                         }}
                                     onClick={() => {
                                       handlePurchase(course);
@@ -342,12 +361,7 @@ const Home = () => {
         )}
 
       </div>
-      {/* <div>
-      <p>Want to be an Instructor?</p>
-        <button onClick={navigate("/register")}>Register</button>
-        <button onClick={navigate("/login")}>Login</button>
-      </div> */}
-
+  
       <Footer />
     </div>
   );

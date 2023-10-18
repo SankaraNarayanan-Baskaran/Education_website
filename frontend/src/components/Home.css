@@ -2,10 +2,6 @@
     border: 1px dotted black;
 }
 
-.card-cost{
-    margin: 0 !important;
-}
-
 .card-body{
     padding: 10px 0 10px 10px !important;
 }

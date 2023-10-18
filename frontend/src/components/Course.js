@@ -217,55 +217,40 @@ const Course = () => {
           <div className="product-card">
             {courses.map((course, index) => (
               <div key={course.id}>
-                <div className="card mb-3 course-card card">
+                <div className="card mb-3 card">
                   <img className="imgBx" src={course.video_url} alt="Image" />
-                  <div className="content">
+                  <div style={{
+                          marginLeft:"5px"
+                        }}>
                     <h5 className="card-title">{course.course_name}</h5>
                     <div style={{ height: "60px" }}>
                       <p className="card-text">{course.course_description}</p>
                     </div>
                     
-                    {/* {!courseProgressVisible[index] ? (
-                      <>
-                        <button
-                        style={{
-                          width:"100px",
-                          height:"60px",
-                          fontSize:"13px",
-                          marginRight:"8px"
-                        }}
-                          onClick={() => {
-                            const newVisibility = [...courseProgressVisible];
-                            newVisibility[index] = true;
-                            setCourseProgressVisible(newVisibility);
-                            fetchProgress(course.course_id);
-                          }}
-                        >
-                          View Progress
-                        </button>
-                      </>
-                    ) : ( */}
+                   
                       <>
                         <ProgressBar
                           now={courseProgress[course.course_id] || 0}
                           label={`Progress:${courseProgress[course.course_id] ||0}% `}
                           style={{
-                            position: "fixed",
-                            top: "105px",
-                            width: "85%",
-                            zIndex: "1",
+                            // position:"absolute",
+                            margin:"0 8px 8px 0",
+                           
+                            // width: "85%",
+                            // zIndex: "1",
                            
                           }}
                         />
+                        
                         {console.log("Progress:", progress)}
                       </>
                     {/* )} */}
                     <button
                    style={{
                           width:"100px",
-                          height:"60px",
+                          height:"30px",
                           fontSize:"13px",
-                          marginRight:"8px"
+                          margin:"0 0 8px"
                         }}
                       onClick={() => {
                         fetchsections(course.course_id);
