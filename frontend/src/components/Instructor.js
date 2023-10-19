@@ -21,12 +21,28 @@ const Instructor = () => {
   });
   const handleAddCourse = async () => {
     try {
-      console.log("INST:",newCourse);
+      console.log("INST:", newCourse);
       await axios.post(`${config.endpoint}/courses`, newCourse);
       setNewCourse({ name: "", description: "", price: "", video_url: "" });
       fetchcourses();
     } catch (error) {
       console.error("Error adding a Course:", error);
+    }
+  };
+  const addToStudent = async () => {
+    try {
+      const res = await axios.post(`${config.endpoint}/convert`, {
+        name: username,
+      });
+      console.log(res);
+      if (res.status === 201) {
+        enqueueSnackbar("You are now a Student", { variant: "info" });
+      } else if (res.status === 299) {
+        enqueueSnackbar("You are already a student", { variant: "info" });
+        navigate("/");
+      }
+    } catch (error) {
+      console.log("error", error);
     }
   };
 
@@ -74,6 +90,7 @@ const Instructor = () => {
       console.error("Error fetching courses:", error);
     }
   };
+  
   useEffect(() => {
     // Fetch all courses when the component mounts
     fetchcourses();
@@ -84,93 +101,107 @@ const Instructor = () => {
 
   return (
     <div>
-    
-      <Header isAuthorised={false} prop student />
+      <Header isAuthorised={false} prop student instr/>
       <center>
-      <div className="mx-2 my-2 container">
-        <h2>Jump into Course creation</h2>
+        <div className="mx-2 my-2 container">
+          <h3>Jump into Course creation</h3>
+          <button
+            className="btn btn-outline-dark mx-6 mr-2 my-2 my-sm-0"
+            onClick={() => {
+              setIsSelected(true);
+            }}
+          >
+            Create Your Course
+          </button>
+
+          {/* {fetchcourses()} */}
+        </div>
+
+        {isSelected ? (
+          <>
+            <div className="mx-2">
+              <center>
+                <form className="form-container">
+                  <h5>Course Structure Details:</h5>
+                  <div className="input-container">
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={newCourse.name}
+                      onChange={(e) =>
+                        setNewCourse({ ...newCourse, name: e.target.value })
+                      }
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Description"
+                      value={newCourse.description}
+                      onChange={(e) =>
+                        setNewCourse({
+                          ...newCourse,
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                    <input
+                      type="text"
+                      placeholder="Price"
+                      value={newCourse.price}
+                      onChange={(e) =>
+                        setNewCourse({ ...newCourse, price: e.target.value })
+                      }
+                    />
+                    <input
+                      type="text"
+                      placeholder="Image URL"
+                      value={newCourse.video_url}
+                      onChange={(e) =>
+                        setNewCourse({
+                          ...newCourse,
+                          video_url: e.target.value,
+                        })
+                      }
+                    />
+                    <center>
+                      <button
+                        className="form-button my-3"
+                        onClick={() => {
+                          enqueueSnackbar("Course Created", {
+                            variant: "success",
+                          });
+                          handleAddCourse();
+                        }}
+                      >
+                        Add course
+                      </button>
+                    </center>
+                  </div>
+                </form>
+              </center>
+            </div>
+          </>
+        ) : (
+          <>
+            <Section />
+          </>
+        )}
+      </center>
+      <center>
         <button
-          className="btn btn-outline-dark mx-6 mr-2 my-2 my-sm-0"
+          style={{
+            marginBottom: "12px",
+          }}
+          class="btn mx-2 my-sm-0 "
           onClick={() => {
-            setIsSelected(true);
+            addToStudent();
           }}
         >
-          Create Your Course
+          Want to be a Student?
         </button>
-        
-
-        {/* {fetchcourses()} */}
-      </div>
-      
-      {isSelected ? (
-        <>
-          <div className="mx-2">
-            <center>
-              <form className="form-container">
-                <h5>Course Structure Details:</h5>
-                <div className="input-container">
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    value={newCourse.name}
-                    onChange={(e) =>
-                      setNewCourse({ ...newCourse, name: e.target.value })
-                    }
-                  />
-
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={newCourse.description}
-                    onChange={(e) =>
-                      setNewCourse({
-                        ...newCourse,
-                        description: e.target.value,
-                      })
-                    }
-                  />
-                  <input
-                    type="text"
-                    placeholder="Price"
-                    value={newCourse.price}
-                    onChange={(e) =>
-                      setNewCourse({ ...newCourse, price: e.target.value })
-                    }
-                  />
-                  <input
-                    type="text"
-                    placeholder="Image URL"
-                    value={newCourse.video_url}
-                    onChange={(e) =>
-                      setNewCourse({
-                        ...newCourse,
-                        video_url: e.target.value,
-                      })
-                    }
-                  />
-                  <center>
-                    <button
-                      className="form-button my-3"
-                      onClick={() => {
-                       enqueueSnackbar("Course Created",{variant:"success"})
-                        handleAddCourse();
-                      }}
-                    >
-                      Add course
-                    </button>
-                  </center>
-                </div>
-              </form>
-            </center>
-          </div>
-        </>
-      ) : (
-        <>
-        <Section/>
-
-        </>
-      )}
       </center>
+
+      <Footer />
     </div>
   );
 };

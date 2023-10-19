@@ -370,28 +370,28 @@ app.get("/api/learners", async (req, res) => {
     console.log("course_id:", course_id);
 
     // Find the account based on the username (replace with dynamic username retrieval)
-    const user = await Accounts.findOne({ where: { username: username } });
+    const enrolled = await Student_Purchases.findAll({ where: { course_id:course_id } });
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    if (!enrolled) {
+      return res.json(0);
     }
 
-    console.log("User:", user.id);
+   
 
     // Find all student purchases for the user
-    const userPurchases = await Student_Purchases.findAndCountAll({
-      where: { student_id: user.id },
-    });
+    // const userPurchases = await Student_Purchases.findAndCountAll({
+    //   where: { student_id: user.id },
+    // });
 
     // Find student purchases for the specific course_id
-    const specificCoursePurchases = await Student_Purchases.findAll({
-      where: { course_id },
-    });
+    // const specificCoursePurchases = await Student_Purchases.findAll({
+    //   where: { course_id },
+    // });
 
-    console.log("Purchase:", specificCoursePurchases);
+    // console.log("Purchase:", specificCoursePurchases);
 
     // Send the specific course purchases as a JSON response
-    return res.json(specificCoursePurchases);
+    return res.json(enrolled);
   
 }
  catch (error) {
@@ -405,7 +405,7 @@ app.post("/api/section", async (req, res) => {
     const { section_name, section_description, img_url,course_name,username} =
       req.body;
       console.log(course_name)
-    Accounts.findOne({ where: { username: username } }).then(async (user) => {
+    Instructor.findOne({ where: { name: username } }).then(async (user) => {
       await CourseDetails.findOne({ where: { name: course_name } }).then(async (course) => {
         await Course_Section.create({
           section_name,
@@ -616,12 +616,31 @@ app.post("/api/progress", async (req, res) => {
   }
 });
 
+app.post("/api/updateSection",async(req,res)=>{
+  try {
+    const {sectionId,section_name,section_description,img_url}=req.body;
+    await Course_Section.update({
+     
+      img_url
+    },
+    {
+      where:{
+      id:sectionId
 
+      }
+    }).then(()=>{
+      res.status(201).json({message:"Success"})
+    })
+  } catch (error) {
+    console.log("Error",error);
+  }
+})
 
 app.get("/api/getProgress",async (req,res)=>{
   try {
     const username=req.query.username;
     const course=req.query.course_id;
+    console.log(course);
     const user=await Accounts.findOne({where:{
       username:username
     }})
@@ -637,36 +656,35 @@ app.get("/api/getProgress",async (req,res)=>{
     }
     
   } catch (error) {
-    console.log("error:",error)
+    console.log("errodr:",error)
   }
 })
 
-app.get("/api/userProgress", async (req, res) => {
+app.post("/api/convert",async (req,res)=>{
   try {
-    const { username } = req.query;
-
-    const user = await Accounts.findOne({ where: { username } });
-
-    if (user) {
-      // Retrieve user's progress data from the database
-      const userProgress = await Progress.findOne({
-        where: { student_id: user.id },
-        attributes: ["courseProgress", "completedSections", "completedCount"],
-      });
-
-      if (userProgress) {
-        res.json(userProgress);
-      } else {
-        res.status(404).send("User progress not found");
+    const {name}=req.body;
+    console.log(name);
+   const user= await Accounts.findOne({where:{username:name}});
+    if(user){
+      return res.status(299).json("Already a student")
+    }
+    const inst=await Instructor.findOne({where:{name:name}});
+    if(inst){
+      const student=await Accounts.create({
+        username:name,
+        password:inst.password,
+        email:inst.mail
       }
-    } else {
-      res.status(404).send("User not found");
+       
+
+      )
+      return res.status(201).json("Student")
+
     }
   } catch (error) {
-    console.log("Error:", error);
-    res.status(500).send("Internal server error");
+    console.log("Error:",error)
   }
-});
+})
 
 app.delete("/api/courses/:id", async (req, res) => {
   try {

@@ -98,6 +98,8 @@ const Course = () => {
 
   const fetchProgress = async (courseId) => {
     try {
+      
+
       const res = await axios.get(`${config.endpoint}/getProgress`, {
         params: {
           username: username,

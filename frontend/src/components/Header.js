@@ -9,7 +9,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { config } from "../App";
 import axios from "axios";
 import "./Home.css";
-const Header = ({ isAuthorised, prop, student, children }) => {
+const Header = ({ isAuthorised, prop, student, children ,instr}) => {
   const navigate = useNavigate();
   const user = localStorage.getItem("username");
 
@@ -69,14 +69,7 @@ const Header = ({ isAuthorised, prop, student, children }) => {
                 <>
                   {!student ? (
                     <>
-                      <button
-                        class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
-                        onClick={() => {
-                          navigate("/instructor");
-                        }}
-                      >
-                        Instructor
-                      </button>
+                    
                       <button
                         class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
@@ -100,32 +93,26 @@ const Header = ({ isAuthorised, prop, student, children }) => {
                     </>
                   ) : (
                     <>
+                    {
+                      instr?(<>
+                        <button className="btn  mx-6 mr-2 my-2 my-sm-0 title">🧑‍🏫{user}</button>
                       <button
                         className="btn  mx-6 mr-2 my-2 my-sm-0 title"
                         onClick={() => {
                           // window.location.reload();
-                          navigate("/section");
+                          navigate("/instructor");
                         }}
                       >
                         My Courses
                       </button>
-                      <button
-                        class="btn  mx-2 my-sm-0 title"
-                        onClick={() => {
-                          navigate("/", { state: { isLogged: "true" } });
-                        }}
-                      >
-                        Student
-                      </button>
+                      </>):(<>
+                        <button className="btn  mx-6 mr-2 my-2 my-sm-0 title">{user}</button>
+                      </>)
+                    }
+                    
+                      
 
-                      <button
-                        class="btn  mx-2 my-sm-0 title"
-                        onClick={() => {
-                          navigate("/", { state: { isLogged: "true" } });
-                        }}
-                      >
-                        Home
-                      </button>
+                      
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
