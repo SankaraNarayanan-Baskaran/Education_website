@@ -9,18 +9,14 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.changeColumn('CourseDetails','user_id',{
-      type:Sequelize.INTEGER,
-      allowNull:false,
-      references:{
-        model:'Instructors',
-        key:'id',
-      },
+    await queryInterface.changeColumn('CourseDetails','category',{
+      type:Sequelize.TEXT,
+      
+      
       
       onUpdate:'CASCADE',
       onDelete:'CASCADE'
     })
-  
   },
 
   async down (queryInterface, Sequelize) {

@@ -18,6 +18,7 @@ const Instructor = () => {
     price: "",
     video_url: "",
     username: username,
+    category:""
   });
   const handleAddCourse = async () => {
     try {
@@ -161,6 +162,14 @@ const Instructor = () => {
                           ...newCourse,
                           video_url: e.target.value,
                         })
+                      }
+                    />
+                    <input
+                      type="text"
+                      placeholder="Category"
+                      value={newCourse.category}
+                      onChange={(e) =>
+                        setNewCourse({ ...newCourse, category: e.target.value })
                       }
                     />
                     <center>

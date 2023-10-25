@@ -59,35 +59,8 @@ const CourseDetails = (courseid) => {
 
   return (
     <div>
-      {/* <Header isAuthorised={false} prop inst /> */}
-      <div className="rounded-element">
-        <h3>Your Progress: {progress}%</h3>
+      <Header isAuthorised={false} prop inst />
       </div>
-      
-      {courses.map((course) => (
-        <div key={course.id}>
-          <div className="row mx-2 my-2">
-            <div className="card mb-3 course-card" style={{ width: "18rem" }}>
-              <img
-                src={course.img_url}
-                alt="Image"
-                width="100%"
-                height="200px"
-              />
-              <div className="card-body">
-                <h5 className="card-title">{course.section_name}</h5>
-                <p className="card-text">{course.section_description}</p>
-              </div>
-              {!completedCourses[course.id] ? ( 
-                <button onClick={() => markCourseAsDone(course.id)}>
-                  Mark as Done
-                </button>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
   );
 };
 

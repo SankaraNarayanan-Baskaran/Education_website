@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer>
       <div className='footer' style={{
-        position:"fixed",
+       
         marginBottom:"0"
       }}>
         <h6> © Copyright {year} EduWeb</h6>

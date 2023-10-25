@@ -21,15 +21,17 @@ import { Box } from "@mui/material";
 import { FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 const Home = () => {
   const location = useLocation();
   const inst = location.state;
   const navigate = useNavigate();
   const username = localStorage.getItem("username");
-
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [purchased, setPurchased] = useState([]);
-
+  const [filteredCourses, setFilteredCourses] = useState([]);
+  const [showFilteredCourses, setShowFilteredCourses] = useState(false);
   const [success, setSuccess] = useState(false);
   const [courses, setCourses] = useState([]);
   const [details, setDetails] = useState(false);
@@ -40,8 +42,9 @@ const Home = () => {
   const [purchasedLoaded, setPurchasedLoaded] = useState(false);
   const [completedCourseId, setCompletedCourseId] = useState(null);
   const [load, setLoad] = useState(false);
-  const [selectedCourseDescription, setSelectedCourseDescription] = useState("");
-  const [description,setDescription]=useState(false);
+  const [selectedCourseDescription, setSelectedCourseDescription] =
+    useState("");
+  const [description, setDescription] = useState(false);
   // const queryParams={
   //   username:username,
   //   course_name:cou
@@ -75,8 +78,6 @@ const Home = () => {
     }
   };
 
-  
-
   const handlePurchase = async (course) => {
     try {
       setSelectedCourse(course);
@@ -87,13 +88,12 @@ const Home = () => {
         video_url: course.video_url,
         student_name: username,
       });
-   
 
       if (res) {
         enqueueSnackbar("Purchased Course successfully", {
           variant: "success",
         });
-       navigate("/course")
+        navigate("/course");
       }
       setSelectedCourse(null);
       setPurchasedCourses((prevPurchasedCourses) => [
@@ -116,7 +116,7 @@ const Home = () => {
   const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
-    if(username){
+    if (username) {
       const fetchPurchased = async () => {
         try {
           const res = await axios.get(`${config.endpoint}/learning`, {
@@ -132,14 +132,35 @@ const Home = () => {
           console.log("error", error);
         }
       };
-  
+
       fetchPurchased();
+    } else {
     }
-    else{
-     
-    }
-    
   }, []);
+
+  const handleCategorySelect = async (event) => {
+    setSelectedCategory(event.target.value);
+    const res = await axios.get(`${config.endpoint}/filter`, {
+      params: {
+        category: event.target.value,
+      },
+    });
+    if (res) {
+      setFilteredCourses(res.data);
+    }
+
+    setShowFilteredCourses(true);
+  };
+
+  // // Filter courses based on the selected category
+  // const filteredCourses = courses.filter((course) => {
+  //   // If no category is selected, show all courses
+  //   if (selectedCategory === "") {
+  //     return true;
+  //   }
+  //   // Otherwise, only show courses that match the selected category
+  //   return course.category === selectedCategory;
+  // });
 
   const handleSearch = async () => {
     if (searchQuery.trim() !== "") {
@@ -157,12 +178,15 @@ const Home = () => {
     fetchCourses();
   }, []);
 
-  
-
   return (
     <div>
       <Header prop={inst}>
-        <Box width={275}>
+        <select value={selectedCategory} onChange={handleCategorySelect}>
+          <option value="All">All</option>
+          <option value="sports">Sports</option>
+          <option value="social">Social</option>
+        </select>
+        <Box width={300}>
           <TextField
             className="search"
             size="small"
@@ -189,53 +213,12 @@ const Home = () => {
       </Header>
 
       <div className="row mx-2 my-2">
-        {searchResults.length > 0 ? (
-          <div className="product-card">
-            {searchResults.map((course) => (
-              <div key={course.id}>
-                <div className="card mb-3 course-card card">
-                  <img className="imgBx" src={course.video_url} alt="Image" />
-                  <div class="content">
-                    <h5 className="card-title">{course.name}</h5>
-                    <div
-                      style={{
-                        height: "60px",
-                      }}
-                    >
-                      {" "}
-                      <p className="card-text">{course.description}</p>{" "}
-                    </div>
-                    <p className="card-cost">${course.price}</p>
-
-                    <button className="btn mb-3" onClick={() => {}}>
-                      More Details
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : searchQuery.trim() !== "" ? (
-          <center>
-            <p>No courses found</p>
-          </center>
-        ) : (
+        {showFilteredCourses ? (
           <>
-            {!details ? (
-              <h3
-                style={{
-                  textAlign: "center !important",
-                }}
-              >
-                Welcome {username}
-              </h3>
-            ) : (
-              <></>
-            )}
-            {!details ? (
+            <div className="product-card">
               <>
                 <div className="product-card">
-                  {courses.map((course) => (
+                  {filteredCourses.map((course) => (
                     <div key={course.id}>
                       <div className="card mb-3 card">
                         <img
@@ -243,55 +226,68 @@ const Home = () => {
                           src={course.video_url}
                           alt="Image"
                         />
-                        <div style={{
-                          // marginLeft:"5px"
-                        }}>
-                          <h5 className="card-title" style={{
-                            marginLeft:"5px"
-                          }}>{course.name}</h5>
-                         
-                          
-                          <p  style={{
-                            marginLeft:"5px"
-                          }}>${course.price}</p>
+                        <div
+                          style={
                             {
-                              selectedCourseDescription === course.name?(<>
-                                <div
-                            style={{
-                              height: "60px",
-                            }}
-                            
-                          >
-                            {" "}
-                            <p className="card-text" style={{
-                            marginLeft:"5px"
-                          }}>
-                              {course.description}
-                            </p>{" "}
-                          </div>
-                              </>):(<>
-                                <button
-                          style={{
-                          width:"100px",
-                          height:"60px",
-                          fontSize:"13px",
-                          marginRight:"8px",
-                          
-                            marginLeft:"5px"
-                          
-                        }}
-                            className="det mb-4"
-                            onClick={() => {
-                              fetchsections(course.id);
-                              setSelectedCourseDescription(course.name);
-                              
-                            }}
-                          >
-                            More Details
-                          </button>
-                              </>)
+                              // marginLeft:"5px"
                             }
-                          
+                          }
+                        >
+                          <h5
+                            className="card-title"
+                            style={{
+                              marginLeft: "5px",
+                            }}
+                          >
+                            {course.name}
+                          </h5>
+
+                          <p
+                            style={{
+                              marginLeft: "5px",
+                            }}
+                          >
+                            ${course.price}
+                          </p>
+                          {selectedCourseDescription === course.name ? (
+                            <>
+                              <div
+                                style={{
+                                  height: "60px",
+                                }}
+                              >
+                                {" "}
+                                <p
+                                  className="card-text"
+                                  style={{
+                                    marginLeft: "5px",
+                                  }}
+                                >
+                                  {course.description}
+                                </p>{" "}
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                style={{
+                                  width: "100px",
+                                  height: "60px",
+                                  fontSize: "13px",
+                                  marginRight: "8px",
+
+                                  marginLeft: "5px",
+                                }}
+                                className="det mb-4"
+                                onClick={() => {
+                                  fetchsections(course.id);
+                                  setSelectedCourseDescription(course.name);
+                                }}
+                              >
+                                More Details
+                              </button>
+                            </>
+                          )}
 
                           {username ? (
                             <>
@@ -302,16 +298,13 @@ const Home = () => {
                               ) : (
                                 <>
                                   <button
-                                  style={{
-                          width:"298.5px",
-                        
-                          
-                          fontSize:"13px",
-                          
-                        }}
+                                    style={{
+                                      width: "298.5px",
+
+                                      fontSize: "13px",
+                                    }}
                                     onClick={() => {
                                       handlePurchase(course);
-                                  
                                     }}
                                   >
                                     Purchase course
@@ -328,40 +321,206 @@ const Home = () => {
                   ))}
                 </div>
               </>
+            </div>
+          </>
+        ) : (
+          <>
+            {searchResults.length > 0 ? (
+              <div className="product-card">
+                {searchResults.map((course) => (
+                  <div key={course.id}>
+                  <div className="card mb-3 card">
+                            <img
+                              className="imgBx"
+                              src={course.video_url}
+                              alt="Image"
+                            />
+                            <div
+                              style={
+                                {
+                                  // marginLeft:"5px"
+                                }
+                              }
+                            >
+                              <h5
+                                className="card-title"
+                                style={{
+                                  marginLeft: "5px",
+                                }}
+                              >
+                                {course.name}
+                              </h5>
+
+                              <p
+                                style={{
+                                  marginLeft: "5px",
+                                }}
+                              >
+                                ${course.price}
+                              </p>
+                              </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : searchQuery.trim() !== "" ? (
+              <center>
+                <p>No courses found</p>
+              </center>
             ) : (
               <>
-                <div className="row">
-                  <center>
-                    {" "}
-                    <button>Click me</button>
-                  </center>
-                </div>
+                {!details ? (
+                  <h3
+                    style={{
+                      textAlign: "center !important",
+                    }}
+                  >
+                    Welcome {username}
+                  </h3>
+                ) : (
+                  <></>
+                )}
+                {!details ? (
+                  <>
+                    <div className="product-card">
+                      {courses.map((course) => (
+                        <div key={course.id}>
+                          <div className="card mb-3 card">
+                            <img
+                              className="imgBx"
+                              src={course.video_url}
+                              alt="Image"
+                            />
+                            <div
+                              style={
+                                {
+                                  // marginLeft:"5px"
+                                }
+                              }
+                            >
+                              <h5
+                                className="card-title"
+                                style={{
+                                  marginLeft: "5px",
+                                }}
+                              >
+                                {course.name}
+                              </h5>
 
-                <div>
-                  {sections.map((section) => (
-                    <div key={section.id} className="row mx-2 my-2">
-                      <div className="col">
-                        <div className="card course-card">
-                          <div className="card-body">
-                            <h5 className="card-title">
-                              {section.section_name}
-                            </h5>
-                            <p className="card-text">
-                              {section.section_description}
-                            </p>
+                              <p
+                                style={{
+                                  marginLeft: "5px",
+                                }}
+                              >
+                                ${course.price}
+                              </p>
+                              {selectedCourseDescription === course.name ? (
+                                <>
+                                  <div
+                                    style={{
+                                      height: "60px",
+                                    }}
+                                  >
+                                    {" "}
+                                    <p
+                                      className="card-text"
+                                      style={{
+                                        marginLeft: "5px",
+                                      }}
+                                    >
+                                      {course.description}
+                                    </p>{" "}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <button
+                                    style={{
+                                      width: "100px",
+                                      height: "60px",
+                                      fontSize: "13px",
+                                      marginRight: "8px",
+
+                                      marginLeft: "5px",
+                                    }}
+                                    className="det mb-4"
+                                    onClick={() => {
+                                      fetchsections(course.id);
+                                      setSelectedCourseDescription(course.name);
+                                    }}
+                                  >
+                                    More Details
+                                  </button>
+                                </>
+                              )}
+
+                              {username ? (
+                                <>
+                                  {purchased.some(
+                                    (item) => item.course_name === course.name
+                                  ) ? (
+                                    <></>
+                                  ) : (
+                                    <>
+                                      <button
+                                        style={{
+                                          width: "298.5px",
+
+                                          fontSize: "13px",
+                                        }}
+                                        onClick={() => {
+                                          handlePurchase(course);
+                                        }}
+                                      >
+                                        Purchase course
+                                      </button>
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                <></>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="row">
+                      <center>
+                        {" "}
+                        <button>Click me</button>
+                      </center>
+                    </div>
+
+                    <div>
+                      {sections.map((section) => (
+                        <div key={section.id} className="row mx-2 my-2">
+                          <div className="col">
+                            <div className="card course-card">
+                              <div className="card-body">
+                                <h5 className="card-title">
+                                  {section.section_name}
+                                </h5>
+                                <p className="card-text">
+                                  {section.section_description}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </>
             )}
           </>
         )}
-
       </div>
-  
+
       <Footer />
     </div>
   );

@@ -69,7 +69,7 @@ const Header = ({ isAuthorised, prop, student, children ,instr}) => {
                 <>
                   {!student ? (
                     <>
-                    
+                   
                       <button
                         class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
@@ -81,6 +81,7 @@ const Header = ({ isAuthorised, prop, student, children ,instr}) => {
                       <button className="btn  mx-lg-2 mx-sm-1 my-sm-0 title">
                         {`${user}`}
                       </button>
+                      
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {

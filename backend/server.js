@@ -47,6 +47,7 @@ const CourseDetails = sequelize.define("CourseDetails", {
   price: DataTypes.DECIMAL(10, 2),
   video_url: DataTypes.STRING,
   user_id: DataTypes.INTEGER,
+  category:DataTypes.TEXT
 });
 
 const Accounts = sequelize.define("Accounts", {
@@ -225,7 +226,7 @@ app.post("/api/google", async (req, res) => {
 
 app.post("/api/courses", async (req, res) => {
   try {
-    const { name, description, price, video_url, username, course_id } =
+    const { name, description, price, video_url, username, course_id,category } =
       req.body;
     console.log("Username:", username);
 
@@ -239,6 +240,7 @@ app.post("/api/courses", async (req, res) => {
         price,
         video_url,
         user_id: user.id,
+        category
       });
       // console.log(userId);
     });
@@ -548,7 +550,7 @@ app.post("/api/progress", async (req, res) => {
         });
 
         if (purchase) {
-          const prog = await Progress.findOne({ where: { student_id: purchase.student_id } });
+          const prog = await Progress.findOne({ where: { student_id: purchase.student_id,course_id:purchase.course_id } });
 
           if (prog) {
             // Get the current completed sections and update it
@@ -573,6 +575,7 @@ app.post("/api/progress", async (req, res) => {
               {
                 where: {
                   student_id: purchase.student_id,
+                  course_id:purchase.course_id
                 },
               }
             );
@@ -683,6 +686,29 @@ app.post("/api/convert",async (req,res)=>{
     }
   } catch (error) {
     console.log("Error:",error)
+  }
+})
+
+app.get("/api/filter",async(req,res)=>{
+  try {
+    const category=req.query.category;
+    console.log(category)
+    if(category === "All"){
+      const ans= await CourseDetails.findAll()
+      console.log(ans)
+      return res.json(ans);
+    }
+    else{
+      const course=await CourseDetails.findAll({where:{
+        category:category
+      }})
+      if(course){
+        res.json(course)
+      }
+    }
+    
+  } catch (error) {
+    console.log("error:",error)
   }
 })
 

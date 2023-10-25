@@ -17,12 +17,7 @@ const Course = () => {
     return storedProgress ? parseInt(storedProgress, 10) : 0;
   });
   const [courseProgressVisible, setCourseProgressVisible] = useState([]);
-  const [courseProgress, setCourseProgress] = useState(() => {
-    const storedCourseProgress = JSON.parse(
-      localStorage.getItem("courseProgress")
-    );
-    return storedCourseProgress ? storedCourseProgress : {};
-  });
+  const [courseProgress, setCourseProgress] = useState([{}]);
   const [completedCount, setCompletedCount] = useState(() => {
     const storedCompletedCount = localStorage.getItem("completedCount");
     return storedCompletedCount ? parseInt(storedCompletedCount, 10) : 0;
@@ -49,15 +44,25 @@ const Course = () => {
     username: username,
   };
   const navigate = useNavigate();
-  useEffect(() => {
-   
-  }, []);
-  
-
-
+  useEffect(() => {}, []);
 
   // Function to update the progress and completed sections
-  
+
+  useEffect(() => {
+    const lastCompletedSectionId = localStorage.getItem(
+      "lastCompletedSectionId"
+    );
+    if (lastCompletedSectionId) {
+      setCompletedCourseId(parseInt(lastCompletedSectionId));
+    } else {
+      if (courses.length > 0) {
+      }
+    }
+  }, [courses]);
+
+  useEffect(() => {}, []);
+
+  // Function to update the progress and completed sections
 
   useEffect(() => {
     const lastCompletedSectionId = localStorage.getItem(
@@ -72,46 +77,24 @@ const Course = () => {
   }, [courses]);
 
   useEffect(() => {
-    
+    fetchcourses();
   }, []);
-
-  // Function to update the progress and completed sections
-  
-
-  useEffect(() => {
-    const lastCompletedSectionId = localStorage.getItem(
-      "lastCompletedSectionId"
-    );
-    if (lastCompletedSectionId) {
-      setCompletedCourseId(parseInt(lastCompletedSectionId));
-    } else {
-      if (courses.length > 0) {
-      }
-    }
-  }, [courses]);
-
-  useEffect(() => {
-    fetchcourses()
-  },
-   []);
-  
 
   const fetchProgress = async (courseId) => {
     try {
-      
-
       const res = await axios.get(`${config.endpoint}/getProgress`, {
         params: {
           username: username,
           course_id: courseId,
         },
-        
       });
-      if(res){setCourseProgress({
-        ...courseProgress,
-        [courseId]: res.data.progress,
-      });}
-      
+      if (res) {
+        setCourseProgress((prevCourseProgress) => ({
+          ...prevCourseProgress,
+          [courseId]: res.data.progress,
+        }));
+        console.log(courseProgress);
+      }
     } catch (error) {
       console.log("Error:", error);
     }
@@ -119,9 +102,9 @@ const Course = () => {
   useEffect(() => {
     courses.forEach((course) => {
       fetchProgress(course.course_id);
+      console.log(courseProgress);
     });
   }, [courses]);
- 
 
   const markCourseAsDone = async (sectionId, courseId) => {
     setCompletedCourseId(sectionId);
@@ -129,12 +112,12 @@ const Course = () => {
       ...prevCompletedSections,
       [sectionId]: true,
     }));
-    await axios.post(`${config.endpoint}/progress`,{
-      sectionId:sectionId,
-      courseId:courseId,
-      username:username,
-      count:courses.length
-    })
+    await axios.post(`${config.endpoint}/progress`, {
+      sectionId: sectionId,
+      courseId: courseId,
+      username: username,
+      count: courses.length,
+    });
   };
 
   const fetchcourses = async () => {
@@ -162,11 +145,7 @@ const Course = () => {
     }
   };
 
-  useEffect(() => {
-   
-  }, []);
-  
- 
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -202,7 +181,6 @@ const Course = () => {
                     <button
                       onClick={() => {
                         markCourseAsDone(section.id, section.Course_id);
-                       
                       }}
                     >
                       View Section
@@ -221,39 +199,41 @@ const Course = () => {
               <div key={course.id}>
                 <div className="card mb-3 card">
                   <img className="imgBx" src={course.video_url} alt="Image" />
-                  <div style={{
-                          marginLeft:"5px"
-                        }}>
+                  <div
+                    style={{
+                      marginLeft: "5px",
+                    }}
+                  >
                     <h5 className="card-title">{course.course_name}</h5>
                     <div style={{ height: "60px" }}>
                       <p className="card-text">{course.course_description}</p>
                     </div>
-                    
-                   
-                      <>
-                        <ProgressBar
-                          now={courseProgress[course.course_id] || 0}
-                          label={`Progress:${courseProgress[course.course_id] ||0}% `}
-                          style={{
-                            // position:"absolute",
-                            margin:"0 8px 8px 0",
-                           
-                            // width: "85%",
-                            // zIndex: "1",
-                           
-                          }}
-                        />
-                        
-                        {console.log("Progress:", progress)}
-                      </>
+
+                    <>
+                      <ProgressBar
+                        now={courseProgress[course.course_id] || 0}
+                        label={`Progress:${
+                          courseProgress[course.course_id] || 0
+                        }% `}
+                        style={{
+                          // position:"absolute",
+                          margin: "0 8px 8px 0",
+
+                          // width: "85%",
+                          // zIndex: "1",
+                        }}
+                      />
+
+                      {console.log("Progress:", progress)}
+                    </>
                     {/* )} */}
                     <button
-                   style={{
-                          width:"100px",
-                          height:"30px",
-                          fontSize:"13px",
-                          margin:"0 0 8px"
-                        }}
+                      style={{
+                        width: "100px",
+                        height: "30px",
+                        fontSize: "13px",
+                        margin: "0 0 8px",
+                      }}
                       onClick={() => {
                         fetchsections(course.course_id);
                         setSection(true);
@@ -261,7 +241,6 @@ const Course = () => {
                     >
                       View Course
                     </button>
-                    
                   </div>
                 </div>
               </div>
