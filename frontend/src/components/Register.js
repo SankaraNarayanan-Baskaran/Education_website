@@ -117,7 +117,7 @@ const Register = () => {
         console.log(response);
         if (response.status === 201) {
           navigate("/login");
-          // toast("Registered Successfully");
+         
         } else if (response.status === 302) {
           console.log("User already exists");
         }

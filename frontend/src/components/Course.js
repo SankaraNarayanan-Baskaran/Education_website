@@ -8,10 +8,7 @@ import { ProgressBar } from "react-bootstrap";
 import "./Course.css";
 
 const Course = () => {
-  const isSectionCompleted = (sectionId, courseId) => {
-    const progress = courseProgress[courseId];
-    return progress > 0 && completedSections[sectionId];
-  };
+ 
   const [progress, setProgress] = useState(() => {
     const storedProgress = localStorage.getItem("courseProgress");
     return storedProgress ? parseInt(storedProgress, 10) : 0;
@@ -38,7 +35,7 @@ const Course = () => {
     );
     return storedCompletedSections ? storedCompletedSections : {};
   });
-  const [completedCourseId, setCompletedCourseId] = useState(null);
+  const [completedCourseId, setCompletedCourseId] = useState([{}]);
 
   const queryParams = {
     username: username,
@@ -93,12 +90,20 @@ const Course = () => {
           ...prevCourseProgress,
           [courseId]: res.data.progress,
         }));
-        console.log(courseProgress);
+       setCompletedCourseId((prevCompletedSections)=>({
+        ...prevCompletedSections,
+        [courseId]:res.data.completedSections
+       }))
+        console.log(res.data);
       }
     } catch (error) {
       console.log("Error:", error);
     }
   };
+  const isSectionCompleted = (sectionId) => {
+    return completedSections[sectionId];
+  };
+  
   useEffect(() => {
     courses.forEach((course) => {
       fetchProgress(course.course_id);
@@ -108,6 +113,10 @@ const Course = () => {
 
   const markCourseAsDone = async (sectionId, courseId) => {
     setCompletedCourseId(sectionId);
+  
+    console.log('completedCourseId:', completedCourseId);
+
+
     setCompletedSections((prevCompletedSections) => ({
       ...prevCompletedSections,
       [sectionId]: true,
@@ -171,6 +180,9 @@ const Course = () => {
                     height="350px"
                   />
                 )}
+               
+             
+
               </div>
               <div className="col-lg-4">
                 <div className="card course-card">
@@ -185,6 +197,7 @@ const Course = () => {
                     >
                       View Section
                     </button>
+                    {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}
                   </div>
                 </div>
               </div>

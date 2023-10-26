@@ -99,11 +99,11 @@ const [students,setStudents]=useState({});
       }
     })
     if(response){
-      setLearn({
-        ...learn,
+      setLearn((prevLearn) => ({
+        ...prevLearn,
         [courseId]: response.data.length,
-        
-    })
+      }));
+    
     setStudents({
       ...students,[courseId]:response.student_name
     })
