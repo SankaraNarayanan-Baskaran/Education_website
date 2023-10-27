@@ -9,7 +9,8 @@ import { config } from "../App";
 
 const CourseDetails = (courseid) => {
   const [courses, setCourses] = useState([]);
-  const [progress, setProgress] = useState(0);
+  const [completedSections, setCompletedSections] = useState([{}]);
+  const [completedCourseId, setCompletedCourseId] = useState([{}]);
   const username = localStorage.getItem("username");
   const queryParams = {
     course_id:courseid
@@ -17,24 +18,22 @@ const CourseDetails = (courseid) => {
   const navigate = useNavigate();
 
   
-  const [completedCourses, setCompletedCourses] = useState(() => {
-    const storedCompletedCourses = localStorage.getItem("completedCourses");
-    return storedCompletedCourses ? JSON.parse(storedCompletedCourses) : {};
-  });
+ 
+ 
+  const isSectionCompleted = (sectionId) => {
+   
+    const exists = Object.values(completedSections).some((value) => {
+      if (Array.isArray(value)) {
+        return value.includes(sectionId);
+      }
+      return false; 
+    });
+  
+    return exists; 
 
-  const fetchcourses = async (courseid) => {
-    try {
-      const response = await axios.get(`${config.endpoint}/section`, {
-        params:{course_id:courseid}
-       
-        
-      });
-      console.log("Query:",queryParams);
-      setCourses(response.data);
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-    }
-  };
+  
+  
+};
 
   const fetchsections = async (courseId) => {
     try {
@@ -51,15 +50,51 @@ const CourseDetails = (courseid) => {
   useEffect(() => {
     const courseId=localStorage.getItem("courseId")
     fetchsections(courseId)
-  }, [courses]);
+  }, []);
 
 
-  const markCourseAsDone = (courseId) => {
-    setCompletedCourses((prevCompletedCourses) => ({
-      ...prevCompletedCourses,
-      [courseId]: true,
+  const markCourseAsDone = async (sectionId, courseId) => {
+    setCompletedCourseId(sectionId);
+  
+    console.log('completedCourseId:', completedCourseId);
+    setCompletedSections((prevCompletedSections) => ({
+      ...prevCompletedSections,
+      [courseId]: [...(prevCompletedSections[courseId] || []), sectionId],
     }));
+    
+   
+    await axios.post(`${config.endpoint}/progress`, {
+      sectionId: sectionId,
+      courseId: courseId,
+      username: username,
+      count: courses.length,
+    });
   };
+  const fetchProgress = async (courseId) => {
+    try {
+      const response = await axios.get(`${config.endpoint}/getProgress`, {
+        params: {
+          username: username,
+          course_id: courseId,
+        },
+      });
+      if (response) {
+        setCompletedSections((prevCompletedSections)=>({
+          ...prevCompletedSections,
+          [courseId]:response.data.Completed_Sections
+        }))
+        console.log(completedSections)
+        
+      }
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+  useEffect(() => {
+    const courseId=localStorage.getItem("courseId")
+    fetchProgress(courseId)
+  }, []);
+
 
   return (
     <div>

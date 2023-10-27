@@ -93,20 +93,20 @@ const Course = () => {
     });
   }, [courses]);
 
-  const markCourseAsDone = async (sectionId, courseId) => {
-    setCompletedCourseId(sectionId);
+  // const markCourseAsDone = async (sectionId, courseId) => {
+  //   setCompletedCourseId(sectionId);
   
-    console.log('completedCourseId:', completedCourseId);
+  //   console.log('completedCourseId:', completedCourseId);
 
 
    
-    await axios.post(`${config.endpoint}/progress`, {
-      sectionId: sectionId,
-      courseId: courseId,
-      username: username,
-      count: courses.length,
-    });
-  };
+  //   await axios.post(`${config.endpoint}/progress`, {
+  //     sectionId: sectionId,
+  //     courseId: courseId,
+  //     username: username,
+  //     count: courses.length,
+  //   });
+  // };
 
   const fetchcourses = async () => {
     try {
@@ -175,7 +175,7 @@ const Course = () => {
 
                     <button
                       onClick={() => {
-                        markCourseAsDone(section.id, section.Course_id);
+                        // markCourseAsDone(section.id, section.Course_id);
                       }}
                     >
                       View Section
@@ -236,7 +236,7 @@ const Course = () => {
                       }}
                       onClick={() => {
                         localStorage.setItem("courseId",course.course_id)
-                        fetchsections(course.course_id);
+                        navigate("/courseDetails")
                         setSection(true);
                       }}
                     >
