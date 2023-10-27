@@ -30,6 +30,7 @@ const Home = () => {
   const username = localStorage.getItem("username");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [purchased, setPurchased] = useState([]);
+  const [instructor,setInstructor]=useState(false)
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [showFilteredCourses, setShowFilteredCourses] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -151,16 +152,47 @@ const Home = () => {
 
     setShowFilteredCourses(true);
   };
+  const addtoInstructor = async () => {
+    try {
+      const res = await axios.post(`${config.endpoint}/convertInst`, {
+        name: username,
+      });
+      console.log(res);
+      if (res.status === 201) {
+        enqueueSnackbar("You are now an Instructor", { variant: "info" });
+      } else if (res.status === 299) {
+        enqueueSnackbar("You are already an instructor", { variant: "info" });
+      
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
-  // // Filter courses based on the selected category
-  // const filteredCourses = courses.filter((course) => {
-  //   // If no category is selected, show all courses
-  //   if (selectedCategory === "") {
-  //     return true;
-  //   }
-  //   // Otherwise, only show courses that match the selected category
-  //   return course.category === selectedCategory;
-  // });
+   const checkInstructor=async(username)=>{
+    try {
+      console.log(username);
+     const resp= await axios.get(`${config.endpoint}/instructor`,{
+        params:{
+         name:username
+        }
+      })
+      console.log(resp)
+      if(resp.status === 201){
+        setInstructor(true)
+        
+      }
+      else if(resp.status === 202){
+        setInstructor(false)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+ useEffect(()=>{
+  const username=localStorage.getItem("username");
+  checkInstructor(username)
+ },[])
 
   const handleSearch = async () => {
     if (searchQuery.trim() !== "") {
@@ -358,6 +390,32 @@ const Home = () => {
                               >
                                 ${course.price}
                               </p>
+                              {username ? (
+                                <>
+                                  {purchased.some(
+                                    (item) => item.course_name === course.name
+                                  ) ? (
+                                    <></>
+                                  ) : (
+                                    <>
+                                      <button
+                                        style={{
+                                          width: "298.5px",
+
+                                          fontSize: "13px",
+                                        }}
+                                        onClick={() => {
+                                          handlePurchase(course);
+                                        }}
+                                      >
+                                        Purchase course
+                                      </button>
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                <></>
+                              )}
                               </div>
                     </div>
                   </div>
@@ -487,42 +545,39 @@ const Home = () => {
                     </div>
                   </>
                 ) : (
-                  <>
-                    <div className="row">
-                      <center>
-                        {" "}
-                        <button>Click me</button>
-                      </center>
-                    </div>
-
-                    <div>
-                      {sections.map((section) => (
-                        <div key={section.id} className="row mx-2 my-2">
-                          <div className="col">
-                            <div className="card course-card">
-                              <div className="card-body">
-                                <h5 className="card-title">
-                                  {section.section_name}
-                                </h5>
-                                <p className="card-text">
-                                  {section.section_description}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
+                  <></>
                 )}
               </>
             )}
           </>
         )}
+        
       </div>
+      <center>
+      
+      {
+        username?(<>
+          <div style={{
+        marginBottom:"3%"
+      }}>  
+      {instructor ?(<>
+                  <button class="btn mx-2 my-sm-0 title" onClick={()=>{
+                    
+                    navigate("/instructor")
+                  }}>Switch to Instructor view</button>
+                 </>):(<><button className="btn mx-2 my-sm-0 title" onClick={()=>{
+                 addtoInstructor()
+                 navigate("/instructor")
+                 }}>Want to be an Instructor?</button></>)}  
+                 </div> 
+        </>):(<></>)
+      }
+        
+                 </center>
 
-      <Footer />
+                 <Footer/>
     </div>
+    
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { config } from "../App";
 import axios from "axios";
 import Header from "./Header";
+import { useNavigate } from "react-router-dom";
 import "./Section.css";
 import Instructor from "./Instructor";
 import { enqueueSnackbar } from "notistack";
@@ -22,6 +23,7 @@ const Section = ({ courseName }) => {
   const [learn,setLearn]=useState({});
   const [edit,setEdit]=useState(false);
   const[update,setUpdate]=useState(false);
+  const navigate = useNavigate();
   const [editSection, setEditSection] = useState({
     section_name: "",
     
@@ -104,14 +106,29 @@ const [students,setStudents]=useState({});
         [courseId]: response.data.length,
       }));
     
-    setStudents({
-      ...students,[courseId]:response.student_name
-    })
-    console.log("Response:",response[0])
-    console.log("Learn:",learn[courseId]);
-    console.log("Students:",students[courseId]);
+    
+    response.data.forEach((course) => {
+      setStudents((prevStudents) => ({
+        ...prevStudents,
+        [course.course_id]: course.student_name,
+      }));
+      console.log(students)
+      const studentName = course.student_name;
+      console.log(`Student Name for Course ${course.course_name}: ${studentName}`);
+    });
+    
    
   }}
+
+  const handleStudents=async (courseName)=>{
+    try {
+      
+      localStorage.setItem("courseName",courseName)
+      navigate(`${courseName}/students`)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 useEffect(()=>{
   courses.forEach((course) => {
       learners(course.id)
@@ -287,7 +304,7 @@ useEffect(()=>{
                         }}>Edit Section</button>
                       </div>
                       <h6 onMouseOver={()=>{
-                        console.log(students.student_name);
+                        
                       }}>Students Enrolled:{learn[course.id]}</h6>
                       <button
                         onClick={() => {
@@ -296,6 +313,16 @@ useEffect(()=>{
                         }}
                       >
                         +Section
+                      </button>
+                      <button
+                        style={{
+                          padding:"0.5px"
+                        }}
+                        onClick={()=>{
+                          handleStudents(course.name)
+                        }}
+                      >
+                        View Students
                       </button>
                    
                     </div>

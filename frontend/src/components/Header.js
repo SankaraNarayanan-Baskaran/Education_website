@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import toast, { Toaster } from "react-hot-toast";
@@ -12,7 +12,30 @@ import "./Home.css";
 const Header = ({ isAuthorised, prop, student, children ,instr}) => {
   const navigate = useNavigate();
   const user = localStorage.getItem("username");
-
+//   const [instructor,setInstructor]=useState(false);
+//   const checkInstructor=async(username)=>{
+//     try {
+//       console.log(username);
+//      const resp= await axios.get(`${config.endpoint}/instructor`,{
+//         params:{
+//          name:username
+//         }
+//       })
+//       if(resp.status === 201){
+//         setInstructor(true)
+//         console.log("Hi")
+//       }
+//       else if(resp.status === 202){
+//         setInstructor(false)
+//       }
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
+//  useEffect(()=>{
+//   const username=localStorage.getItem("username");
+//   checkInstructor(username)
+//  },[])
   return (
     <div className="header">
       <nav
@@ -69,7 +92,7 @@ const Header = ({ isAuthorised, prop, student, children ,instr}) => {
                 <>
                   {!student ? (
                     <>
-                   
+                
                       <button
                         class="btn  mx-2 my-sm-0 title"
                         onClick={() => {

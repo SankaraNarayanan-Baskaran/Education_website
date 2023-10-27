@@ -36,18 +36,22 @@ const CourseDetails = (courseid) => {
     }
   };
 
+  const fetchsections = async (courseId) => {
+    try {
+      const response = await axios.get(`${config.endpoint}/section`, {
+        params: {
+          course_id: courseId,
+        },
+      });
+      setCourses(response.data);
+    } catch (error) {
+      console.error("Error fetching sections:", error);
+    }
+  };
   useEffect(() => {
-    fetchcourses();
-  }, []);
-
-  useEffect(() => {
-    const completedCount =
-      Object.values(completedCourses).filter(Boolean).length;
-    const totalCourses = courses.length;
-    const newProgress = Math.trunc((completedCount * 100) / totalCourses);
-    setProgress(newProgress);
-     localStorage.setItem("completedCourses", JSON.stringify(completedCourses));
-  }, [completedCourses, courses]);
+    const courseId=localStorage.getItem("courseId")
+    fetchsections(courseId)
+  }, [courses]);
 
 
   const markCourseAsDone = (courseId) => {
@@ -60,6 +64,54 @@ const CourseDetails = (courseid) => {
   return (
     <div>
       <Header isAuthorised={false} prop inst />
+      <>
+      <h4>Course Sections:</h4>
+          {courses.map((section) => (
+            <div key={section.id} className="row mx-2 my-2">
+              <div className="col-lg-8 my-2">
+                {completedCourseId === section.id && (
+                  <img
+                    className="img-Bx"
+                    style={{
+                      position: "fixed",
+                      left: "10px",
+                      top: "100px",
+                    }}
+                    src={section.img_url}
+                    alt="Image"
+                    width="50%px"
+                    height="350px"
+                  />
+                )}
+               
+             
+
+              </div>
+              <div className="col-lg-4">
+                <div className="card course-card">
+                  <div className="card-body">
+                    <h5 className="card-title">{section.section_name}</h5>
+                    <p className="card-text">{section.section_description}</p>
+
+                    <button
+                      onClick={() => {
+                        markCourseAsDone(section.id, section.Course_id);
+                      }}
+                    >
+                      View Section
+                    </button>
+                  
+                  {/* {  {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}} */}
+                 
+                  {isSectionCompleted(section.id)?(<><p>✓ Section Completed</p></>):(<>{console.log("false")}</>)}
+                   
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
+      
       </div>
   );
 };

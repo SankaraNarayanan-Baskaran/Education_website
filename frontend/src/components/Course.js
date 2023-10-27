@@ -15,6 +15,7 @@ const Course = () => {
   });
   const [courseProgressVisible, setCourseProgressVisible] = useState([]);
   const [courseProgress, setCourseProgress] = useState([{}]);
+  
   const [completedCount, setCompletedCount] = useState(() => {
     const storedCompletedCount = localStorage.getItem("completedCount");
     return storedCompletedCount ? parseInt(storedCompletedCount, 10) : 0;
@@ -29,12 +30,7 @@ const Course = () => {
   const [courses, setCourses] = useState([]);
   const username = localStorage.getItem("username");
   const [section, setSection] = useState(false);
-  const [completedSections, setCompletedSections] = useState(() => {
-    const storedCompletedSections = JSON.parse(
-      localStorage.getItem("completedSections")
-    );
-    return storedCompletedSections ? storedCompletedSections : {};
-  });
+  const [completedSections, setCompletedSections] = useState([{}]);
   const [completedCourseId, setCompletedCourseId] = useState([{}]);
 
   const queryParams = {
@@ -43,35 +39,9 @@ const Course = () => {
   const navigate = useNavigate();
   useEffect(() => {}, []);
 
-  // Function to update the progress and completed sections
-
-  useEffect(() => {
-    const lastCompletedSectionId = localStorage.getItem(
-      "lastCompletedSectionId"
-    );
-    if (lastCompletedSectionId) {
-      setCompletedCourseId(parseInt(lastCompletedSectionId));
-    } else {
-      if (courses.length > 0) {
-      }
-    }
-  }, [courses]);
+  
 
   useEffect(() => {}, []);
-
-  // Function to update the progress and completed sections
-
-  useEffect(() => {
-    const lastCompletedSectionId = localStorage.getItem(
-      "lastCompletedSectionId"
-    );
-    if (lastCompletedSectionId) {
-      setCompletedCourseId(parseInt(lastCompletedSectionId));
-    } else {
-      if (courses.length > 0) {
-      }
-    }
-  }, [courses]);
 
   useEffect(() => {
     fetchcourses();
@@ -79,35 +49,47 @@ const Course = () => {
 
   const fetchProgress = async (courseId) => {
     try {
-      const res = await axios.get(`${config.endpoint}/getProgress`, {
+      const response = await axios.get(`${config.endpoint}/getProgress`, {
         params: {
           username: username,
           course_id: courseId,
         },
       });
-      if (res) {
+      if (response) {
         setCourseProgress((prevCourseProgress) => ({
           ...prevCourseProgress,
-          [courseId]: res.data.progress,
+          [courseId]: response.data.progress,
         }));
-       setCompletedCourseId((prevCompletedSections)=>({
-        ...prevCompletedSections,
-        [courseId]:res.data.completedSections
-       }))
-        console.log(res.data);
+        setCompletedSections((prevCompletedSections)=>({
+          ...prevCompletedSections,
+          [courseId]:response.data.Completed_Sections
+        }))
+        console.log(completedSections)
+        
       }
     } catch (error) {
       console.log("Error:", error);
     }
   };
   const isSectionCompleted = (sectionId) => {
-    return completedSections[sectionId];
+   
+      const exists = Object.values(completedSections).some((value) => {
+        if (Array.isArray(value)) {
+          return value.includes(sectionId);
+        }
+        return false; // Or handle non-array values as needed
+      });
+    
+      return exists; // Add this return statement
+  
+    
+    
   };
   
   useEffect(() => {
     courses.forEach((course) => {
       fetchProgress(course.course_id);
-      console.log(courseProgress);
+      
     });
   }, [courses]);
 
@@ -117,10 +99,7 @@ const Course = () => {
     console.log('completedCourseId:', completedCourseId);
 
 
-    setCompletedSections((prevCompletedSections) => ({
-      ...prevCompletedSections,
-      [sectionId]: true,
-    }));
+   
     await axios.post(`${config.endpoint}/progress`, {
       sectionId: sectionId,
       courseId: courseId,
@@ -158,7 +137,11 @@ const Course = () => {
 
   return (
     <>
-      <Header isAuthorised={false} prop student />
+      <Header isAuthorised={false} prop student>
+      <button onClick={()=>{
+        navigate("/")
+      }}>Back to Home</button>
+      </Header>
 
       {section ? (
         <>
@@ -197,7 +180,11 @@ const Course = () => {
                     >
                       View Section
                     </button>
-                    {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}
+                  
+                  {/* {  {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}} */}
+                 
+                  {isSectionCompleted(section.id)?(<><p>✓ Section Completed</p></>):(<>{console.log("false")}</>)}
+                   
                   </div>
                 </div>
               </div>
@@ -248,6 +235,7 @@ const Course = () => {
                         margin: "0 0 8px",
                       }}
                       onClick={() => {
+                        localStorage.setItem("courseId",course.course_id)
                         fetchsections(course.course_id);
                         setSection(true);
                       }}

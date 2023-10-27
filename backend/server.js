@@ -378,21 +378,9 @@ app.get("/api/learners", async (req, res) => {
       return res.json(0);
     }
 
-   
-
-    // Find all student purchases for the user
-    // const userPurchases = await Student_Purchases.findAndCountAll({
-    //   where: { student_id: user.id },
-    // });
-
-    // Find student purchases for the specific course_id
-    // const specificCoursePurchases = await Student_Purchases.findAll({
-    //   where: { course_id },
-    // });
-
-    // console.log("Purchase:", specificCoursePurchases);
-
-    // Send the specific course purchases as a JSON response
+   enrolled.map((enrollment)=>{
+    console.log(enrollment.student_name)
+   })
     return res.json(enrolled);
   
 }
@@ -709,6 +697,85 @@ app.get("/api/filter",async(req,res)=>{
     
   } catch (error) {
     console.log("error:",error)
+  }
+})
+
+app.get("/api/:courseName/students",async(req,res)=>{
+  try {
+    const {courseName}=req.params;
+    const course=await Student_Purchases.findAll({where:{
+      course_name:courseName
+    }})
+    if(course){
+    
+      return res.json(course)
+    }
+  } catch (error) {
+    console.log("error",error)
+  }
+})
+
+app.get("/api/instructor",async(req,res)=>{
+ const name=req.query.name;
+  try {
+   const user= await Instructor.findOne({where:{
+      name:name
+    }})
+    if(user){
+     console.log(user)
+    return res.status(201).json({message:"Success"})
+    }
+    else{
+      
+      return res.status(202).json({message:"success"})
+    }
+  } catch (error) {
+    console.log("ERRORRR:",error)
+  }
+})
+
+app.get("/api/isStudent",async(req,res)=>{
+  const name=req.query.name;
+   try {
+    const user= await Accounts.findOne({where:{
+       username:name
+     }})
+     if(user){
+      console.log(user)
+     return res.status(201).json({message:"Success"})
+     }
+     else{
+       
+       return res.status(202).json({message:"success"})
+     }
+   } catch (error) {
+     console.log("ERRORRR:",error)
+   }
+ })
+
+ app.post("/api/convertInst",async (req,res)=>{
+  try {
+    const {name}=req.body;
+    console.log(name);
+   const user= await Instructor.findOne({where:{name:name}});
+    if(user){
+      return res.status(299).json("Already an Instructor")
+    }
+    const inst=await Accounts.findOne({where:{username:name}});
+    if(inst){
+      const student=await Instructor.create({
+        name:name,
+        password:inst.password,
+        mail:inst.email
+      }
+       
+
+      )
+      return res.status(201).json("Instructor")
+
+    }
+  } catch (error) {
+    console.log("Error:",error)
   }
 })
 

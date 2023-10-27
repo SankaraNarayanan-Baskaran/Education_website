@@ -12,6 +12,7 @@ import { enqueueSnackbar } from "notistack";
 import Section from "./Section";
 const Instructor = () => {
   const username = localStorage.getItem("username");
+  const[student,setStudent]=useState(false)
   const [newCourse, setNewCourse] = useState({
     name: "",
     description: "",
@@ -40,12 +41,37 @@ const Instructor = () => {
         enqueueSnackbar("You are now a Student", { variant: "info" });
       } else if (res.status === 299) {
         enqueueSnackbar("You are already a student", { variant: "info" });
-        navigate("/");
+        
       }
     } catch (error) {
       console.log("error", error);
     }
   };
+  const checkStudent=async(username)=>{
+    try {
+      console.log(username);
+     const resp= await axios.get(`${config.endpoint}/isStudent`,{
+        params:{
+         name:username
+        }
+      })
+      console.log(resp)
+      if(resp.status === 201){
+        setStudent(true)
+        
+      }
+      else if(resp.status === 202){
+        setStudent(false)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+ useEffect(()=>{
+  const username=localStorage.getItem("username");
+  checkStudent(username)
+ },[])
+
 
   const handleDeleteCourse = async (id) => {
     try {
@@ -197,7 +223,21 @@ const Instructor = () => {
         )}
       </center>
       <center>
-        <button
+      <div style={{
+        marginBottom:"3%"
+      }}>   
+        {student?(<>
+                  <button class="btn mx-2 my-sm-0 title" onClick={()=>{
+                    navigate("/",{state:{isLogged:"true"}})
+                  }}>Switch to Student view</button>
+                 </>):(<><button className="btn mx-2 my-sm-0 title" onClick={()=>{
+                  addToStudent();
+                  navigate("/",{state:{isLogged:"true"}})
+                 }}>Want to be a Student?</button></>)}  
+                 </div>
+                 </center>
+      
+        {/* <button
           style={{
             marginBottom: "12px",
           }}
@@ -207,8 +247,8 @@ const Instructor = () => {
           }}
         >
           Want to be a Student?
-        </button>
-      </center>
+        </button> */}
+     
 
       <Footer />
     </div>
