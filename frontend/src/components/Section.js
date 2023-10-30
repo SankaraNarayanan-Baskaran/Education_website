@@ -19,6 +19,7 @@ const Section = ({ courseName }) => {
     img_url: "",
     course_name:"",
     username: username,
+    transcript:""
   });
   const [learn,setLearn]=useState({});
   const [edit,setEdit]=useState(false);
@@ -47,6 +48,7 @@ const [students,setStudents]=useState({});
         section_description: "",
         img_url: "",
         course_name: "",
+        transcript:""
       });
     } catch (error) {
       console.log("Error:", error);
@@ -254,6 +256,17 @@ useEffect(()=>{
                         setnewSection({
                           ...newSection,
                           img_url: e.target.value,
+                        })
+                      }
+                    />
+                    <input
+                      type="text"
+                      placeholder="Transcript"
+                      value={newSection.transcript}
+                      onChange={(e) =>
+                        setnewSection({
+                          ...newSection,
+                          transcript: e.target.value,
                         })
                       }
                     />

@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+  .quiz-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .question {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+  }
+  .option {
+    margin: 5px 0;
+  }

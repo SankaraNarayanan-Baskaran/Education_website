@@ -217,6 +217,7 @@ const Home = () => {
           <option value="All">All</option>
           <option value="sports">Sports</option>
           <option value="social">Social</option>
+          <option value="technology">Technology</option>
         </select>
         <Box width={300}>
           <TextField

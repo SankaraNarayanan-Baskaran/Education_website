@@ -72,7 +72,8 @@ const Course_Section=sequelize.define("Course_Section",{
   section_description:DataTypes.TEXT,
   img_url:DataTypes.STRING,
   Course_id:DataTypes.INTEGER,
-  Course_name:DataTypes.STRING
+  Course_name:DataTypes.STRING,
+  transcript:DataTypes.TEXT
 })
 
 const Progress=sequelize.define("Progress",{
@@ -87,6 +88,13 @@ const Instructor=sequelize.define("Instructor",{
   name:DataTypes.STRING,
   password:DataTypes.STRING,
   mail:DataTypes.STRING
+})
+
+const Quiz=sequelize.define("Quiz",{
+  question:DataTypes.ARRAY(DataTypes.TEXT),
+  options:DataTypes.ARRAY(DataTypes.STRING),
+  correct_answer:DataTypes.STRING,
+  title:DataTypes.STRING
 })
 sequelize.sync();
 app.post("/api/adduser", async (req, res) => {
@@ -392,7 +400,7 @@ app.get("/api/learners", async (req, res) => {
 
 app.post("/api/section", async (req, res) => {
   try {
-    const { section_name, section_description, img_url,course_name,username} =
+    const { section_name, section_description, img_url,course_name,username,transcript} =
       req.body;
       console.log(course_name)
     Instructor.findOne({ where: { name: username } }).then(async (user) => {
@@ -402,7 +410,8 @@ app.post("/api/section", async (req, res) => {
           section_description,
           img_url,
           Course_id:course.id,
-          Course_name:course_name
+          Course_name:course_name,
+          transcript
         });
       });
 
@@ -778,7 +787,19 @@ app.get("/api/isStudent",async(req,res)=>{
     console.log("Error:",error)
   }
 })
-
+app.post("/api/quiz",async (req,res)=>{
+  try {
+    const {title,questions,options,correctAnswer}=req.body;
+    await Quiz.create({
+      title:title,
+      question:questions,
+      options:options,
+      correct_nswer:correctAnswer
+    })
+  } catch (error) {
+    console.log("Error",error)
+  }
+})
 app.delete("/api/courses/:id", async (req, res) => {
   try {
     const { id } = req.params;

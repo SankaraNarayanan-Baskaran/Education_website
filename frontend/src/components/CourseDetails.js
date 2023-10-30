@@ -13,27 +13,20 @@ const CourseDetails = (courseid) => {
   const [completedCourseId, setCompletedCourseId] = useState([{}]);
   const username = localStorage.getItem("username");
   const queryParams = {
-    course_id:courseid
+    course_id: courseid,
   };
   const navigate = useNavigate();
 
-  
- 
- 
   const isSectionCompleted = (sectionId) => {
-   
     const exists = Object.values(completedSections).some((value) => {
       if (Array.isArray(value)) {
         return value.includes(sectionId);
       }
-      return false; 
+      return false;
     });
-  
-    return exists; 
 
-  
-  
-};
+    return exists;
+  };
 
   const fetchsections = async (courseId) => {
     try {
@@ -48,21 +41,19 @@ const CourseDetails = (courseid) => {
     }
   };
   useEffect(() => {
-    const courseId=localStorage.getItem("courseId")
-    fetchsections(courseId)
+    const courseId = localStorage.getItem("courseId");
+    fetchsections(courseId);
   }, []);
-
 
   const markCourseAsDone = async (sectionId, courseId) => {
     setCompletedCourseId(sectionId);
-  
-    console.log('completedCourseId:', completedCourseId);
+
+    console.log("completedCourseId:", completedCourseId);
     setCompletedSections((prevCompletedSections) => ({
       ...prevCompletedSections,
       [courseId]: [...(prevCompletedSections[courseId] || []), sectionId],
     }));
-    
-   
+
     await axios.post(`${config.endpoint}/progress`, {
       sectionId: sectionId,
       courseId: courseId,
@@ -79,32 +70,31 @@ const CourseDetails = (courseid) => {
         },
       });
       if (response) {
-        setCompletedSections((prevCompletedSections)=>({
+        setCompletedSections((prevCompletedSections) => ({
           ...prevCompletedSections,
-          [courseId]:response.data.Completed_Sections
-        }))
-        console.log(completedSections)
-        
+          [courseId]: response.data.Completed_Sections,
+        }));
+        console.log(completedSections);
       }
     } catch (error) {
       console.log("Error:", error);
     }
   };
   useEffect(() => {
-    const courseId=localStorage.getItem("courseId")
-    fetchProgress(courseId)
+    const courseId = localStorage.getItem("courseId");
+    fetchProgress(courseId);
   }, []);
-
 
   return (
     <div>
       <Header isAuthorised={false} prop inst />
       <>
-      <h4>Course Sections:</h4>
-          {courses.map((section) => (
-            <div key={section.id} className="row mx-2 my-2">
-              <div className="col-lg-8 my-2">
-                {completedCourseId === section.id && (
+        <h4>Course Sections:</h4>
+        {courses.map((section) => (
+          <div key={section.id} className="row mx-2 my-2">
+            <div className="col-lg-8 my-2">
+              {completedCourseId === section.id && (
+                <>
                   <img
                     className="img-Bx"
                     style={{
@@ -117,37 +107,55 @@ const CourseDetails = (courseid) => {
                     width="50%px"
                     height="350px"
                   />
-                )}
-               
-             
-
-              </div>
-              <div className="col-lg-4">
+                  <div
+                    style={{
+                      position: "fixed",
+                      left: "10px",
+                      bottom: "10px",
+                    }}
+                  >
+                    {" "}
+                    <textarea rows={5} cols={80} readOnly>
+                      {section.transcript}
+                    </textarea>{" "}
+                  </div>
+                </>
+              )}
+            </div>
+           
+            <div className="col-lg-4">
+           
                 <div className="card course-card">
                   <div className="card-body">
                     <h5 className="card-title">{section.section_name}</h5>
                     <p className="card-text">{section.section_description}</p>
+                    <div>
+                      <button
+                        onClick={() => {
+                          markCourseAsDone(section.id, section.Course_id);
+                        }}
+                      >
+                        View Section
+                      </button>
 
-                    <button
-                      onClick={() => {
-                        markCourseAsDone(section.id, section.Course_id);
-                      }}
-                    >
-                      View Section
-                    </button>
-                  
-                  {/* {  {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}} */}
-                 
-                  {isSectionCompleted(section.id)?(<><p>✓ Section Completed</p></>):(<>{console.log("false")}</>)}
-                   
+                      {/* {  {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}} */}
+
+                      {isSectionCompleted(section.id) ? (
+                        <>
+                          <p>✓ Section Completed</p>
+                        </>
+                      ) : (
+                        <>{console.log("false")}</>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              
             </div>
-          ))}
-        </>
-      
-      </div>
+          </div>
+        ))}
+      </>
+    </div>
   );
 };
 

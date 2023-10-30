@@ -139,60 +139,11 @@ const Course = () => {
     <>
       <Header isAuthorised={false} prop student>
       <button onClick={()=>{
-        navigate("/")
+        navigate("/",{state:{isLogged:"true"}})
       }}>Back to Home</button>
       </Header>
 
-      {section ? (
-        <>
-          <h4>Course Sections:</h4>
-          {courses.map((section) => (
-            <div key={section.id} className="row mx-2 my-2">
-              <div className="col-lg-8 my-2">
-                {completedCourseId === section.id && (
-                  <img
-                    className="img-Bx"
-                    style={{
-                      position: "fixed",
-                      left: "10px",
-                      top: "100px",
-                    }}
-                    src={section.img_url}
-                    alt="Image"
-                    width="50%px"
-                    height="350px"
-                  />
-                )}
-               
-             
-
-              </div>
-              <div className="col-lg-4">
-                <div className="card course-card">
-                  <div className="card-body">
-                    <h5 className="card-title">{section.section_name}</h5>
-                    <p className="card-text">{section.section_description}</p>
-
-                    <button
-                      onClick={() => {
-                        // markCourseAsDone(section.id, section.Course_id);
-                      }}
-                    >
-                      View Section
-                    </button>
-                  
-                  {/* {  {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}} */}
-                 
-                  {isSectionCompleted(section.id)?(<><p>✓ Section Completed</p></>):(<>{console.log("false")}</>)}
-                   
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </>
-      ) : (
-        <>
+      
           <h4>Purchased Courses</h4>
           <div className="product-card">
             {courses.map((course, index) => (
@@ -248,8 +199,8 @@ const Course = () => {
             ))}
           </div>
         </>
-      )}
-    </>
+      
+    
   );
 };
 
