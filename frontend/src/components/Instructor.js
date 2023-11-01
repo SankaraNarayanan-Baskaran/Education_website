@@ -12,14 +12,14 @@ import { enqueueSnackbar } from "notistack";
 import Section from "./Section";
 const Instructor = () => {
   const username = localStorage.getItem("username");
-  const[student,setStudent]=useState(false)
+  const [student, setStudent] = useState(false);
   const [newCourse, setNewCourse] = useState({
     name: "",
     description: "",
     price: "",
     video_url: "",
     username: username,
-    category:""
+    category: "",
   });
   const handleAddCourse = async () => {
     try {
@@ -41,37 +41,33 @@ const Instructor = () => {
         enqueueSnackbar("You are now a Student", { variant: "info" });
       } else if (res.status === 299) {
         enqueueSnackbar("You are already a student", { variant: "info" });
-        
       }
     } catch (error) {
       console.log("error", error);
     }
   };
-  const checkStudent=async(username)=>{
+  const checkStudent = async (username) => {
     try {
       console.log(username);
-     const resp= await axios.get(`${config.endpoint}/isStudent`,{
-        params:{
-         name:username
-        }
-      })
-      console.log(resp)
-      if(resp.status === 201){
-        setStudent(true)
-        
-      }
-      else if(resp.status === 202){
-        setStudent(false)
+      const resp = await axios.get(`${config.endpoint}/isStudent`, {
+        params: {
+          name: username,
+        },
+      });
+      console.log(resp);
+      if (resp.status === 201) {
+        setStudent(true);
+      } else if (resp.status === 202) {
+        setStudent(false);
       }
     } catch (error) {
       console.log(error);
     }
-  }
- useEffect(()=>{
-  const username=localStorage.getItem("username");
-  checkStudent(username)
- },[])
-
+  };
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    checkStudent(username);
+  }, []);
 
   const handleDeleteCourse = async (id) => {
     try {
@@ -117,7 +113,7 @@ const Instructor = () => {
       console.error("Error fetching courses:", error);
     }
   };
-  
+
   useEffect(() => {
     // Fetch all courses when the component mounts
     fetchcourses();
@@ -128,7 +124,7 @@ const Instructor = () => {
 
   return (
     <div>
-      <Header isAuthorised={false} prop student instr/>
+      <Header isAuthorised={false} prop student instr />
       <center>
         <div className="mx-2 my-2 container">
           <h3>Jump into Course creation</h3>
@@ -223,21 +219,39 @@ const Instructor = () => {
         )}
       </center>
       <center>
-      <div style={{
-        marginBottom:"3%"
-      }}>   
-        {student?(<>
-                  <button class="btn mx-2 my-sm-0 title" onClick={()=>{
-                    navigate("/",{state:{isLogged:"true"}})
-                  }}>Switch to Student view</button>
-                 </>):(<><button className="btn mx-2 my-sm-0 title" onClick={()=>{
+        <div
+          style={{
+            marginBottom: "3%",
+          }}
+        >
+          {student ? (
+            <>
+              <button
+                class="btn mx-2 my-sm-0 title"
+                onClick={() => {
+                  navigate("/", { state: { isLogged: "true" } });
+                }}
+              >
+                Switch to Student view
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="btn mx-2 my-sm-0 title"
+                onClick={() => {
                   addToStudent();
-                  navigate("/",{state:{isLogged:"true"}})
-                 }}>Want to be a Student?</button></>)}  
-                 </div>
-                 </center>
-      
-        {/* <button
+                  navigate("/", { state: { isLogged: "true" } });
+                }}
+              >
+                Want to be a Student?
+              </button>
+            </>
+          )}
+        </div>
+      </center>
+
+      {/* <button
           style={{
             marginBottom: "12px",
           }}
@@ -248,7 +262,6 @@ const Instructor = () => {
         >
           Want to be a Student?
         </button> */}
-     
 
       <Footer />
     </div>

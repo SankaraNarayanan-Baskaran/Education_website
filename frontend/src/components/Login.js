@@ -28,7 +28,8 @@ const Login = () => {
     confirmPassword: "",
   });
   const [changePass, setChangePass] = useState(false);
-  const [instructor,setInstructor]=useState(false);
+  const [instructor, setInstructor] = useState(false);
+  const [institution, setInstitution] = useState(false);
 
   const validateInput = (data) => {
     if (data.username === "") {
@@ -89,6 +90,25 @@ const Login = () => {
       console.log(error);
     }
   };
+
+  const loggedInstitution = async (formData) => {
+    try {
+      const res = await axios.post(config.endpoint + "/logininst", {
+        institution_name: formData.username,
+        password: formData.password,
+      });
+      if (res.status === 201) {
+        localStorage.setItem("username", formData.username);
+        enqueueSnackbar("Logged in Successfully", { variant: "success" });
+        navigate("/instructor");
+      }
+    } catch (error) {
+      enqueueSnackbar("Invalid Credentials", { variant: "error" });
+
+      console.log(error);
+    }
+  };
+
   const handleChangePassword = async (changePassword) => {
     try {
       const res = await axios.put(config.endpoint + "/updatePass", {
@@ -254,16 +274,34 @@ const Login = () => {
         ) : (
           <>
             <div className="login-container">
-              <h2>Login</h2>
+             {institution?(<></>):(<>
+              {}
+             </>)}
               <div className="input-container">
-                <input
-                  type="text"
-                  placeholder="Username"
-                  value={formData.username}
-                  onChange={(e) => {
-                    setFormData({ ...formData, username: e.target.value });
-                  }}
-                />
+                {institution ? (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Name of the Institution"
+                      value={formData.username}
+                      onChange={(e) => {
+                        setFormData({ ...formData, username: e.target.value });
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Username"
+                      value={formData.username}
+                      onChange={(e) => {
+                        setFormData({ ...formData, username: e.target.value });
+                      }}
+                    />
+                  </>
+                )}
+
                 <input
                   type="password"
                   placeholder="Password"
@@ -289,39 +327,82 @@ const Login = () => {
               >
                 Forgot Password
               </button>
-              {
-                instructor?(<><button
-                className="login-button mx-3 mb-3"
-                onClick={() => {
-                  if (validateInput(formData)) {
-                    loggedInst(formData);
-                  }
-                }}
-              >
-                Login
-              </button></>):(<>
+              {institution ? <></> : <></>}
+              {instructor ? (
+                <>
                   <button
-                className="login-button mx-3 mb-3"
-                onClick={() => {
-                  if (validateInput(formData)) {
-                    logged(formData);
-                  }
-                }}
-              >
-                Login
-              </button>
-                </>)
-              }
-              
-              {
-                instructor?(<></>):(<>
-                  <button className="login-button" onClick={()=>{
-                    localStorage.setItem("user","inst")
-                setInstructor(true);
-              }}>Login as Instructor?</button>
-                </>)
-              }
-              
+                    className="login-button mx-3 mb-3"
+                    onClick={() => {
+                      if (validateInput(formData)) {
+                        loggedInst(formData);
+                      }
+                    }}
+                  >
+                    Login
+                  </button>
+                </>
+              ) : (
+                <>
+                  {institution ? (
+                    <>
+                      <button
+                        className="login-button mx-3 mb-3"
+                        onClick={() => {
+                          if (validateInput(formData)) {
+                            loggedInstitution(formData);
+                          }
+                        }}
+                      >
+                        Login
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      <button
+                        className="login-button mx-3 mb-3"
+                        onClick={() => {
+                          if (validateInput(formData)) {
+                            logged(formData);
+                          }
+                        }}
+                      >
+                        Login
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
+
+              {instructor ? (
+                <></>
+              ) : (
+                <>
+                  {institution ? (
+                    <></>
+                  ) : (
+                    <>
+                      <button
+                        className="login-button"
+                        onClick={() => {
+                          localStorage.setItem("user", "inst");
+                          setInstructor(true);
+                        }}
+                      >
+                        Login as Instructor?
+                      </button>
+                      <button
+                        className="login-button"
+                        onClick={() => {
+                          setInstitution(true);
+                        }}
+                      >
+                        Institution Login?
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </>
         )}

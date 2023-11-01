@@ -187,12 +187,25 @@ const Course = () => {
                       }}
                       onClick={() => {
                         localStorage.setItem("courseId",course.course_id)
+                      
                         navigate("/courseDetails")
                         setSection(true);
                       }}
                     >
                       View Course
                     </button>
+                    {
+                      courseProgress[course.course_id] === 100 ?(<> <div><button style={{
+                        width: "100px",
+                        height: "30px",
+                        fontSize: "13px",
+                        margin: "0 0 8px",
+                      }}
+                      onClick={()=>{localStorage.setItem("COURSE",course.course_name)
+                      navigate(`/course/${course.course_name}/quiz`)}}>
+                        Take Quiz
+                      </button></div></>):(<></>)
+                    }
                   </div>
                 </div>
               </div>

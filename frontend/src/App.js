@@ -12,11 +12,13 @@ import Course from "./components/Course";
 import Section from "./components/Section";
 import { SnackbarProvider } from "notistack";
 import StudentsList from "./components/StudentsList";
+import Quiz from "./components/Quiz";
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };
 function App() {
   const courseName=localStorage.getItem("courseName");
+  const course=localStorage.getItem("COURSE")
   return (
     <div className="font-color font" >
     <SnackbarProvider>
@@ -31,6 +33,7 @@ function App() {
         <Route path="/course" element={<Course/>}/>
         <Route path="/section" element={<Section/>}/>
         <Route path="/instructor/:courseName/students" element={<StudentsList/>}/>
+        <Route path="/course/:course/quiz" element={<Quiz/>}/>
       </Routes>
       </SnackbarProvider>
     </div>

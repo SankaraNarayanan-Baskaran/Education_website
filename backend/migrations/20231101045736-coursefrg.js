@@ -9,8 +9,11 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.addColumn('Quizzes','title',{
-      type:Sequelize.ARRAY,
+    await queryInterface.addColumn('Quizzes','course_name',{
+      type:Sequelize.STRING,
+     
+      
+      
       onUpdate:'CASCADE',
       onDelete:'CASCADE'
     })

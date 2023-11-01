@@ -1,5 +1,5 @@
 const express = require("express");
-const nodemailer=require("nodemailer")
+const nodemailer = require("nodemailer");
 const cors = require("cors");
 const pool = require("./config/database");
 const PORT = 3001;
@@ -16,13 +16,12 @@ const sequelize = new Sequelize({
   ...require("./config/config.json")["development"],
 });
 const transporter = nodemailer.createTransport({
-  service: "Gmail", 
+  service: "Gmail",
   auth: {
     user: "sankaran879@gmail.com",
     pass: "nvix fmvk ekfz sboa",
   },
 });
-
 
 const sendWelcomeEmail = (username, email, generatedPassword) => {
   const mailOptions = {
@@ -47,7 +46,7 @@ const CourseDetails = sequelize.define("CourseDetails", {
   price: DataTypes.DECIMAL(10, 2),
   video_url: DataTypes.STRING,
   user_id: DataTypes.INTEGER,
-  category:DataTypes.TEXT
+  category: DataTypes.TEXT,
 });
 
 const Accounts = sequelize.define("Accounts", {
@@ -64,37 +63,48 @@ const Student_Purchases = sequelize.define("Student_Purchases", {
   student_id: DataTypes.INTEGER,
   student_name: DataTypes.STRING,
   course_id: DataTypes.INTEGER,
-  Progress:DataTypes.INTEGER
+  Progress: DataTypes.INTEGER,
 });
 
-const Course_Section=sequelize.define("Course_Section",{
-  section_name:DataTypes.STRING,
-  section_description:DataTypes.TEXT,
-  img_url:DataTypes.STRING,
-  Course_id:DataTypes.INTEGER,
-  Course_name:DataTypes.STRING,
-  transcript:DataTypes.TEXT
-})
+const Course_Section = sequelize.define("Course_Section", {
+  section_name: DataTypes.STRING,
+  section_description: DataTypes.TEXT,
+  img_url: DataTypes.STRING,
+  Course_id: DataTypes.INTEGER,
+  Course_name: DataTypes.STRING,
+  transcript: DataTypes.TEXT,
+});
 
-const Progress=sequelize.define("Progress",{
-  student_id:DataTypes.INTEGER,
-  course_id:DataTypes.INTEGER,
-  progress:DataTypes.INTEGER,
-  Completed_Sections:DataTypes.ARRAY(DataTypes.INTEGER),
-  Completed_Count:DataTypes.INTEGER
-})
+const Progress = sequelize.define("Progress", {
+  student_id: DataTypes.INTEGER,
+  course_id: DataTypes.INTEGER,
+  progress: DataTypes.INTEGER,
+  Completed_Sections: DataTypes.ARRAY(DataTypes.INTEGER),
+  Completed_Count: DataTypes.INTEGER,
+});
 
-const Instructor=sequelize.define("Instructor",{
-  name:DataTypes.STRING,
+const Instructor = sequelize.define("Instructor", {
+  name: DataTypes.STRING,
+  password: DataTypes.STRING,
+  mail: DataTypes.STRING,
+});
+
+const Quiz = sequelize.define("Quiz", {
+  question: DataTypes.TEXT,
+  option1: DataTypes.STRING,
+  option2: DataTypes.STRING,
+  option3: DataTypes.STRING,
+  option4: DataTypes.STRING,
+  correct_answer: DataTypes.STRING,
+  title: DataTypes.STRING,
+  course_name: DataTypes.STRING,
+});
+
+const Institution=sequelize.define("Institution",{
+  institution_name:DataTypes.STRING,
   password:DataTypes.STRING,
-  mail:DataTypes.STRING
-})
-
-const Quiz=sequelize.define("Quiz",{
-  question:DataTypes.ARRAY(DataTypes.TEXT),
-  options:DataTypes.ARRAY(DataTypes.STRING),
-  correct_answer:DataTypes.STRING,
-  title:DataTypes.STRING
+  email:DataTypes.STRING,
+  address:DataTypes.TEXT
 })
 sequelize.sync();
 app.post("/api/adduser", async (req, res) => {
@@ -114,8 +124,7 @@ app.post("/api/adduser", async (req, res) => {
         username,
         password,
         email,
-        address
-      
+        address,
       });
       return res.status(201).json({
         success: "true",
@@ -130,7 +139,7 @@ app.post("/api/adduser", async (req, res) => {
 
 app.post("/api/inst", async (req, res) => {
   try {
-    const { username, password, email} = req.body;
+    const { username, password, email } = req.body;
     const userExists = await Instructor.findOne({
       where: {
         name: username,
@@ -142,10 +151,9 @@ app.post("/api/inst", async (req, res) => {
       });
     } else {
       const newUser = await Instructor.create({
-        name:username,
+        name: username,
         password,
-        mail:email
-        
+        mail: email,
       });
       return res.status(201).json({
         success: "true",
@@ -203,9 +211,8 @@ app.post("/api/logininst", async (req, res) => {
 
 app.post("/api/google", async (req, res) => {
   try {
-    
     const { username, password, email, address } = req.body;
-    sendWelcomeEmail(username, email,password);
+    sendWelcomeEmail(username, email, password);
     const userExists = await Accounts.findOne({
       where: {
         username: username,
@@ -234,12 +241,18 @@ app.post("/api/google", async (req, res) => {
 
 app.post("/api/courses", async (req, res) => {
   try {
-    const { name, description, price, video_url, username, course_id,category } =
-      req.body;
+    const {
+      name,
+      description,
+      price,
+      video_url,
+      username,
+      course_id,
+      category,
+    } = req.body;
     console.log("Username:", username);
 
-   Instructor.findOne({ where: { name: username } }).then((user) => {
-      
+    Instructor.findOne({ where: { name: username } }).then((user) => {
       console.log("UserID:", user.id);
 
       CourseDetails.create({
@@ -248,7 +261,7 @@ app.post("/api/courses", async (req, res) => {
         price,
         video_url,
         user_id: user.id,
-        category
+        category,
       });
       // console.log(userId);
     });
@@ -262,14 +275,12 @@ app.post("/api/courses", async (req, res) => {
 
 app.get("/api/courses", async (req, res) => {
   try {
-    
     const param = req.query.username;
     // console.log("Param:", param);
     const some = await Instructor.findOne({ where: { name: param } }).then(
       async (users) => {
         // console.log("Userd:",users);
         const details = await CourseDetails.findAll({
-          
           where: { user_id: users.id },
         }).then((course) => {
           console.log("Course:", course);
@@ -281,7 +292,7 @@ app.get("/api/courses", async (req, res) => {
       // res.json(details);
     );
   } catch (error) {
-    console.log("ERR:",req.query.username);
+    console.log("ERR:", req.query.username);
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -318,7 +329,7 @@ app.get("/api/learning", async (req, res) => {
       // res.json(details);
     );
   } catch (error) {
-    console.log("EEEE",req.query.username);
+    console.log("EEEE", req.query.username);
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -326,8 +337,9 @@ app.get("/api/learning", async (req, res) => {
 
 app.post("/api/learning", async (req, res) => {
   try {
-    const { course_name, course_description, video_url, student_name } = req.body;
-    
+    const { course_name, course_description, video_url, student_name } =
+      req.body;
+
     // First, find the user based on their username
     const user = await Accounts.findOne({ where: { username: student_name } });
 
@@ -336,7 +348,9 @@ app.post("/api/learning", async (req, res) => {
     }
 
     // Next, find the course based on its name
-    const course = await CourseDetails.findOne({ where: { name: course_name } });
+    const course = await CourseDetails.findOne({
+      where: { name: course_name },
+    });
 
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
@@ -376,23 +390,23 @@ app.post("/api/learning", async (req, res) => {
 app.get("/api/learners", async (req, res) => {
   try {
     const course_id = req.query.course_id;
-    const username=req.query.username
+    const username = req.query.username;
     console.log("course_id:", course_id);
 
     // Find the account based on the username (replace with dynamic username retrieval)
-    const enrolled = await Student_Purchases.findAll({ where: { course_id:course_id } });
+    const enrolled = await Student_Purchases.findAll({
+      where: { course_id: course_id },
+    });
 
     if (!enrolled) {
       return res.json(0);
     }
 
-   enrolled.map((enrollment)=>{
-    console.log(enrollment.student_name)
-   })
+    enrolled.map((enrollment) => {
+      console.log(enrollment.student_name);
+    });
     return res.json(enrolled);
-  
-}
- catch (error) {
+  } catch (error) {
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -400,20 +414,28 @@ app.get("/api/learners", async (req, res) => {
 
 app.post("/api/section", async (req, res) => {
   try {
-    const { section_name, section_description, img_url,course_name,username,transcript} =
-      req.body;
-      console.log(course_name)
+    const {
+      section_name,
+      section_description,
+      img_url,
+      course_name,
+      username,
+      transcript,
+    } = req.body;
+    console.log(course_name);
     Instructor.findOne({ where: { name: username } }).then(async (user) => {
-      await CourseDetails.findOne({ where: { name: course_name } }).then(async (course) => {
-        await Course_Section.create({
-          section_name,
-          section_description,
-          img_url,
-          Course_id:course.id,
-          Course_name:course_name,
-          transcript
-        });
-      });
+      await CourseDetails.findOne({ where: { name: course_name } }).then(
+        async (course) => {
+          await Course_Section.create({
+            section_name,
+            section_description,
+            img_url,
+            Course_id: course.id,
+            Course_name: course_name,
+            transcript,
+          });
+        }
+      );
 
       // console.log(userId);
     });
@@ -452,20 +474,20 @@ app.get("/api/purchased", async (req, res) => {
   }
 });
 
-
-
 app.get("/api/section", async (req, res) => {
   try {
     // console.log("Request:", req.body);
     const param = req.query.course_id;
     console.log("Param:", param);
-    const some = Student_Purchases.findOne({ where: {course_id:param } }).then(
+    const some = Student_Purchases.findOne({
+      where: { course_id: param },
+    }).then(
       async (course) => {
-        console.log("CourseID:",course.id);
-         await Course_Section.findAll({
-          where:{Course_id:course.course_id}
-         }).then((section) => {
-         console.log("Section:",section)
+        console.log("CourseID:", course.id);
+        await Course_Section.findAll({
+          where: { Course_id: course.course_id },
+        }).then((section) => {
+          console.log("Section:", section);
           res.json(section);
         });
       }
@@ -474,64 +496,67 @@ app.get("/api/section", async (req, res) => {
       // res.json(details);
     );
   } catch (error) {
-    console.log("EEWW",req.query.username);
+    console.log("EEWW", req.query.username);
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-app.get("/api/search",async(req,res)=>{
+app.get("/api/search", async (req, res) => {
   try {
-   
     const results = await CourseDetails.findAll({
       where: {
         name: {
-          [Sequelize.Op.iLike]: `%${req.query.query}%`, 
+          [Sequelize.Op.iLike]: `%${req.query.query}%`,
         },
       },
     });
-    console.log("Query:",results)
-    res.json(results); 
-  }  catch (error) {
-    console.log("Error:",error);
-  }
-})
-
-app.put("/api/updatePass",async(req,res)=>{
-  try {
-    const {oldPassword,newPassword}=req.body;
-    await Accounts.update({
-      password:newPassword
-    },
-    {
-      where:{
-        password:oldPassword
-      }
-    }).then(()=>{
-      res.status(201).json({message:"Success"})
-    })
+    console.log("Query:", results);
+    res.json(results);
   } catch (error) {
-    console.log("Error",error);
+    console.log("Error:", error);
   }
-})
+});
 
-app.put("/api/forgotPass",async(req,res)=>{
+app.put("/api/updatePass", async (req, res) => {
   try {
-    const {username,newPassword}=req.body;
-    await Accounts.update({
-      password:newPassword
-    },
-    {
-      where:{
-      username:username
+    const { oldPassword, newPassword } = req.body;
+    await Accounts.update(
+      {
+        password: newPassword,
+      },
+      {
+        where: {
+          password: oldPassword,
+        },
       }
-    }).then(()=>{
-      res.status(201).json({message:"Success"})
-    })
+    ).then(() => {
+      res.status(201).json({ message: "Success" });
+    });
   } catch (error) {
-    console.log("Error",error);
+    console.log("Error", error);
   }
-})
+});
+
+app.put("/api/forgotPass", async (req, res) => {
+  try {
+    const { username, newPassword } = req.body;
+    await Accounts.update(
+      {
+        password: newPassword,
+      },
+      {
+        where: {
+          username: username,
+        },
+      }
+    ).then(() => {
+      res.status(201).json({ message: "Success" });
+    });
+  } catch (error) {
+    console.log("Error", error);
+  }
+});
 
 app.post("/api/progress", async (req, res) => {
   try {
@@ -539,7 +564,9 @@ app.post("/api/progress", async (req, res) => {
     const user = await Accounts.findOne({ where: { username: username } });
 
     if (user) {
-      const section = await Course_Section.findOne({ where: { id: sectionId } });
+      const section = await Course_Section.findOne({
+        where: { id: sectionId },
+      });
 
       if (section) {
         const purchase = await Student_Purchases.findOne({
@@ -547,58 +574,56 @@ app.post("/api/progress", async (req, res) => {
         });
 
         if (purchase) {
-          const prog = await Progress.findOne({ where: { student_id: purchase.student_id,course_id:purchase.course_id } });
+          const prog = await Progress.findOne({
+            where: {
+              student_id: purchase.student_id,
+              course_id: purchase.course_id,
+            },
+          });
 
           if (prog) {
             // Get the current completed sections and update it
             let completedSections = prog.Completed_Sections || [];
-         
-          
+
             // If the sectionId is not already in the completedSections, add it
             if (!completedSections.includes(sectionId)) {
               completedSections.push(sectionId);
             }
 
             // Update the progress and completed sections
-            const completedCount=prog.Completed_Sections.length;
-            const progress=Math.trunc(completedCount*100/count);
+            const completedCount = prog.Completed_Sections.length;
+            const progress = Math.trunc((completedCount * 100) / count);
             await Progress.update(
               {
-                
                 progress: progress,
                 Completed_Sections: completedSections,
-                
               },
               {
                 where: {
                   student_id: purchase.student_id,
-                  course_id:purchase.course_id
+                  course_id: purchase.course_id,
                 },
               }
             );
           } else {
             // If there is no progress record, create one
-          
-           
-           const first= await Progress.create({
+
+            const first = await Progress.create({
               student_id: purchase.student_id,
               course_id: purchase.course_id,
-             
-              Completed_Sections: [sectionId], 
+
+              Completed_Sections: [sectionId],
             });
-            if(first){
-              const completedCount=prog.Completed_Sections.length;
-              const progress=Math.trunc((completedCount*100)/count)
+            if (first) {
+              const completedCount = prog.Completed_Sections.length;
+              const progress = Math.trunc((completedCount * 100) / count);
               await Progress.update({
                 student_id: purchase.student_id,
                 course_id: purchase.course_id,
                 progress: progress,
-                
-              })
+              });
             }
-            
           }
-          
 
           res.status(200).send("Progress recorded successfully");
         } else {
@@ -616,186 +641,229 @@ app.post("/api/progress", async (req, res) => {
   }
 });
 
-app.post("/api/updateSection",async(req,res)=>{
+app.post("/api/updateSection", async (req, res) => {
   try {
-    const {sectionId,section_name,section_description,img_url}=req.body;
-    await Course_Section.update({
-     
-      img_url
-    },
-    {
-      where:{
-      id:sectionId
-
+    const { sectionId, section_name, section_description, img_url } = req.body;
+    await Course_Section.update(
+      {
+        img_url,
+      },
+      {
+        where: {
+          id: sectionId,
+        },
       }
-    }).then(()=>{
-      res.status(201).json({message:"Success"})
-    })
+    ).then(() => {
+      res.status(201).json({ message: "Success" });
+    });
   } catch (error) {
-    console.log("Error",error);
+    console.log("Error", error);
   }
-})
+});
 
-app.get("/api/getProgress",async (req,res)=>{
+app.get("/api/getProgress", async (req, res) => {
   try {
-    const username=req.query.username;
-    const course=req.query.course_id;
+    const username = req.query.username;
+    const course = req.query.course_id;
     console.log(course);
-    const user=await Accounts.findOne({where:{
-      username:username
-    }})
-    if(user){
-      const progress=await Progress.findOne({where:{
-        student_id:user.id,
-        course_id:course
-      }})
-      if(progress){
-        res.json(progress)
-      
+    const user = await Accounts.findOne({
+      where: {
+        username: username,
+      },
+    });
+    if (user) {
+      const progress = await Progress.findOne({
+        where: {
+          student_id: user.id,
+          course_id: course,
+        },
+      });
+      if (progress) {
+        res.json(progress);
       }
     }
-    
   } catch (error) {
-    console.log("errodr:",error)
+    console.log("errodr:", error);
   }
-})
+});
 
-app.post("/api/convert",async (req,res)=>{
+app.post("/api/convert", async (req, res) => {
   try {
-    const {name}=req.body;
+    const { name } = req.body;
     console.log(name);
-   const user= await Accounts.findOne({where:{username:name}});
-    if(user){
-      return res.status(299).json("Already a student")
+    const user = await Accounts.findOne({ where: { username: name } });
+    if (user) {
+      return res.status(299).json("Already a student");
     }
-    const inst=await Instructor.findOne({where:{name:name}});
-    if(inst){
-      const student=await Accounts.create({
-        username:name,
-        password:inst.password,
-        email:inst.mail
-      }
-       
-
-      )
-      return res.status(201).json("Student")
-
+    const inst = await Instructor.findOne({ where: { name: name } });
+    if (inst) {
+      const student = await Accounts.create({
+        username: name,
+        password: inst.password,
+        email: inst.mail,
+      });
+      return res.status(201).json("Student");
     }
   } catch (error) {
-    console.log("Error:",error)
+    console.log("Error:", error);
   }
-})
+});
 
-app.get("/api/filter",async(req,res)=>{
+app.get("/api/filter", async (req, res) => {
   try {
-    const category=req.query.category;
-    console.log(category)
-    if(category === "All"){
-      const ans= await CourseDetails.findAll()
-      console.log(ans)
+    const category = req.query.category;
+    console.log(category);
+    if (category === "All") {
+      const ans = await CourseDetails.findAll();
+      console.log(ans);
       return res.json(ans);
-    }
-    else{
-      const course=await CourseDetails.findAll({where:{
-        category:category
-      }})
-      if(course){
-        res.json(course)
+    } else {
+      const course = await CourseDetails.findAll({
+        where: {
+          category: category,
+        },
+      });
+      if (course) {
+        res.json(course);
       }
     }
-    
   } catch (error) {
-    console.log("error:",error)
+    console.log("error:", error);
   }
-})
+});
 
-app.get("/api/:courseName/students",async(req,res)=>{
+app.get("/api/:courseName/students", async (req, res) => {
   try {
-    const {courseName}=req.params;
-    const course=await Student_Purchases.findAll({where:{
+    const { courseName } = req.params;
+    const course = await Student_Purchases.findAll({
+      where: {
+        course_name: courseName,
+      },
+    });
+    if (course) {
+      return res.json(course);
+    }
+  } catch (error) {
+    console.log("error", error);
+  }
+});
+
+app.get("/api/instructor", async (req, res) => {
+  const name = req.query.name;
+  try {
+    const user = await Instructor.findOne({
+      where: {
+        name: name,
+      },
+    });
+    if (user) {
+      console.log(user);
+      return res.status(201).json({ message: "Success" });
+    } else {
+      return res.status(202).json({ message: "success" });
+    }
+  } catch (error) {
+    console.log("ERRORRR:", error);
+  }
+});
+
+app.get("/api/isStudent", async (req, res) => {
+  const name = req.query.name;
+  try {
+    const user = await Accounts.findOne({
+      where: {
+        username: name,
+      },
+    });
+    if (user) {
+      console.log(user);
+      return res.status(201).json({ message: "Success" });
+    } else {
+      return res.status(202).json({ message: "success" });
+    }
+  } catch (error) {
+    console.log("ERRORRR:", error);
+  }
+});
+
+app.post("/api/convertInst", async (req, res) => {
+  try {
+    const { name } = req.body;
+    console.log(name);
+    const user = await Instructor.findOne({ where: { name: name } });
+    if (user) {
+      return res.status(299).json("Already an Instructor");
+    }
+    const inst = await Accounts.findOne({ where: { username: name } });
+    if (inst) {
+      const student = await Instructor.create({
+        name: name,
+        password: inst.password,
+        mail: inst.email,
+      });
+      return res.status(201).json("Instructor");
+    }
+  } catch (error) {
+    console.log("Error:", error);
+  }
+});
+app.post("/api/quiz", async (req, res) => {
+  try {
+    const {
+      question,
+      option1,
+      option2,
+      option3,
+      option4,
+      correctAnswer,
+      course_name,
+    } = req.body;
+    await Quiz.create({
+      question,
+      option1,
+      option2,
+      option3,
+      option4,
+      correct_answer: correctAnswer,
+      course_name,
+    });
+  } catch (error) {
+    console.log("Error", error);
+  }
+});
+
+app.get("/api/quiz",async(req,res)=>{
+  try {
+    const courseName=req.query.course_name;
+    console.log(courseName)
+    const questions=await Quiz.findAll({where:{
       course_name:courseName
     }})
-    if(course){
-    
-      return res.json(course)
+    if(questions){
+      console.log("QUIZ:",questions)
+      return res.json(questions)
     }
   } catch (error) {
-    console.log("error",error)
+    console.log("Error",error)
   }
 })
 
-app.get("/api/instructor",async(req,res)=>{
- const name=req.query.name;
+app.get("/api/answer",async(req,res)=>{
   try {
-   const user= await Instructor.findOne({where:{
-      name:name
+    const question=req.query.question;
+    const option = req.query.option;
+    const ques=await Quiz.findOne({where:{
+      question:question
     }})
-    if(user){
-     console.log(user)
-    return res.status(201).json({message:"Success"})
-    }
-    else{
+    if(ques){
       
-      return res.status(202).json({message:"success"})
-    }
-  } catch (error) {
-    console.log("ERRORRR:",error)
-  }
-})
-
-app.get("/api/isStudent",async(req,res)=>{
-  const name=req.query.name;
-   try {
-    const user= await Accounts.findOne({where:{
-       username:name
-     }})
-     if(user){
-      console.log(user)
-     return res.status(201).json({message:"Success"})
-     }
-     else{
-       
-       return res.status(202).json({message:"success"})
-     }
-   } catch (error) {
-     console.log("ERRORRR:",error)
-   }
- })
-
- app.post("/api/convertInst",async (req,res)=>{
-  try {
-    const {name}=req.body;
-    console.log(name);
-   const user= await Instructor.findOne({where:{name:name}});
-    if(user){
-      return res.status(299).json("Already an Instructor")
-    }
-    const inst=await Accounts.findOne({where:{username:name}});
-    if(inst){
-      const student=await Instructor.create({
-        name:name,
-        password:inst.password,
-        mail:inst.email
+      if(ques.correct_answer === option){
+        return res.status(201).json({message:"Success"})
       }
-       
-
-      )
-      return res.status(201).json("Instructor")
-
+      else{
+        return res.status(202).json({message:"Failure"})
+      }
     }
-  } catch (error) {
-    console.log("Error:",error)
-  }
-})
-app.post("/api/quiz",async (req,res)=>{
-  try {
-    const {title,questions,options,correctAnswer}=req.body;
-    await Quiz.create({
-      title:title,
-      question:questions,
-      options:options,
-      correct_nswer:correctAnswer
-    })
   } catch (error) {
     console.log("Error",error)
   }
