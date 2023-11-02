@@ -1,16 +1,23 @@
 const express = require("express");
+const fastcsv = require("fast-csv");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
+const multer = require("multer");
+const csv = require("csv-parser");
 const pool = require("./config/database");
 const PORT = 3001;
+const fs = require("fs");
 const bodyParser = require("body-parser");
 const app = express();
 const { Sequelize, DataTypes } = require("sequelize");
 const coursedetails = require("./models/coursedetails");
-
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 app.use(bodyParser.json());
 // app.use(express.json());
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 const sequelize = new Sequelize({
   dialect: "postgres",
   ...require("./config/config.json")["development"],
@@ -29,6 +36,23 @@ const sendWelcomeEmail = (username, email, generatedPassword) => {
     to: email,
     subject: "Welcome to Your App",
     text: `Hello ${username},\n\nWelcome to Your App! Your username is: ${username}\nYour password is: ${generatedPassword}\n\nPlease change your password after logging in for security.`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Error sending email:", error);
+    } else {
+      console.log("Email sent:", info.response);
+    }
+  });
+};
+
+const sendInstitutionMail = (username, email, generatedPassword) => {
+  const mailOptions = {
+    from: "YourEmailAddress",
+    to: email,
+    subject: "Welcome to EduWeb",
+    text: `Greetings ${username},\n\nYour Institution has been successfully registered\nExplore our services\n\nStart Adding Instructors and Students.`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -100,12 +124,12 @@ const Quiz = sequelize.define("Quiz", {
   course_name: DataTypes.STRING,
 });
 
-const Institution=sequelize.define("Institution",{
-  institution_name:DataTypes.STRING,
-  password:DataTypes.STRING,
-  email:DataTypes.STRING,
-  address:DataTypes.TEXT
-})
+const Institution = sequelize.define("Institution", {
+  institution_name: DataTypes.STRING,
+  password: DataTypes.STRING,
+  email: DataTypes.STRING,
+  address: DataTypes.TEXT,
+});
 sequelize.sync();
 app.post("/api/adduser", async (req, res) => {
   try {
@@ -832,42 +856,120 @@ app.post("/api/quiz", async (req, res) => {
   }
 });
 
-app.get("/api/quiz",async(req,res)=>{
+app.get("/api/quiz", async (req, res) => {
   try {
-    const courseName=req.query.course_name;
-    console.log(courseName)
-    const questions=await Quiz.findAll({where:{
-      course_name:courseName
-    }})
-    if(questions){
-      console.log("QUIZ:",questions)
-      return res.json(questions)
+    const courseName = req.query.course_name;
+    console.log(courseName);
+    const questions = await Quiz.findAll({
+      where: {
+        course_name: courseName,
+      },
+    });
+    if (questions) {
+      console.log("QUIZ:", questions);
+      return res.json(questions);
     }
   } catch (error) {
-    console.log("Error",error)
+    console.log("Error", error);
   }
-})
+});
 
-app.get("/api/answer",async(req,res)=>{
+app.get("/api/answer", async (req, res) => {
   try {
-    const question=req.query.question;
+    const question = req.query.question;
     const option = req.query.option;
-    const ques=await Quiz.findOne({where:{
-      question:question
-    }})
-    if(ques){
-      
-      if(ques.correct_answer === option){
-        return res.status(201).json({message:"Success"})
-      }
-      else{
-        return res.status(202).json({message:"Failure"})
+    const ques = await Quiz.findOne({
+      where: {
+        question: question,
+      },
+    });
+    if (ques) {
+      if (ques.correct_answer === option) {
+        return res.status(201).json({ message: "Success" });
+      } else {
+        return res.status(202).json({ message: "Failure" });
       }
     }
   } catch (error) {
-    console.log("Error",error)
+    console.log("Error", error);
   }
-})
+});
+
+app.post("/api/institution", async (req, res) => {
+  try {
+    const { institution_name, password, email, address } = req.body;
+    const userExists = await Institution.findOne({
+      where: {
+        institution_name: institution_name,
+      },
+    });
+    if (userExists) {
+      return res.status(302).json({
+        success: "true",
+      });
+    } else {
+      const newUser = await Institution.create({
+        institution_name,
+        password,
+        email,
+        address,
+      });
+      sendInstitutionMail(institution_name, email, password);
+      return res.status(201).json({
+        success: "true",
+        message: "Institution",
+      });
+    }
+  } catch (error) {
+    console.error("Error creating User:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/api/upload-csv", upload.single("csvFile"), (req, res) => {
+  const fileBuffer = req.file.buffer.toString("utf8");
+
+  const results = [];
+  fastcsv
+    .parseString(fileBuffer, { headers: true })
+    .on("data", (row) => results.push(row))
+    .on("end", () => {
+      sequelize
+        .sync()
+        .then(() => {
+          return Accounts.bulkCreate(results);
+        })
+        .then(() => {
+          res.status(200).send("Data inserted successfully.");
+        })
+        .catch((err) => {
+          console.error("Error inserting data:", err);
+          res.status(500).send("Error inserting data.");
+        });
+    });
+});
+
+app.post("/api/logininstitution", async (req, res) => {
+  try {
+    // console.log(req.body.username);
+    const { institution_name, password } = req.body;
+    // console.log(username,password);
+    const user = await Institution.findOne({
+      where: { institution_name: institution_name, password: password },
+    });
+    if (user) {
+      return res.status(201).json({
+        success: "true",
+      });
+    } else
+      return res.status(500).json({
+        success: "false",
+      });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 app.delete("/api/courses/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -877,6 +979,27 @@ app.delete("/api/courses/:id", async (req, res) => {
   } catch (error) {
     console.error("Error Deleting Course:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/api/studentinfo", async (req, res) => {
+  try {
+    const students = await Accounts.findAll();
+    if (students) {
+      return res.json(students);
+    }
+  } catch (error) {
+    console.log("Error:", error);
+  }
+});
+app.get("/api/instructorinfo", async (req, res) => {
+  try {
+    const instructor = await Instructor.findAll();
+    if (instructor) {
+      return res.json(instructor);
+    }
+  } catch (error) {
+    console.log("Error:", error);
   }
 });
 app.listen(PORT, () => {

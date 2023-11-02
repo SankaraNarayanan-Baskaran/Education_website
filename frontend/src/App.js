@@ -4,6 +4,7 @@ import { ReactDOM } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
+import Admin from "./components/Admin";
 import Register from "./components/Register";
 import CourseDetails from "./components/CourseDetails";
 import Instructor from "./components/Instructor";
@@ -34,6 +35,7 @@ function App() {
         <Route path="/section" element={<Section/>}/>
         <Route path="/instructor/:courseName/students" element={<StudentsList/>}/>
         <Route path="/course/:course/quiz" element={<Quiz/>}/>
+        <Route path="/admin" element={<Admin/>}/>
       </Routes>
       </SnackbarProvider>
     </div>

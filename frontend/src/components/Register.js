@@ -7,11 +7,13 @@ import toast, { Toaster } from "react-hot-toast";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import { useSnackbar } from "notistack";
+import Papa from "papaparse";
 import Footer from "./Footer";
 import "./Register.css";
 const Register = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const [file, setFile] = useState(null);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -133,12 +135,15 @@ const Register = () => {
     try {
       const response = await axios.post(`${config.endpoint}/institution`, {
         institution_name: institutionData.institution_name,
+        password: institutionData.password,
+        email: institutionData.email,
+        address: institutionData.address,
       });
       console.log(response);
       if (response.status === 201) {
         navigate("/login");
       } else if (response.status === 302) {
-        console.log("User already exists");
+        console.log("Institution already registered");
       }
     } catch (error) {
       console.log(error);
@@ -157,6 +162,27 @@ const Register = () => {
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const handleUpload = async () => {
+    if (file) {
+      const formData = new FormData();
+      formData.append('csvFile', file);
+
+      try {
+        const response = await axios.post(`${config.endpoint}/upload-csv`,formData);
+        if (response.ok) {
+          alert('CSV file uploaded and data inserted successfully.');
+        }
+      } catch (error) {
+        console.error('Error uploading CSV file:', error);
+      }
     }
   };
   return (
@@ -292,23 +318,23 @@ const Register = () => {
                 )}
                 <input
                   className={
-                    validateEmail(institutionData.emailaddress)
+                    validateEmail(institutionData.email)
                       ? ""
                       : "clicked-input"
                   }
                   type="email"
                   placeholder="Email-Address"
-                  value={institutionData.emailaddress}
+                  value={institutionData.email}
                   onChange={(e) => {
                     handleEmailClick();
                     setInstitutionData({
                       ...institutionData,
-                      emailaddress: e.target.value,
+                      email: e.target.value,
                     });
                   }}
                 />
                 {isEmailClicked ? (
-                  validateEmail(institutionData.emailaddress) ? (
+                  validateEmail(institutionData.email) ? (
                     ""
                   ) : (
                     <>
@@ -340,15 +366,15 @@ const Register = () => {
                       })
                     }
                   ></textarea>
+                    <input type="file" accept=".csv" onChange={handleFileChange} />
+                    <button onClick={handleUpload}>Upload CSV</button>
                   <button
                     className="login-button"
                     onClick={() => {
-                      if (validateInput(formData)) {
-                        Credentials(formData);
-                        enqueueSnackbar("Registered successfully", {
-                          variant: "success",
-                        });
-                      }
+                      Institute(institutionData);
+                      enqueueSnackbar("Registered successfully", {
+                        variant: "success",
+                      });
                     }}
                   >
                     Register
@@ -498,6 +524,7 @@ const Register = () => {
                         setFormData({ ...formData, address: e.target.value })
                       }
                     ></textarea>
+                 
                   </>
                 )}
               </div>

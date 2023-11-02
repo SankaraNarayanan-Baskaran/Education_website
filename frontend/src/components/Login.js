@@ -93,14 +93,14 @@ const Login = () => {
 
   const loggedInstitution = async (formData) => {
     try {
-      const res = await axios.post(config.endpoint + "/logininst", {
+      const res = await axios.post(config.endpoint + "/logininstitution", {
         institution_name: formData.username,
         password: formData.password,
       });
       if (res.status === 201) {
         localStorage.setItem("username", formData.username);
         enqueueSnackbar("Logged in Successfully", { variant: "success" });
-        navigate("/instructor");
+        navigate("/admin");
       }
     } catch (error) {
       enqueueSnackbar("Invalid Credentials", { variant: "error" });
@@ -274,9 +274,23 @@ const Login = () => {
         ) : (
           <>
             <div className="login-container">
-             {institution?(<></>):(<>
-              {}
-             </>)}
+              {institution ? (
+                <>
+                  <h3>Institution Login</h3>
+                </>
+              ) : (
+                <>
+                  {instructor ? (
+                    <>
+                      <h3>Instructor Login</h3>
+                    </>
+                  ) : (
+                    <>
+                      <h3>Student Login</h3>
+                    </>
+                  )}
+                </>
+              )}
               <div className="input-container">
                 {institution ? (
                   <>
