@@ -25,7 +25,7 @@ const Admin = () => {
                 setInstructorList(instructorNames);
             }
         } catch (error) {
-            console.log(error)
+            console.log("Error:",error)
         }
     }
     useEffect(()=>{
