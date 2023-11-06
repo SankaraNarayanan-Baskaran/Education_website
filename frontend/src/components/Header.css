@@ -27,7 +27,8 @@
 .title {
   /* font-size:xx-large; */
   font-weight: 600;
-  color:#14213d !important
+  color:#14213d !important;
+  /* background-color: aliceblue; */
 }
 .rounded-button{
   border-radius: 35%;

@@ -366,8 +366,7 @@ const Register = () => {
                       })
                     }
                   ></textarea>
-                    <input type="file" accept=".csv" onChange={handleFileChange} />
-                    <button onClick={handleUpload}>Upload CSV</button>
+                    
                   <button
                     className="login-button"
                     onClick={() => {

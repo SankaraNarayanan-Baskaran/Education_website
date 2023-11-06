@@ -78,6 +78,7 @@ const Accounts = sequelize.define("Accounts", {
   password: DataTypes.STRING,
   email: DataTypes.STRING,
   address: DataTypes.TEXT,
+  institution_code: DataTypes.INTEGER,
 });
 
 const Student_Purchases = sequelize.define("Student_Purchases", {
@@ -129,6 +130,7 @@ const Institution = sequelize.define("Institution", {
   password: DataTypes.STRING,
   email: DataTypes.STRING,
   address: DataTypes.TEXT,
+  icon: DataTypes.STRING,
 });
 sequelize.sync();
 app.post("/api/adduser", async (req, res) => {
@@ -772,24 +774,24 @@ app.get("/api/:courseName/students", async (req, res) => {
   }
 });
 
-app.get("/api/instructor", async (req, res) => {
-  const name = req.query.name;
-  try {
-    const user = await Instructor.findOne({
-      where: {
-        name: name,
-      },
-    });
-    if (user) {
-      console.log(user);
-      return res.status(201).json({ message: "Success" });
-    } else {
-      return res.status(202).json({ message: "success" });
-    }
-  } catch (error) {
-    console.log("ERRORRR:", error);
-  }
-});
+// app.get("/api/instructor", async (req, res) => {
+//   const name = req.query.name;
+//   try {
+//     const user = await Instructor.findOne({
+//       where: {
+//         name: name,
+//       },
+//     });
+//     if (user) {
+//       console.log(user);
+//       return res.status(201).json({ message: "Success" });
+//     } else {
+//       return res.status(202).json({ message: "success" });
+//     }
+//   } catch (error) {
+//     console.log("ERRORRR:", error);
+//   }
+// });
 
 app.get("/api/isStudent", async (req, res) => {
   const name = req.query.name;
@@ -970,23 +972,37 @@ app.post("/api/logininstitution", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-app.delete("/api/courses/:id", async (req, res) => {
+app.delete("/api/user/:id", async (req, res) => {
   try {
     const { id } = req.params;
     console.log(id);
-    const course = await CourseDetails.findByPk(id);
-    await course.destroy();
+    const user = await Accounts.findByPk(id);
+    await user.destroy();
+    return res.json(id);
   } catch (error) {
-    console.error("Error Deleting Course:", error);
+    console.error("Error Deleting user:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
 app.get("/api/studentinfo", async (req, res) => {
   try {
-    const students = await Accounts.findAll();
+    const user = req.query.username;
+    const students = await Institution.findOne({
+      where: {
+        institution_name: user,
+      },
+    });
+    console.log(students);
     if (students) {
-      return res.json(students);
+      const accounts = await Accounts.findAll({
+        where: {
+          institution_code: students.id,
+        },
+      });
+      if (accounts) {
+        return res.json(accounts);
+      }
     }
   } catch (error) {
     console.log("Error:", error);
@@ -1000,6 +1016,62 @@ app.get("/api/instructorinfo", async (req, res) => {
     }
   } catch (error) {
     console.log("Error:", error);
+  }
+});
+
+app.get("/api/icon", async (req, res) => {
+  try {
+    const username = req.query.username;
+    const user = await Accounts.findOne({
+      where: {
+        username: username,
+      },
+    });
+   
+    const inst = await Instructor.findOne({
+      where: {
+        name: username,
+      },
+    });
+    console.log("INS",inst)
+    if (user) {
+      console.log(user)
+      const icon = await Institution.findOne({
+        where: {
+          id: user.institution_code,
+        },
+      });
+      if (icon) {
+        console.log(icon);
+        return res.json(icon);
+      }
+    } 
+  } catch (error) {
+    console.log("ERror:", error);
+  }
+});
+
+app.get("/api/managecourses/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await Accounts.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (user) {
+      const courses = await Student_Purchases.findAll({
+        where: {
+          student_id: id,
+        },
+      });
+      if (courses) {
+        // console.log(courses)
+        return res.json(courses);
+      }
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 app.listen(PORT, () => {

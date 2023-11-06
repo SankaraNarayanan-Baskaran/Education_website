@@ -208,6 +208,9 @@ useEffect(()=>{
                           
                           setUpdate(true);
                         }}>Edit</button>
+                        <button onClick={()=>{
+                          
+                        }}>Add Quiz</button>
 
                       </div>
                       
