@@ -774,24 +774,24 @@ app.get("/api/:courseName/students", async (req, res) => {
   }
 });
 
-// app.get("/api/instructor", async (req, res) => {
-//   const name = req.query.name;
-//   try {
-//     const user = await Instructor.findOne({
-//       where: {
-//         name: name,
-//       },
-//     });
-//     if (user) {
-//       console.log(user);
-//       return res.status(201).json({ message: "Success" });
-//     } else {
-//       return res.status(202).json({ message: "success" });
-//     }
-//   } catch (error) {
-//     console.log("ERRORRR:", error);
-//   }
-// });
+app.get("/api/instructor", async (req, res) => {
+  const name = req.query.name;
+  try {
+    const user = await Instructor.findOne({
+      where: {
+        name: name,
+      },
+    });
+    if (user) {
+      console.log(user);
+      return res.status(201).json({ message: "Success" });
+    } else {
+      return res.status(202).json({ message: "success" });
+    }
+  } catch (error) {
+    console.log("ERRORRR:", error);
+  }
+});
 
 app.get("/api/isStudent", async (req, res) => {
   const name = req.query.name;
@@ -985,6 +985,19 @@ app.delete("/api/user/:id", async (req, res) => {
   }
 });
 
+app.delete("/api/instructor/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const instructor = await Instructor.findByPk(id);
+    await instructor.destroy();
+    return res.json(id);
+  } catch (error) {
+    console.error("Error Deleting Instructor:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.get("/api/studentinfo", async (req, res) => {
   try {
     const user = req.query.username;
@@ -1008,34 +1021,49 @@ app.get("/api/studentinfo", async (req, res) => {
     console.log("Error:", error);
   }
 });
+
 app.get("/api/instructorinfo", async (req, res) => {
   try {
-    const instructor = await Instructor.findAll();
-    if (instructor) {
-      return res.json(instructor);
+    const user = req.query.username;
+    const students = await Institution.findOne({
+      where: {
+        institution_name: user,
+      },
+    });
+    console.log("1033:",students);
+    if (students) {
+      const accounts = await Instructor.findAll({
+        where: {
+          institution_code: students.id,
+        },
+      });
+      if (accounts) {
+        return res.json(accounts);
+      }
     }
   } catch (error) {
-    console.log("Error:", error);
+    console.log("Error45:", error);
   }
 });
 
 app.get("/api/icon", async (req, res) => {
   try {
     const username = req.query.username;
+    console.log("1052:", username);
     const user = await Accounts.findOne({
       where: {
         username: username,
       },
     });
-   
+
     const inst = await Instructor.findOne({
       where: {
         name: username,
       },
     });
-    console.log("INS",inst)
+    console.log("INS", inst);
     if (user) {
-      console.log(user)
+      console.log(user);
       const icon = await Institution.findOne({
         where: {
           id: user.institution_code,
@@ -1045,9 +1073,21 @@ app.get("/api/icon", async (req, res) => {
         console.log(icon);
         return res.json(icon);
       }
-    } 
+    } else if (inst) {
+      const icon = await Institution.findOne({
+        where: {
+          id: inst.institution_code,
+        },
+      });
+      if (icon) {
+        return res.json(icon);
+      }
+    }
+    else{
+
+    }
   } catch (error) {
-    console.log("ERror:", error);
+    console.log("1061ERror:", error);
   }
 });
 
@@ -1063,6 +1103,30 @@ app.get("/api/managecourses/:id", async (req, res) => {
       const courses = await Student_Purchases.findAll({
         where: {
           student_id: id,
+        },
+      });
+      if (courses) {
+        // console.log(courses)
+        return res.json(courses);
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.get("/api/manageinstcourses/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await Instructor.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (user) {
+      const courses = await CourseDetails.findAll({
+        where: {
+          user_id: id,
         },
       });
       if (courses) {

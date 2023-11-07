@@ -8,6 +8,7 @@ const Admin = () => {
   const [studentList, setStudentList] = useState([]);
   const [file, setFile] = useState(null);
   const [courseView, setCourseView] = useState(false);
+  const [instCourse, setInstCourse] = useState(false);
   const [courses, setCourses] = useState([]);
   const [instructorList, setInstructorList] = useState([]);
   const username = localStorage.getItem("username");
@@ -52,14 +53,18 @@ const Admin = () => {
     }
   };
 
-  const instructorData = async () => {
+  const instructorData = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/instructorinfo`);
+      const response = await axios.get(`${config.endpoint}/instructorinfo`, {
+        params: {
+          username: username,
+        },
+      });
       if (response) {
-        const instructorNames = response.data.map(
-          (instructor) => instructor.name
-        );
-        setInstructorList(instructorNames);
+        // const instructorNames = response.data.map(
+        //   (instructor) => instructor.name
+        // );
+        setInstructorList(response.data);
         console.log(response.data);
       }
     } catch (error) {
@@ -82,6 +87,24 @@ const Admin = () => {
     }
   };
 
+  const handleRemoveInst = async (id) => {
+    try {
+      const response = await axios.delete(
+        `${config.endpoint}/instructor/${id}`
+      );
+      if (response) {
+        enqueueSnackbar("Instructor removed", { variant: "success" });
+        // window.location.reload()
+        const newInstructorList = instructorList.filter(
+          (instructor) => instructor.id !== id
+        );
+        setInstructorList(newInstructorList);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleManageCourses = async (id) => {
     try {
       const response = await axios.get(
@@ -95,10 +118,24 @@ const Admin = () => {
       console.log(error);
     }
   };
+
+  const handleInstructor = async (id) => {
+    try {
+      const response = await axios.get(
+        `${config.endpoint}/manageinstcourses/${id}`
+      );
+      if (response) {
+        console.log(response.data);
+        setCourses(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     const username = localStorage.getItem("username");
     studentData(username);
-    instructorData();
+    instructorData(username);
   }, []);
   return (
     <>
@@ -106,7 +143,15 @@ const Admin = () => {
 
       <input type="file" accept=".csv" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload CSV</button>
-      <h3>Student List</h3>
+      {courseView ? (
+        <>
+          <h3>Student Courses List</h3>
+        </>
+      ) : (
+        <>
+          <h3>Student List</h3>
+        </>
+      )}
       <div>
         <table>
           {courseView ? (
@@ -118,9 +163,29 @@ const Admin = () => {
                       <h6>{course.course_name}</h6>
                     </div>
                   ))}
+                  <div>
+                    <button
+                      onClick={() => {
+                        setCourseView(false);
+                      }}
+                    >
+                      Back Home
+                    </button>
+                  </div>
                 </>
               ) : (
-                <p>No courses to display</p>
+                <>
+                  <p>No courses to display</p>
+                  <div>
+                    <button
+                      onClick={() => {
+                        setCourseView(false);
+                      }}
+                    >
+                      Back Home
+                    </button>
+                  </div>
+                </>
               )}
             </>
           ) : (
@@ -158,10 +223,86 @@ const Admin = () => {
             </>
           )}
         </table>
-        {/* <h3>Instructor List</h3>
-      {instructorList.map((instructor, index) => (
-        <li key={index}>{instructor}</li>
-      ))} */}
+        {instCourse ? (
+          <>
+            <h3>Instructor Courses List</h3>
+          </>
+        ) : (
+          <>
+            {" "}
+            <h3>Instructor List</h3>
+          </>
+        )}
+
+        {instCourse ? (
+          <>
+            {courses && courses.length > 0 ? (
+              <>
+                {courses.map((course) => (
+                  <div key={course.id}>
+                    <h6>{course.course_name}</h6>
+                  </div>
+                ))}
+                <div>
+                  <button
+                    onClick={() => {
+                      setCourseView(false);
+                    }}
+                  >
+                    Back Home
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p>No courses to display</p>
+                <div>
+                  <button
+                    onClick={() => {
+                      setCourseView(false);
+                      setInstCourse(false)
+                    }}
+                  >
+                    Back Home
+                  </button>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            {instructorList.map((instructor) => (
+              <div key={instructor.id}>
+                <tr>
+                  <td>
+                    {" "}
+                    <p>{instructor.name}</p>
+                  </td>
+                  <td>
+                    {" "}
+                    <button
+                      onClick={() => {
+                        handleInstructor(instructor.id);
+                        setInstCourse(true);
+                      }}
+                    >
+                      Manage Courses
+                    </button>{" "}
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => {
+                        handleRemoveInst(instructor.id);
+                      }}
+                    >
+                      Delete Instructor
+                    </button>
+                  </td>
+                </tr>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </>
   );

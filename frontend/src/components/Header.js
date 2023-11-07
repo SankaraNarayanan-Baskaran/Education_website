@@ -11,26 +11,29 @@ import axios from "axios";
 import "./Home.css";
 const Header = ({ isAuthorised, prop, student, children, instr }) => {
   const navigate = useNavigate();
-  const [data,setData]=useState(null)
+  const [data, setData] = useState(null);
   const user = localStorage.getItem("username");
-  const fetchInstitution=async (username)=>{
+  const fetchInstitution = async (username) => {
     try {
-     const response= await axios.get(`${config.endpoint}/icon`,{
-        params:{
-          username:username
-        }
-      })
-      if(response){
-        setData(response.data)
+    
+      const response = await axios.get(`${config.endpoint}/icon`, {
+        params: {
+          username: username,
+        },
+      });
+      if (response) {
+        console.log("USERNAME",username)
+        console.log(response.data)
+        setData(response.data);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-  useEffect(()=>{
-    const username=localStorage.getItem("username")
+  };
+  useEffect(() => {
+    const username = localStorage.getItem("username");
     fetchInstitution(username);
-  },[])
+  }, []);
   return (
     <div className="header">
       <nav
@@ -86,16 +89,27 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
             <>
               {prop ? (
                 <>
+          
                   {!student ? (
                     <>
-                    {
-                      data?(<><><img src={data.icon} alt="Img" style={{
-                      borderRadius:"50%",
-                      width:"40px",
-                      height:"40px"
-                    }}/></></>):(<></>)
-                    }
-                    
+                      {data ? (
+                        <>
+                          <>
+                            <img
+                              src={data.icon}
+                              alt="Img"
+                              style={{
+                                borderRadius: "50%",
+                                width: "40px",
+                                height: "40px",
+                              }}
+                            />
+                          </>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+
                       <button
                         class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
@@ -108,8 +122,8 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         className="btn mx-lg-2 mx-sm-1 my-sm-0"
                         style={{
                           borderRadius: "50%",
-                          backgroundColor:"aliceblue",
-                          fontWeight:"600"
+                          backgroundColor: "aliceblue",
+                          fontWeight: "600",
                         }}
                       >
                         {`${user[0].toUpperCase()}`}
@@ -129,13 +143,23 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                     <>
                       {instr ? (
                         <>
-                        {
-                      data?(<><><img src={data.icon} alt="Img" style={{
-                      borderRadius:"50%",
-                      width:"40px",
-                      height:"40px"
-                    }}/></></>):(<></>)
-                    }
+                          {data ? (
+                            <>
+                              <>
+                                <img
+                                  src={data.icon}
+                                  alt="Img"
+                                  style={{
+                                    borderRadius: "50%",
+                                    width: "40px",
+                                    height: "40px",
+                                  }}
+                                />
+                              </>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                           <button className="btn  mx-6 mr-2 my-2 my-sm-0 title">
                             🧑‍🏫{user}
                           </button>
