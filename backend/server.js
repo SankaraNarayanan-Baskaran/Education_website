@@ -71,6 +71,8 @@ const CourseDetails = sequelize.define("CourseDetails", {
   video_url: DataTypes.STRING,
   user_id: DataTypes.INTEGER,
   category: DataTypes.TEXT,
+  approved: DataTypes.BOOLEAN,
+  institution_code: DataTypes.INTEGER,
 });
 
 const Accounts = sequelize.define("Accounts", {
@@ -275,22 +277,27 @@ app.post("/api/courses", async (req, res) => {
       username,
       course_id,
       category,
+      approved,
     } = req.body;
     console.log("Username:", username);
 
-    Instructor.findOne({ where: { name: username } }).then((user) => {
-      console.log("UserID:", user.id);
-
+    const inst = await Instructor.findOne({ where: { name: username } });
+    console.log(inst.institution_code)
+    if (inst) {
+      // console.log(inst.institution_code)
       CourseDetails.create({
         name,
         description,
         price,
         video_url,
-        user_id: user.id,
+        user_id: inst.id,
         category,
+        approved,
+        institution_code: inst.institution_code,
+
+        // console.log(userId);
       });
-      // console.log(userId);
-    });
+    }
 
     // res = newCourse;
   } catch (error) {
@@ -1030,7 +1037,7 @@ app.get("/api/instructorinfo", async (req, res) => {
         institution_name: user,
       },
     });
-    console.log("1033:",students);
+    console.log("1033:", students);
     if (students) {
       const accounts = await Instructor.findAll({
         where: {
@@ -1082,9 +1089,7 @@ app.get("/api/icon", async (req, res) => {
       if (icon) {
         return res.json(icon);
       }
-    }
-    else{
-
+    } else {
     }
   } catch (error) {
     console.log("1061ERror:", error);
@@ -1138,6 +1143,62 @@ app.get("/api/manageinstcourses/:id", async (req, res) => {
     console.log(error);
   }
 });
+
+app.get("/api/pending", async (req, res) => {
+  try {
+    const username = req.query.username;
+    console.log(username);
+    const inst = await Institution.findOne({
+      where: {
+        institution_name: username,
+      },
+    });
+    if (inst) {
+      console.log(inst);
+      if (inst.id) {
+        const pending = await CourseDetails.findAll({
+          where: {
+            institution_code: inst.id,
+            approved: false,
+          },
+        });
+        if (pending) {
+          console.log(pending);
+          return res.json(pending);
+        }
+      } else {
+        console.log("Institution code is undefined");
+        return res.json([]); // Return an empty array or handle this case appropriately
+      }
+    }
+  } catch (error) {
+    console.log("ERROR:", error);
+    // Handle the error appropriately (e.g., return an error response)
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+app.put("/api/courses/:courseId/approve", async (req, res) => {
+  try {
+    const { courseId } = req.params;
+   
+     const approve= await CourseDetails.update(
+        {
+         approved:true,
+        },
+        {
+          where: {
+            id:courseId,
+          },
+        })
+    if(approve){
+      return res.status(200).json({message:"Success"})
+    }
+  } catch (error) {
+    console.log("1184Error:", error);
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on Port ${PORT}`);
 });

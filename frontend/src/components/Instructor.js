@@ -20,12 +20,17 @@ const Instructor = () => {
     video_url: "",
     username: username,
     category: "",
+    requires_Approval: false,
   });
   const handleAddCourse = async () => {
     try {
       console.log("INST:", newCourse);
-      await axios.post(`${config.endpoint}/courses`, newCourse);
-      setNewCourse({ name: "", description: "", price: "", video_url: "" });
+      const courseData = { ...newCourse };
+    if (newCourse.requires_Approval) {
+      courseData.approved = false;
+    }
+      await axios.post(`${config.endpoint}/courses`, courseData);
+      setNewCourse({ name: "", description: "", price: "", video_url: "" ,requires_Approval:false});
       fetchcourses();
     } catch (error) {
       console.error("Error adding a Course:", error);
@@ -194,6 +199,21 @@ const Instructor = () => {
                         setNewCourse({ ...newCourse, category: e.target.value })
                       }
                     />
+                    <input
+                      type="checkbox"
+                      id="requires_Approval"
+                      name="requires_Approval"
+                      value={newCourse.requires_Approval}
+                      onChange={(e) =>
+                        setNewCourse({
+                          ...newCourse,
+                          requires_Approval: e.target.checked,
+                        })
+                      }
+                    />
+                    <label htmlFor="requires_Approval">
+                      Submit for Admin Approval
+                    </label>
                     <center>
                       <button
                         className="form-button my-3"

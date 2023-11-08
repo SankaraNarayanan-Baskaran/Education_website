@@ -4,8 +4,14 @@ import axios from "axios";
 import { config } from "../App";
 import Header from "./Header";
 import { enqueueSnackbar } from "notistack";
+import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import "react-pro-sidebar/dist/css/styles.css";
+import { faGem, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import "@fontawesome/fontawesome-free/css/all.min.css";
 const Admin = () => {
   const [studentList, setStudentList] = useState([]);
+  const [pending, setPending] = useState([]);
   const [file, setFile] = useState(null);
   const [courseView, setCourseView] = useState(false);
   const [instCourse, setInstCourse] = useState(false);
@@ -132,177 +138,246 @@ const Admin = () => {
       console.log(error);
     }
   };
+
+  const fetchPendingCourses = async (username) => {
+    try {
+      const response = await axios.get(`${config.endpoint}/pending`, {
+        params: {
+          username: username,
+        },
+      });
+      if (response) {
+        console.log(response.data)
+        setPending(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleApproveCourse = async (courseId) => {
+    try {
+      // Send a request to the server to approve the course
+      const response = await axios.put(
+        `${config.endpoint}/courses/${courseId}/approve`
+      );
+  
+      if (response.status === 200) {
+        enqueueSnackbar("Course approved", { variant: "success" });
+        const newPendingList = pending.filter(
+          (course) => course.approved === true
+        );
+        setPending(newPendingList);
+      }
+    } catch (error) {
+      console.error("Error approving a Course:", error);
+    }}
   useEffect(() => {
     const username = localStorage.getItem("username");
     studentData(username);
     instructorData(username);
   }, []);
+  useEffect(() => {
+    const user = localStorage.getItem("username");
+    fetchPendingCourses(user);
+  }, []);
   return (
     <>
-      <Header />
-
-      <input type="file" accept=".csv" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload CSV</button>
-      {courseView ? (
-        <>
-          <h3>Student Courses List</h3>
-        </>
-      ) : (
-        <>
-          <h3>Student List</h3>
-        </>
-      )}
       <div>
-        <table>
+        {/* <ProSidebar style={{
+      display:"flex",
+      flexDirection:"row",
+      width:"100%",
+      height:"100%"
+     }}>
+        <Menu iconShape="square">
+          <MenuItem icon={<FontAwesomeIcon icon={faGem} />}>Dashboard</MenuItem>
+          <SubMenu title="Components" icon={<FontAwesomeIcon icon={faHeart} />}>
+            <MenuItem>Component 1</MenuItem>
+            <MenuItem>Component 2</MenuItem>
+          </SubMenu>
+        </Menu>
+      </ProSidebar> */}
+        <div>
+          <input type="file" accept=".csv" onChange={handleFileChange} />
+          <button onClick={handleUpload}>Upload CSV</button>
           {courseView ? (
             <>
-              {courses && courses.length > 0 ? (
-                <>
-                  {courses.map((course) => (
-                    <div key={course.id}>
-                      <h6>{course.course_name}</h6>
-                    </div>
-                  ))}
-                  <div>
-                    <button
-                      onClick={() => {
-                        setCourseView(false);
-                      }}
-                    >
-                      Back Home
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p>No courses to display</p>
-                  <div>
-                    <button
-                      onClick={() => {
-                        setCourseView(false);
-                      }}
-                    >
-                      Back Home
-                    </button>
-                  </div>
-                </>
-              )}
+              <h3>Student Courses List</h3>
             </>
           ) : (
             <>
-              {studentList.map((student) => (
-                <div key={student.id}>
-                  <tr>
-                    <td>
-                      {" "}
-                      <p>{student.username}</p>
-                    </td>
-                    <td>
-                      {" "}
-                      <button
-                        onClick={() => {
-                          handleManageCourses(student.id);
-                          setCourseView(true);
-                        }}
-                      >
-                        Manage Courses
-                      </button>{" "}
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => {
-                          handleRemoveUser(student.id);
-                        }}
-                      >
-                        Delete user
-                      </button>
-                    </td>
-                  </tr>
-                </div>
-              ))}
+              <h3>Student List</h3>
             </>
           )}
-        </table>
-        {instCourse ? (
-          <>
-            <h3>Instructor Courses List</h3>
-          </>
-        ) : (
-          <>
-            {" "}
-            <h3>Instructor List</h3>
-          </>
-        )}
-
-        {instCourse ? (
-          <>
-            {courses && courses.length > 0 ? (
+          <div>
+            <table>
+              {courseView ? (
+                <>
+                  {courses && courses.length > 0 ? (
+                    <>
+                      {courses.map((course) => (
+                        <div key={course.id}>
+                          <h6>{course.course_name}</h6>
+                        </div>
+                      ))}
+                      <div>
+                        <button
+                          onClick={() => {
+                            setCourseView(false);
+                          }}
+                        >
+                          Back Home
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p>No courses to display</p>
+                      <div>
+                        <button
+                          onClick={() => {
+                            setCourseView(false);
+                          }}
+                        >
+                          Back Home
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  {studentList.map((student) => (
+                    <div key={student.id}>
+                      <tr>
+                        <td>
+                          {" "}
+                          <p>{student.username}</p>
+                        </td>
+                        <td>
+                          {" "}
+                          <button
+                            onClick={() => {
+                              handleManageCourses(student.id);
+                              setCourseView(true);
+                            }}
+                          >
+                            Manage Courses
+                          </button>{" "}
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              handleRemoveUser(student.id);
+                            }}
+                          >
+                            Delete user
+                          </button>
+                        </td>
+                      </tr>
+                    </div>
+                  ))}
+                </>
+              )}
+            </table>
+            {instCourse ? (
               <>
-                {courses.map((course) => (
-                  <div key={course.id}>
-                    <h6>{course.course_name}</h6>
-                  </div>
-                ))}
-                <div>
-                  <button
-                    onClick={() => {
-                      setCourseView(false);
-                    }}
-                  >
-                    Back Home
-                  </button>
-                </div>
+                <h3>Instructor Courses List</h3>
               </>
             ) : (
               <>
-                <p>No courses to display</p>
-                <div>
-                  <button
-                    onClick={() => {
-                      setCourseView(false);
-                      setInstCourse(false)
-                    }}
-                  >
-                    Back Home
-                  </button>
-                </div>
+                {" "}
+                <h3>Instructor List</h3>
               </>
             )}
-          </>
-        ) : (
-          <>
-            {instructorList.map((instructor) => (
-              <div key={instructor.id}>
-                <tr>
-                  <td>
-                    {" "}
-                    <p>{instructor.name}</p>
-                  </td>
-                  <td>
-                    {" "}
-                    <button
-                      onClick={() => {
-                        handleInstructor(instructor.id);
-                        setInstCourse(true);
-                      }}
-                    >
-                      Manage Courses
-                    </button>{" "}
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        handleRemoveInst(instructor.id);
-                      }}
-                    >
-                      Delete Instructor
-                    </button>
-                  </td>
-                </tr>
-              </div>
-            ))}
-          </>
-        )}
+
+            {instCourse ? (
+              <>
+                {courses && courses.length > 0 ? (
+                  <>
+                    {courses.map((course) => (
+                      <div key={course.id}>
+                        <h6>{course.course_name}</h6>
+                      </div>
+                    ))}
+                    <div>
+                      <button
+                        onClick={() => {
+                          setCourseView(false);
+                        }}
+                      >
+                        Back Home
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p>No courses to display</p>
+                    <div>
+                      <button
+                        onClick={() => {
+                          setCourseView(false);
+                          setInstCourse(false);
+                        }}
+                      >
+                        Back Home
+                      </button>
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                {instructorList.map((instructor) => (
+                  <div key={instructor.id}>
+                    <tr>
+                      <td>
+                        {" "}
+                        <p>{instructor.name}</p>
+                      </td>
+                      <td>
+                        {" "}
+                        <button
+                          onClick={() => {
+                            handleInstructor(instructor.id);
+                            setInstCourse(true);
+                          }}
+                        >
+                          Manage Courses
+                        </button>{" "}
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => {
+                            handleRemoveInst(instructor.id);
+                          }}
+                        >
+                          Delete Instructor
+                        </button>
+                      </td>
+                    </tr>
+                  </div>
+                ))}
+              </>
+            )}
+            {pending.length > 0 && (
+              <>
+                <h3>Pending Courses for Approval</h3>
+                <ul>
+                  {pending.map((course) => (
+                    <li key={course.id}>
+                      {course.name} -{" "}
+                      <button onClick={() => handleApproveCourse(course.id)}>
+                        Approve
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );
