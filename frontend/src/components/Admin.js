@@ -9,6 +9,7 @@ import "react-pro-sidebar/dist/css/styles.css";
 import { faGem, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import "@fontawesome/fontawesome-free/css/all.min.css";
+import "./Admin.css"
 const Admin = () => {
   const [studentList, setStudentList] = useState([]);
   const [pending, setPending] = useState([]);
@@ -147,7 +148,7 @@ const Admin = () => {
         },
       });
       if (response) {
-        console.log(response.data)
+        console.log(response.data);
         setPending(response.data);
       }
     } catch (error) {
@@ -161,17 +162,14 @@ const Admin = () => {
       const response = await axios.put(
         `${config.endpoint}/courses/${courseId}/approve`
       );
-  
+
       if (response.status === 200) {
         enqueueSnackbar("Course approved", { variant: "success" });
-        const newPendingList = pending.filter(
-          (course) => course.approved === true
-        );
-        setPending(newPendingList);
       }
     } catch (error) {
       console.error("Error approving a Course:", error);
-    }}
+    }
+  };
   useEffect(() => {
     const username = localStorage.getItem("username");
     studentData(username);
@@ -184,7 +182,7 @@ const Admin = () => {
   return (
     <>
       <div>
-        {/* <ProSidebar style={{
+        <ProSidebar style={{
       display:"flex",
       flexDirection:"row",
       width:"100%",
@@ -197,9 +195,14 @@ const Admin = () => {
             <MenuItem>Component 2</MenuItem>
           </SubMenu>
         </Menu>
-      </ProSidebar> */}
-        <div>
-          <input type="file" accept=".csv" onChange={handleFileChange} />
+      </ProSidebar>
+        <div style={{
+          marginLeft:"3px"
+        }}>
+        <h5>Add Instructors and Students</h5>
+          <input type="file" accept=".csv" onChange={handleFileChange} style={{
+            border:"1px solid black"
+          }}/>
           <button onClick={handleUpload}>Upload CSV</button>
           {courseView ? (
             <>
@@ -248,36 +251,51 @@ const Admin = () => {
                 </>
               ) : (
                 <>
-                  {studentList.map((student) => (
-                    <div key={student.id}>
+                  <table>
+                    <thead>
                       <tr>
-                        <td>
-                          {" "}
-                          <p>{student.username}</p>
-                        </td>
-                        <td>
-                          {" "}
-                          <button
-                            onClick={() => {
-                              handleManageCourses(student.id);
-                              setCourseView(true);
-                            }}
-                          >
-                            Manage Courses
-                          </button>{" "}
-                        </td>
-                        <td>
-                          <button
-                            onClick={() => {
-                              handleRemoveUser(student.id);
-                            }}
-                          >
-                            Delete user
-                          </button>
-                        </td>
+                      <th></th>
+                        <th>Student Name</th>
+                        <th>Courses</th>
+                        <th>Delete</th>
                       </tr>
-                    </div>
-                  ))}
+                    </thead>
+                    <tbody>
+                      {studentList.map((student) => (
+                        
+                          <tr>
+                          <td>
+                            <input type="checkbox"/>
+                          </td>
+                            <td>
+                              {" "}
+                              <p>{student.username}</p>
+                            </td>
+                            <td>
+                              {" "}
+                              <button
+                                onClick={() => {
+                                  handleManageCourses(student.id);
+                                  setCourseView(true);
+                                }}
+                              >
+                                Manage Courses
+                              </button>{" "}
+                            </td>
+                            <td>
+                              <button
+                                onClick={() => {
+                                  handleRemoveUser(student.id);
+                                }}
+                              >
+                                Delete user
+                              </button>
+                            </td>
+                          </tr>
+                        
+                      ))}
+                    </tbody>
+                  </table>
                 </>
               )}
             </table>
@@ -329,8 +347,9 @@ const Admin = () => {
               </>
             ) : (
               <>
+              <table>
                 {instructorList.map((instructor) => (
-                  <div key={instructor.id}>
+                  
                     <tr>
                       <td>
                         {" "}
@@ -357,8 +376,9 @@ const Admin = () => {
                         </button>
                       </td>
                     </tr>
-                  </div>
+                  
                 ))}
+                </table>
               </>
             )}
             {pending.length > 0 && (

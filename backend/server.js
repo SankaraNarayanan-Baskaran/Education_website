@@ -114,6 +114,7 @@ const Instructor = sequelize.define("Instructor", {
   name: DataTypes.STRING,
   password: DataTypes.STRING,
   mail: DataTypes.STRING,
+  institution_code:DataTypes.INTEGER
 });
 
 const Quiz = sequelize.define("Quiz", {
@@ -283,8 +284,9 @@ app.post("/api/courses", async (req, res) => {
 
     const inst = await Instructor.findOne({ where: { name: username } });
     console.log(inst.institution_code)
+    
     if (inst) {
-      // console.log(inst.institution_code)
+      console.log("165",inst)
       CourseDetails.create({
         name,
         description,
@@ -333,7 +335,11 @@ app.get("/api/courses", async (req, res) => {
 
 app.get("/api/student", async (req, res) => {
   try {
-    const details = await CourseDetails.findAll();
+    const details = await CourseDetails.findAll({
+      where:{
+        approved:true
+      }
+    });
     return res.json(details);
   } catch (error) {
     console.error("Error fetching details:", error);

@@ -84,7 +84,7 @@ const [students,setStudents]=useState({});
   }
   const fetchcourses = async () => {
     try {
-      const response = await axios.get(`${config.endpoint}/courses`, {
+      const response = await axios.get(`${config.endpoint}/student`, {
         params: {
           username: username,
         },
@@ -310,7 +310,7 @@ useEffect(()=>{
                         src={course.video_url}
                         alt="Image"
                         width="100%"
-                        height="200px"
+                        height="150px"
                       />
                       <div class="card-body">
                         <h5 class="card-title">{course.name}</h5>
