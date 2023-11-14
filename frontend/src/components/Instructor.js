@@ -26,9 +26,7 @@ const Instructor = () => {
     try {
       console.log("INST:", newCourse);
       const courseData = { ...newCourse };
-    if (newCourse.approved) {
-      courseData.approved = false;
-    }
+    
       await axios.post(`${config.endpoint}/courses`, courseData);
       setNewCourse({ name: "", description: "", price: "", video_url: "" ,approved:false});
       fetchcourses();
@@ -199,7 +197,7 @@ const Instructor = () => {
                         setNewCourse({ ...newCourse, category: e.target.value })
                       }
                     />
-                    <input
+                    {/* <input
                       type="checkbox"
                       id="approved"
                       name="approved"
@@ -213,7 +211,7 @@ const Instructor = () => {
                     />
                     <label htmlFor="approved">
                       Submit for Admin Approval
-                    </label>
+                    </label> */}
                     <center>
                       <button
                         className="form-button my-3"

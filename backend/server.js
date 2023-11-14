@@ -335,12 +335,35 @@ app.get("/api/courses", async (req, res) => {
 
 app.get("/api/student", async (req, res) => {
   try {
-    const details = await CourseDetails.findAll({
-      where:{
-        approved:true
+    if(req.query.username){
+      const name=req.query.username
+     
+      const user=await Accounts.findOne({where:{
+        username:name
+      }})
+      if(user){
+       const courses= await CourseDetails.findAll({
+          where:{
+            institution_code:user.institution_code,
+            approved:true
+          }
+        })
+        return res.json(courses)
       }
-    });
-    return res.json(details);
+     
+    }
+    else{
+    
+        const details = await CourseDetails.findAll({
+          where:{
+            institution_code:null
+          }
+        });
+        return res.json(details);
+      
+    }
+    
+    
   } catch (error) {
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -517,8 +540,8 @@ app.get("/api/section", async (req, res) => {
   try {
     // console.log("Request:", req.body);
     const param = req.query.course_id;
-    console.log("Param:", param);
-    const some = Student_Purchases.findOne({
+    console.log("Param543:", param);
+    const some = CourseDetails.findOne({
       where: { course_id: param },
     }).then(
       async (course) => {
@@ -751,21 +774,39 @@ app.post("/api/convert", async (req, res) => {
 app.get("/api/filter", async (req, res) => {
   try {
     const category = req.query.category;
-    console.log(category);
-    if (category === "All") {
-      const ans = await CourseDetails.findAll();
-      console.log(ans);
-      return res.json(ans);
-    } else {
-      const course = await CourseDetails.findAll({
-        where: {
-          category: category,
-        },
-      });
-      if (course) {
-        res.json(course);
+    if(req.query.username){
+      const username=req.query.username
+      const user=await Accounts.findOne({
+        where:{
+          username:username
+        }
+      })
+      
+      if(user){
+        if (category === "All") {
+          const ans = await CourseDetails.findAll({
+            where:{
+              institution_code:user.institution_code
+            }
+          });
+          console.log(ans);
+          return res.json(ans);
+        } else {
+          const course = await CourseDetails.findAll({
+            where: {
+              category: category,
+              institution_code:user.institution_code
+            },
+          });
+          if (course) {
+            res.json(course);
+          }
+        }
       }
     }
+    
+    
+    
   } catch (error) {
     console.log("error:", error);
   }
@@ -788,8 +829,10 @@ app.get("/api/:courseName/students", async (req, res) => {
 });
 
 app.get("/api/instructor", async (req, res) => {
-  const name = req.query.name;
+  
   try {
+   if(req.query.name){
+    const name=req.query.name
     const user = await Instructor.findOne({
       where: {
         name: name,
@@ -801,25 +844,31 @@ app.get("/api/instructor", async (req, res) => {
     } else {
       return res.status(202).json({ message: "success" });
     }
+   }
+    
   } catch (error) {
     console.log("ERRORRR:", error);
   }
 });
 
 app.get("/api/isStudent", async (req, res) => {
-  const name = req.query.name;
+ 
   try {
-    const user = await Accounts.findOne({
-      where: {
-        username: name,
-      },
-    });
-    if (user) {
-      console.log(user);
-      return res.status(201).json({ message: "Success" });
-    } else {
-      return res.status(202).json({ message: "success" });
+    if(req.query.name){
+      const name = req.query.name;
+      const user = await Accounts.findOne({
+        where: {
+          username: name,
+        },
+      });
+      if (user) {
+        console.log(user);
+        return res.status(201).json({ message: "Success" });
+      } else {
+        return res.status(202).json({ message: "success" });
+      }
     }
+    
   } catch (error) {
     console.log("ERRORRR:", error);
   }
@@ -1014,6 +1063,8 @@ app.delete("/api/instructor/:id", async (req, res) => {
 app.get("/api/studentinfo", async (req, res) => {
   try {
     const user = req.query.username;
+  
+    if(user !== undefined){
     const students = await Institution.findOne({
       where: {
         institution_name: user,
@@ -1029,7 +1080,7 @@ app.get("/api/studentinfo", async (req, res) => {
       if (accounts) {
         return res.json(accounts);
       }
-    }
+    }}
   } catch (error) {
     console.log("Error:", error);
   }
@@ -1037,23 +1088,26 @@ app.get("/api/studentinfo", async (req, res) => {
 
 app.get("/api/instructorinfo", async (req, res) => {
   try {
-    const user = req.query.username;
-    const students = await Institution.findOne({
-      where: {
-        institution_name: user,
-      },
-    });
-    console.log("1033:", students);
-    if (students) {
-      const accounts = await Instructor.findAll({
+    if(req.query.username){
+      const user=req.query.username
+      const students = await Institution.findOne({
         where: {
-          institution_code: students.id,
+          institution_name: user,
         },
       });
-      if (accounts) {
-        return res.json(accounts);
+      console.log("1033:", students);
+      if (students) {
+        const accounts = await Instructor.findAll({
+          where: {
+            institution_code: students.id,
+          },
+        });
+        if (accounts) {
+          return res.json(accounts);
+        }
       }
     }
+    
   } catch (error) {
     console.log("Error45:", error);
   }
@@ -1061,42 +1115,45 @@ app.get("/api/instructorinfo", async (req, res) => {
 
 app.get("/api/icon", async (req, res) => {
   try {
-    const username = req.query.username;
-    console.log("1052:", username);
-    const user = await Accounts.findOne({
-      where: {
-        username: username,
-      },
-    });
-
-    const inst = await Instructor.findOne({
-      where: {
-        name: username,
-      },
-    });
-    console.log("INS", inst);
-    if (user) {
-      console.log(user);
-      const icon = await Institution.findOne({
+    
+    if(req.query.username){
+      const username=req.query.username
+      const user = await Accounts.findOne({
         where: {
-          id: user.institution_code,
+          username: username,
         },
       });
-      if (icon) {
-        console.log(icon);
-        return res.json(icon);
-      }
-    } else if (inst) {
-      const icon = await Institution.findOne({
+  
+      const inst = await Instructor.findOne({
         where: {
-          id: inst.institution_code,
+          name: username,
         },
       });
-      if (icon) {
-        return res.json(icon);
+      console.log("INS", inst);
+      if (user) {
+        console.log(user);
+        const icon = await Institution.findOne({
+          where: {
+            id: user.institution_code,
+          },
+        });
+        if (icon) {
+          console.log(icon);
+          return res.json(icon);
+        }
+      } else if (inst) {
+        const icon = await Institution.findOne({
+          where: {
+            id: inst.institution_code,
+          },
+        });
+        if (icon) {
+          return res.json(icon);
+        }
+      } else {
       }
-    } else {
     }
+    
   } catch (error) {
     console.log("1061ERror:", error);
   }

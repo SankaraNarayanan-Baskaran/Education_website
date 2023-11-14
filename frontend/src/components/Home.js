@@ -30,7 +30,7 @@ const Home = () => {
   const username = localStorage.getItem("username");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [purchased, setPurchased] = useState([]);
-  const [instructor,setInstructor]=useState(false)
+  const [instructor, setInstructor] = useState(false);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [showFilteredCourses, setShowFilteredCourses] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -50,9 +50,13 @@ const Home = () => {
   //   username:username,
   //   course_name:cou
   // }
-  const fetchCourses = async () => {
+  const fetchCourses = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/student`);
+      const response = await axios.get(`${config.endpoint}/student`, {
+        params: {
+          username: username,
+        },
+      });
       setCourses(response.data);
 
       // const purchasedResponse=await axios.get(`${config.endpoint}/purchased`,{
@@ -144,6 +148,7 @@ const Home = () => {
     const res = await axios.get(`${config.endpoint}/filter`, {
       params: {
         category: event.target.value,
+        username: username,
       },
     });
     if (res) {
@@ -162,37 +167,34 @@ const Home = () => {
         enqueueSnackbar("You are now an Instructor", { variant: "info" });
       } else if (res.status === 299) {
         enqueueSnackbar("You are already an instructor", { variant: "info" });
-      
       }
     } catch (error) {
       console.log("error", error);
     }
   };
 
-   const checkInstructor=async(username)=>{
+  const checkInstructor = async (username) => {
     try {
       console.log(username);
-     const resp= await axios.get(`${config.endpoint}/instructor`,{
-        params:{
-         name:username
-        }
-      })
-      console.log(resp)
-      if(resp.status === 201){
-        setInstructor(true)
-        
-      }
-      else if(resp.status === 202){
-        setInstructor(false)
+      const resp = await axios.get(`${config.endpoint}/instructor`, {
+        params: {
+          name: username,
+        },
+      });
+      console.log(resp);
+      if (resp.status === 201) {
+        setInstructor(true);
+      } else if (resp.status === 202) {
+        setInstructor(false);
       }
     } catch (error) {
       console.log(error);
     }
-  }
- useEffect(()=>{
-  const username=localStorage.getItem("username");
-  checkInstructor(username)
- },[])
+  };
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    checkInstructor(username);
+  }, []);
 
   const handleSearch = async () => {
     if (searchQuery.trim() !== "") {
@@ -207,7 +209,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchCourses();
+    const username = localStorage.getItem("username");
+    fetchCourses(username);
   }, []);
 
   return (
@@ -313,7 +316,7 @@ const Home = () => {
                                 }}
                                 className="det mb-4"
                                 onClick={() => {
-                                  fetchsections(course.id);
+                                  // fetchsections(course.id);
                                   setSelectedCourseDescription(course.name);
                                 }}
                               >
@@ -362,62 +365,62 @@ const Home = () => {
               <div className="product-card">
                 {searchResults.map((course) => (
                   <div key={course.id}>
-                  <div className="card mb-3 card">
-                            <img
-                              className="imgBx"
-                              src={course.video_url}
-                              alt="Image"
-                            />
-                            <div
-                              style={
-                                {
-                                  // marginLeft:"5px"
-                                }
-                              }
-                            >
-                              <h5
-                                className="card-title"
-                                style={{
-                                  marginLeft: "5px",
-                                }}
-                              >
-                                {course.name}
-                              </h5>
+                    <div className="card mb-3 card">
+                      <img
+                        className="imgBx"
+                        src={course.video_url}
+                        alt="Image"
+                      />
+                      <div
+                        style={
+                          {
+                            // marginLeft:"5px"
+                          }
+                        }
+                      >
+                        <h5
+                          className="card-title"
+                          style={{
+                            marginLeft: "5px",
+                          }}
+                        >
+                          {course.name}
+                        </h5>
 
-                              <p
-                                style={{
-                                  marginLeft: "5px",
-                                }}
-                              >
-                                ${course.price}
-                              </p>
-                              {username ? (
-                                <>
-                                  {purchased.some(
-                                    (item) => item.course_name === course.name
-                                  ) ? (
-                                    <></>
-                                  ) : (
-                                    <>
-                                      <button
-                                        style={{
-                                          width: "298.5px",
+                        <p
+                          style={{
+                            marginLeft: "5px",
+                          }}
+                        >
+                          ${course.price}
+                        </p>
+                        {username ? (
+                          <>
+                            {purchased.some(
+                              (item) => item.course_name === course.name
+                            ) ? (
+                              <></>
+                            ) : (
+                              <>
+                                <button
+                                  style={{
+                                    width: "298.5px",
 
-                                          fontSize: "13px",
-                                        }}
-                                        onClick={() => {
-                                          handlePurchase(course);
-                                        }}
-                                      >
-                                        Purchase course
-                                      </button>
-                                    </>
-                                  )}
-                                </>
-                              ) : (
-                                <></>
-                              )}
-                              </div>
+                                    fontSize: "13px",
+                                  }}
+                                  onClick={() => {
+                                    handlePurchase(course);
+                                  }}
+                                >
+                                  Purchase course
+                                </button>
+                              </>
+                            )}
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -504,7 +507,7 @@ const Home = () => {
                                     }}
                                     className="det mb-4"
                                     onClick={() => {
-                                      fetchsections(course.id);
+                                      // fetchsections(course.id);
                                       setSelectedCourseDescription(course.name);
                                     }}
                                   >
@@ -552,33 +555,51 @@ const Home = () => {
             )}
           </>
         )}
-        
       </div>
       <center>
-      
-      {
-        username?(<>
-          <div style={{
-        marginBottom:"3%"
-      }}>  
-      {instructor ?(<>
-                  <button class="btn mx-2 my-sm-0 title" onClick={()=>{
-                    
-                    navigate("/instructor")
-                  }}>Switch to Instructor view</button>
-                 </>):(<><button className="btn mx-2 my-sm-0 title" onClick={()=>{
-                 addtoInstructor()
-                 navigate("/instructor")
-                 }}>Want to be an Instructor?</button></>)}  
-                 </div> 
-        </>):(<></>)
-      }
-        
-                 </center>
+        {username ? (
+          <>
+            <div
+              style={{
+                marginBottom: "3%",
+              }}
+            >
+              {instructor ? (
+                <>
+                  <button
+                    class="btn mx-2 my-sm-0 title"
+                    onClick={() => {
+                      navigate("/instructor");
+                    }}
+                  >
+                    Switch to Instructor view
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="btn mx-2 my-sm-0 title"
+                    onClick={() => {
+                      addtoInstructor();
+                      navigate("/instructor");
+                    }}
+                  >
+                    Want to be an Instructor?
+                  </button>
+                  <button onClick={()=>{
+                    navigate("/feedback")
+                  }}>Give Feedback</button>
+                </>
+              )}
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+      </center>
 
-                 <Footer/>
+      <Footer />
     </div>
-    
   );
 };
 

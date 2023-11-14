@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { config } from "../App";
 import Header from "./Header";
+import BarGraph from "./Bar";
 import { enqueueSnackbar } from "notistack";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -182,7 +183,9 @@ const Admin = () => {
   return (
     <>
       <div>
-        <ProSidebar style={{
+      <BarGraph/>
+
+        {/* <ProSidebar style={{
       display:"flex",
       flexDirection:"row",
       width:"100%",
@@ -254,7 +257,7 @@ const Admin = () => {
                   <table>
                     <thead>
                       <tr>
-                      <th></th>
+                    
                         <th>Student Name</th>
                         <th>Courses</th>
                         <th>Delete</th>
@@ -264,9 +267,8 @@ const Admin = () => {
                       {studentList.map((student) => (
                         
                           <tr>
-                          <td>
-                            <input type="checkbox"/>
-                          </td>
+                          
+                          
                             <td>
                               {" "}
                               <p>{student.username}</p>
@@ -397,7 +399,7 @@ const Admin = () => {
               </>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

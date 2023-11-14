@@ -13,6 +13,7 @@ import Course from "./components/Course";
 import Section from "./components/Section";
 import { SnackbarProvider } from "notistack";
 import StudentsList from "./components/StudentsList";
+import Feedback from "./components/Feedback";
 import Quiz from "./components/Quiz";
 export const config = {
   endpoint: `http://localhost:3001/api`,
@@ -36,6 +37,7 @@ function App() {
         <Route path="/instructor/:courseName/students" element={<StudentsList/>}/>
         <Route path="/course/:course/quiz" element={<Quiz/>}/>
         <Route path="/admin" element={<Admin/>}/>
+        <Route path="/feedback" element={<Feedback/>}/>
       </Routes>
       </SnackbarProvider>
     </div>
