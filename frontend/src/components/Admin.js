@@ -183,14 +183,15 @@ const Admin = () => {
   return (
     <>
       <div>
-      <BarGraph/>
+     
 
-        {/* <ProSidebar style={{
+        <ProSidebar style={{
       display:"flex",
       flexDirection:"row",
       width:"100%",
       height:"100%"
      }}>
+      
         <Menu iconShape="square">
           <MenuItem icon={<FontAwesomeIcon icon={faGem} />}>Dashboard</MenuItem>
           <SubMenu title="Components" icon={<FontAwesomeIcon icon={faHeart} />}>
@@ -199,6 +200,7 @@ const Admin = () => {
           </SubMenu>
         </Menu>
       </ProSidebar>
+      <BarGraph/>
         <div style={{
           marginLeft:"3px"
         }}>
@@ -399,7 +401,7 @@ const Admin = () => {
               </>
             )}
           </div>
-        </div> */}
+        </div>
       </div>
     </>
   );

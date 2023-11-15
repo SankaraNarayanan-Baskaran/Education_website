@@ -15,6 +15,7 @@ import { SnackbarProvider } from "notistack";
 import StudentsList from "./components/StudentsList";
 import Feedback from "./components/Feedback";
 import Quiz from "./components/Quiz";
+import BarGraph from "./components/Bar";
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };
@@ -38,6 +39,8 @@ function App() {
         <Route path="/course/:course/quiz" element={<Quiz/>}/>
         <Route path="/admin" element={<Admin/>}/>
         <Route path="/feedback" element={<Feedback/>}/>
+        <Route path="/bar" element={<BarGraph/>}/>
+        
       </Routes>
       </SnackbarProvider>
     </div>
