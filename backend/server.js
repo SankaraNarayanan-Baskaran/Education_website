@@ -348,7 +348,16 @@ app.get("/api/student", async (req, res) => {
             approved:true
           }
         })
-        return res.json(courses)
+        if(courses){
+          console.log("C",courses)
+          const purchases=await Student_Purchases.findAll({
+            where:{
+             student_id:user.id
+            }
+          })
+          return res.json(courses)
+        }
+       
       }
      
     }
@@ -1217,7 +1226,7 @@ app.get("/api/pending", async (req, res) => {
       },
     });
     if (inst) {
-      console.log(inst);
+      
       if (inst.id) {
         const pending = await CourseDetails.findAll({
           where: {

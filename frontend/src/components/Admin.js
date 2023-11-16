@@ -2,21 +2,33 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { config } from "../App";
+import ChartComponent from "./Chart";
 import Header from "./Header";
 import BarGraph from "./Bar";
 import { enqueueSnackbar } from "notistack";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
-import { faGem, faHeart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFolderOpen,
+  faFolderPlus,
+  faFolderTree,
+  faGem,
+  faHeart,
+  faListCheck,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import "@fontawesome/fontawesome-free/css/all.min.css";
-import "./Admin.css"
+import "./Admin.css";
 const Admin = () => {
   const [studentList, setStudentList] = useState([]);
   const [pending, setPending] = useState([]);
   const [file, setFile] = useState(null);
   const [courseView, setCourseView] = useState(false);
   const [instCourse, setInstCourse] = useState(false);
+  const [student, setStudent] = useState(false);
+  const [instructor, setInstructor] = useState(false);
+  const [addpeople, setAddpeople] = useState(false);
   const [courses, setCourses] = useState([]);
   const [instructorList, setInstructorList] = useState([]);
   const username = localStorage.getItem("username");
@@ -29,7 +41,7 @@ const Admin = () => {
     if (file) {
       const formData = new FormData();
       formData.append("csvFile", file);
-
+      console.log(formData.get("csvFile"));
       try {
         const response = await axios.post(
           `${config.endpoint}/upload-csv`,
@@ -182,46 +194,112 @@ const Admin = () => {
   }, []);
   return (
     <>
-      <div>
-     
-
-        <ProSidebar style={{
-      display:"flex",
-      flexDirection:"row",
-      width:"100%",
-      height:"100%"
-     }}>
+    <div><Header/></div>
+    
+      <div className="row">
       
-        <Menu iconShape="square">
-          <MenuItem icon={<FontAwesomeIcon icon={faGem} />}>Dashboard</MenuItem>
-          <SubMenu title="Components" icon={<FontAwesomeIcon icon={faHeart} />}>
-            <MenuItem>Component 1</MenuItem>
-            <MenuItem>Component 2</MenuItem>
-          </SubMenu>
-        </Menu>
-      </ProSidebar>
-      <BarGraph/>
-        <div style={{
-          marginLeft:"3px"
-        }}>
-        <h5>Add Instructors and Students</h5>
-          <input type="file" accept=".csv" onChange={handleFileChange} style={{
-            border:"1px solid black"
-          }}/>
-          <button onClick={handleUpload}>Upload CSV</button>
-          {courseView ? (
-            <>
-              <h3>Student Courses List</h3>
-            </>
-          ) : (
-            <>
-              <h3>Student List</h3>
-            </>
-          )}
+        <div className="col-lg-3">
+          <ProSidebar
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <Menu iconShape="square">
+              <MenuItem icon={<FontAwesomeIcon icon={faUser} />}>
+                Dashboard
+              </MenuItem>
+              <SubMenu
+                title="Manage users"
+                icon={<FontAwesomeIcon icon={faFolderPlus} />}
+              >
+                <MenuItem
+                  onClick={() => {
+                    setStudent(true);
+                  }}
+                >
+                  Student List
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setInstructor(true);
+                  }}
+                >
+                  Instructor List
+                </MenuItem>
+              </SubMenu>
+              <SubMenu title="Manage Courses" icon={<FontAwesomeIcon icon={faListCheck}/>}>
+                <MenuItem>Student Courses</MenuItem>
+                <MenuItem>Instructor Courses</MenuItem>
+              </SubMenu>
+            </Menu>
+          </ProSidebar>
+        </div>
+        <div className="col-lg-9">
+          <div class="row sparkboxes mt-4">
+            <div class="col-md-3">
+              <div class="box box1">
+                <div class="details">
+                  <h3>1213</h3>
+                  <h4>CLICKS</h4>
+                </div>
+                <div id="spark1"></div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="box box2">
+                <div class="details">
+                  <h3>422</h3>
+                  <h4>VIEWS</h4>
+                </div>
+                <div id="spark2"></div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="box box3">
+                <div class="details">
+                  <h3>311</h3>
+                  <h4>LEADS</h4>
+                </div>
+                <div id="spark3"></div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="box box4">
+                <div class="details">
+                  <h3>22</h3>
+                  <h4>SALES</h4>
+                </div>
+                <div id="spark4"></div>
+              </div>
+            </div>
+          </div>
+
+          <ChartComponent />
           <div>
-            <table>
-              {courseView ? (
-                <>
+            <h5>Add Instructors and Students</h5>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              style={{
+                border: "1px solid black",
+              }}
+            />
+            <button onClick={handleUpload}>Upload CSV</button>
+            {/* {courseView ? (
+              <>
+                <h3>Student Courses List</h3>
+              </>
+            ) : (
+              <>
+                <h3>Student List</h3>
+              </>
+            )} */}
+            <div>
+              {/* <>
                   {courses && courses.length > 0 ? (
                     <>
                       {courses.map((course) => (
@@ -253,13 +331,13 @@ const Admin = () => {
                       </div>
                     </>
                   )}
-                </>
-              ) : (
+                </> */}
+              {student ? (
                 <>
+                  <h3>Student List</h3>
                   <table>
                     <thead>
                       <tr>
-                    
                         <th>Student Name</th>
                         <th>Courses</th>
                         <th>Delete</th>
@@ -267,139 +345,141 @@ const Admin = () => {
                     </thead>
                     <tbody>
                       {studentList.map((student) => (
-                        
-                          <tr>
-                          
-                          
-                            <td>
-                              {" "}
-                              <p>{student.username}</p>
-                            </td>
-                            <td>
-                              {" "}
-                              <button
-                                onClick={() => {
-                                  handleManageCourses(student.id);
-                                  setCourseView(true);
-                                }}
-                              >
-                                Manage Courses
-                              </button>{" "}
-                            </td>
-                            <td>
-                              <button
-                                onClick={() => {
-                                  handleRemoveUser(student.id);
-                                }}
-                              >
-                                Delete user
-                              </button>
-                            </td>
-                          </tr>
-                        
+                        <tr>
+                          <td>
+                            {" "}
+                            <p>{student.username}</p>
+                          </td>
+                          <td>
+                            {" "}
+                            <button
+                              onClick={() => {
+                                handleManageCourses(student.id);
+                                setCourseView(true);
+                              }}
+                            >
+                              Manage Courses
+                            </button>{" "}
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => {
+                                handleRemoveUser(student.id);
+                              }}
+                            >
+                              Delete user
+                            </button>
+                          </td>
+                        </tr>
                       ))}
                     </tbody>
                   </table>
                 </>
+              ) : (
+                <></>
               )}
-            </table>
-            {instCourse ? (
-              <>
-                <h3>Instructor Courses List</h3>
-              </>
-            ) : (
-              <>
-                {" "}
-                <h3>Instructor List</h3>
-              </>
-            )}
+              <></>
 
-            {instCourse ? (
-              <>
-                {courses && courses.length > 0 ? (
-                  <>
-                    {courses.map((course) => (
-                      <div key={course.id}>
-                        <h6>{course.course_name}</h6>
-                      </div>
-                    ))}
-                    <div>
-                      <button
-                        onClick={() => {
-                          setCourseView(false);
-                        }}
-                      >
-                        Back Home
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <p>No courses to display</p>
-                    <div>
-                      <button
-                        onClick={() => {
-                          setCourseView(false);
-                          setInstCourse(false);
-                        }}
-                      >
-                        Back Home
-                      </button>
-                    </div>
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-              <table>
-                {instructorList.map((instructor) => (
-                  
-                    <tr>
-                      <td>
-                        {" "}
-                        <p>{instructor.name}</p>
-                      </td>
-                      <td>
-                        {" "}
+              {/* {instCourse ? (
+                <>
+                  <h3>Instructor Courses List</h3>
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <h3>Instructor List</h3>
+                </>
+              )} */}
+
+              {/* <> */}
+              {/* {courses && courses.length > 0 ? (
+                    <>
+                      {courses.map((course) => (
+                        <div key={course.id}>
+                          <h6>{course.course_name}</h6>
+                        </div>
+                      ))}
+                      <div>
                         <button
                           onClick={() => {
-                            handleInstructor(instructor.id);
-                            setInstCourse(true);
+                            setCourseView(false);
                           }}
                         >
-                          Manage Courses
-                        </button>{" "}
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => {
-                            handleRemoveInst(instructor.id);
-                          }}
-                        >
-                          Delete Instructor
+                          Back Home
                         </button>
-                      </td>
-                    </tr>
-                  
-                ))}
-                </table>
-              </>
-            )}
-            {pending.length > 0 && (
-              <>
-                <h3>Pending Courses for Approval</h3>
-                <ul>
-                  {pending.map((course) => (
-                    <li key={course.id}>
-                      {course.name} -{" "}
-                      <button onClick={() => handleApproveCourse(course.id)}>
-                        Approve
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p>No courses to display</p>
+                      <div>
+                        <button
+                          onClick={() => {
+                            setCourseView(false);
+                            setInstCourse(false);
+                          }}
+                        >
+                          Back Home
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </> */}
+              {instructor ? (
+                <>
+                  <h3>Instructor List</h3>
+                  <table>
+                    {instructorList.map((instructor) => (
+                      <tr>
+                        <td>
+                          {" "}
+                          <p>{instructor.name}</p>
+                        </td>
+                        <td>
+                          {" "}
+                          <button
+                            onClick={() => {
+                              handleInstructor(instructor.id);
+                              setInstCourse(true);
+                            }}
+                          >
+                            Manage Courses
+                          </button>{" "}
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              handleRemoveInst(instructor.id);
+                            }}
+                          >
+                            Delete Instructor
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </table>
+                </>
+              ) : (
+                <></>
+              )}
+              <></>
+
+              {pending.length > 0 && (
+                <>
+                  <h3>Pending Courses for Approval</h3>
+                  <ul>
+                    {pending.map((course) => (
+                      <li key={course.id}>
+                        {course.name} -{" "}
+                        <button onClick={() => handleApproveCourse(course.id)}>
+                          Approve
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

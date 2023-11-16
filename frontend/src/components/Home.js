@@ -330,7 +330,18 @@ const Home = () => {
                               {purchased.some(
                                 (item) => item.course_name === course.name
                               ) ? (
-                                <></>
+                                <>
+                                  <button
+                                    style={{
+                                      width: "298.5px",
+                                      fontSize: "13px",
+                                      backgroundColor: "#CCCCCC", // Set a background color to visually indicate it's disabled
+                                    }}
+                                    disabled
+                                  >
+                                    Already purchased
+                                  </button>
+                                </>
                               ) : (
                                 <>
                                   <button
@@ -399,7 +410,18 @@ const Home = () => {
                             {purchased.some(
                               (item) => item.course_name === course.name
                             ) ? (
-                              <></>
+                              <>
+                              <button
+                                    style={{
+                                      width: "298.5px",
+                                      fontSize: "13px",
+                                      backgroundColor: "#CCCCCC", // Set a background color to visually indicate it's disabled
+                                    }}
+                                    disabled
+                                  >
+                                    Already purchased
+                                  </button>
+                              </>
                             ) : (
                               <>
                                 <button
@@ -521,7 +543,18 @@ const Home = () => {
                                   {purchased.some(
                                     (item) => item.course_name === course.name
                                   ) ? (
-                                    <></>
+                                    <>
+                                    <button
+                                    style={{
+                                      width: "298.5px",
+                                      fontSize: "13px",
+                                      backgroundColor: "#CCCCCC", // Set a background color to visually indicate it's disabled
+                                    }}
+                                    disabled
+                                  >
+                                    Already purchased
+                                  </button>
+                                    </>
                                   ) : (
                                     <>
                                       <button
@@ -586,9 +619,13 @@ const Home = () => {
                   >
                     Want to be an Instructor?
                   </button>
-                  <button onClick={()=>{
-                    navigate("/feedback")
-                  }}>Give Feedback</button>
+                  <button
+                    onClick={() => {
+                      navigate("/feedback");
+                    }}
+                  >
+                    Give Feedback
+                  </button>
                 </>
               )}
             </div>
