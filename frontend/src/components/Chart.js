@@ -61,27 +61,43 @@ const ChartComponent = () => {
         horizontal: false,
       },
     },
+    yaxis:{
+      title: {
+        text: 'Number of Students',
+        style: {
+          color: 'black', // Optional: You can customize the color
+       } },
+       labels: {
+        formatter: function (value) {
+          // Use the toFixed method to remove decimals
+          return value.toFixed(0);
+        },
+        style: {
+          colors: 'black',
+        },
+      },
+    },
+    
     series: [
       {
-        name: "Population",
+        name: "Courses",
         data: [
-          8550405, 3971883, 2720546, 2296224, 1567442, 1563025, 1469845,
-          1394928, 1300092, 1026908,
+          4,2,3,1
         ],
       },
     ],
     xaxis: {
+      title: {
+        text: 'Courses',
+        style: {
+          color: 'black', // Optional: You can customize the color
+       } },
       categories: [
-        "New York",
-        "Los Angeles",
-        "Chicago",
-        "Houston",
-        "Philadelphia",
-        "Phoenix",
-        "San Antonio",
-        "San Diego",
-        "Dallas",
-        "San Jose",
+        "mycourse",
+        "tech course",
+        "social course",
+        "Machine Learning",
+        
       ],
     },
     fill: {
@@ -91,7 +107,7 @@ const ChartComponent = () => {
       enabled: false,
     },
     title: {
-      text: "Largest US Cities By Population",
+      text: "Frequently Purchased Courses",
       align: "center",
       margin: 20,
       offsetY: 20,
@@ -143,14 +159,30 @@ const ChartComponent = () => {
     }));
   };
   const handleOrientationChange = () => {
-    setChartOptions((prevOptions) => ({
-      ...prevOptions,
-      plotOptions: {
-        bar: {
-          horizontal: !prevOptions.plotOptions.bar.horizontal,
+    setChartOptions((prevOptions) => {
+      const newOptions = {
+        ...prevOptions,
+        plotOptions: {
+          bar: {
+            horizontal: !prevOptions.plotOptions.bar.horizontal,
+          },
         },
-      },
-    }));
+      };
+  
+      // Update yaxis labels formatter when changing orientation
+      newOptions.yaxis.labels = {
+        formatter: function (value) {
+          return parseFloat(value).toFixed(0);
+        },
+        style: {
+          colors: 'black',
+        },
+      };
+  
+      return newOptions;
+    });
+  
+  
   };
 
   return (

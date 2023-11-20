@@ -9,12 +9,18 @@ import { enqueueSnackbar } from "notistack";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import {
+  faAdd,
+  faBook,
+  faChalkboardTeacher,
+  faChalkboardUser,
   faFolderOpen,
   faFolderPlus,
   faFolderTree,
   faGem,
+  faGraduationCap,
   faHeart,
   faListCheck,
+  faPersonCircleCheck,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,13 +29,17 @@ import "./Admin.css";
 const Admin = () => {
   const [studentList, setStudentList] = useState([]);
   const [pending, setPending] = useState([]);
+  const [approve, setApprove] = useState(false);
   const [file, setFile] = useState(null);
   const [courseView, setCourseView] = useState(false);
   const [instCourse, setInstCourse] = useState(false);
+  const [studentCourse,setStudentCourse]=useState(false);
+  const [instructorCourse,setInstructorCourse]=useState(false)
   const [student, setStudent] = useState(false);
   const [instructor, setInstructor] = useState(false);
   const [addpeople, setAddpeople] = useState(false);
   const [courses, setCourses] = useState([]);
+  const [instcourses, setInstCourses] = useState([]);
   const [instructorList, setInstructorList] = useState([]);
   const username = localStorage.getItem("username");
   const handleFileChange = (e) => {
@@ -169,6 +179,38 @@ const Admin = () => {
     }
   };
 
+  const handleStudentCourse=async()=>{
+    try {
+      const response=await axios.get(`${config.endpoint}/studentcourses`,{
+        params:{
+          username:username
+        }
+      })
+      if(response){
+        setCourses(response.data)
+        console.log(response.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleInstructorCourse=async()=>{
+    try {
+      const response=await axios.get(`${config.endpoint}/instcourses`,{
+        params:{
+          username:username
+        }
+      })
+      if(response){
+        setInstCourses(response.data)
+    
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const handleApproveCourse = async (courseId) => {
     try {
       // Send a request to the server to approve the course
@@ -194,10 +236,9 @@ const Admin = () => {
   }, []);
   return (
     <>
-    <div><Header/></div>
-    
+      {/* <div><Header/></div> */}
+
       <div className="row">
-      
         <div className="col-lg-3">
           <ProSidebar
             style={{
@@ -219,6 +260,7 @@ const Admin = () => {
                   onClick={() => {
                     setStudent(true);
                   }}
+                  icon={<FontAwesomeIcon icon={faGraduationCap} />}
                 >
                   Student List
                 </MenuItem>
@@ -226,13 +268,48 @@ const Admin = () => {
                   onClick={() => {
                     setInstructor(true);
                   }}
+                  icon={<FontAwesomeIcon icon={faChalkboardTeacher} />}
                 >
                   Instructor List
                 </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setAddpeople(true);
+                  }}
+                  icon={<FontAwesomeIcon icon={faAdd} />}
+                >
+                  Add Student/Instructors
+                </MenuItem>
               </SubMenu>
-              <SubMenu title="Manage Courses" icon={<FontAwesomeIcon icon={faListCheck}/>}>
-                <MenuItem>Student Courses</MenuItem>
-                <MenuItem>Instructor Courses</MenuItem>
+              <SubMenu
+                title="Manage Courses"
+                icon={<FontAwesomeIcon icon={faListCheck} />}
+              >
+                <MenuItem 
+                onClick={()=>{
+                  setStudentCourse(true)
+                  handleStudentCourse();
+                 
+                }}
+                icon={<FontAwesomeIcon icon={faBook} />}>
+                  Student Courses
+                </MenuItem>
+                <MenuItem 
+                onClick={()=>{
+                  setInstructorCourse(true)
+                  handleInstructorCourse();
+                }}
+                icon={<FontAwesomeIcon icon={faChalkboardUser} />}>
+                  Instructor Courses
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setApprove(true);
+                  }}
+                  icon={<FontAwesomeIcon icon={faPersonCircleCheck} />}
+                >
+                  Approve Courses
+                </MenuItem>
               </SubMenu>
             </Menu>
           </ProSidebar>
@@ -243,7 +320,7 @@ const Admin = () => {
               <div class="box box1">
                 <div class="details">
                   <h3>1213</h3>
-                  <h4>CLICKS</h4>
+                  <h4>SEARCHES</h4>
                 </div>
                 <div id="spark1"></div>
               </div>
@@ -261,7 +338,7 @@ const Admin = () => {
               <div class="box box3">
                 <div class="details">
                   <h3>311</h3>
-                  <h4>LEADS</h4>
+                  <h4>PURCHASES</h4>
                 </div>
                 <div id="spark3"></div>
               </div>
@@ -270,7 +347,7 @@ const Admin = () => {
               <div class="box box4">
                 <div class="details">
                   <h3>22</h3>
-                  <h4>SALES</h4>
+                  <h4>STUDENTS</h4>
                 </div>
                 <div id="spark4"></div>
               </div>
@@ -279,59 +356,26 @@ const Admin = () => {
 
           <ChartComponent />
           <div>
-            <h5>Add Instructors and Students</h5>
-            <input
-              type="file"
-              accept=".csv"
-              onChange={handleFileChange}
-              style={{
-                border: "1px solid black",
-              }}
-            />
-            <button onClick={handleUpload}>Upload CSV</button>
-            {/* {courseView ? (
+            {addpeople ? (
               <>
-                <h3>Student Courses List</h3>
+                <h5>Add Instructors and Students</h5>
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileChange}
+                  style={{
+                    border: "1px solid black",
+                  }}
+                />
+                <button onClick={handleUpload}>Upload CSV</button>
               </>
             ) : (
-              <>
-                <h3>Student List</h3>
-              </>
-            )} */}
+              <></>
+            )}
+
+          
             <div>
-              {/* <>
-                  {courses && courses.length > 0 ? (
-                    <>
-                      {courses.map((course) => (
-                        <div key={course.id}>
-                          <h6>{course.course_name}</h6>
-                        </div>
-                      ))}
-                      <div>
-                        <button
-                          onClick={() => {
-                            setCourseView(false);
-                          }}
-                        >
-                          Back Home
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <p>No courses to display</p>
-                      <div>
-                        <button
-                          onClick={() => {
-                            setCourseView(false);
-                          }}
-                        >
-                          Back Home
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </> */}
+              
               {student ? (
                 <>
                   <h3>Student List</h3>
@@ -380,51 +424,7 @@ const Admin = () => {
               )}
               <></>
 
-              {/* {instCourse ? (
-                <>
-                  <h3>Instructor Courses List</h3>
-                </>
-              ) : (
-                <>
-                  {" "}
-                  <h3>Instructor List</h3>
-                </>
-              )} */}
-
-              {/* <> */}
-              {/* {courses && courses.length > 0 ? (
-                    <>
-                      {courses.map((course) => (
-                        <div key={course.id}>
-                          <h6>{course.course_name}</h6>
-                        </div>
-                      ))}
-                      <div>
-                        <button
-                          onClick={() => {
-                            setCourseView(false);
-                          }}
-                        >
-                          Back Home
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <p>No courses to display</p>
-                      <div>
-                        <button
-                          onClick={() => {
-                            setCourseView(false);
-                            setInstCourse(false);
-                          }}
-                        >
-                          Back Home
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </> */}
+             
               {instructor ? (
                 <>
                   <h3>Instructor List</h3>
@@ -463,22 +463,64 @@ const Admin = () => {
                 <></>
               )}
               <></>
-
-              {pending.length > 0 && (
+              {approve ? (
                 <>
-                  <h3>Pending Courses for Approval</h3>
-                  <ul>
-                    {pending.map((course) => (
-                      <li key={course.id}>
-                        {course.name} -{" "}
-                        <button onClick={() => handleApproveCourse(course.id)}>
-                          Approve
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                  {pending.length > 0 ?(<><h3>Pending Courses for Approval</h3>
+                      <ul>
+                        {pending.map((course) => (
+                          <li key={course.id}>
+                            {course.name} -{" "}
+                            <button
+                              onClick={() => handleApproveCourse(course.id)}
+                            >
+                              Approve
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </>):(<>
+                      <p>No courses to approve</p>
+                    </>) 
+                    
+                      
+                  
+                  }
+                </>
+              ) : (
+                <>
+                 
                 </>
               )}
+              {
+                studentCourse?(<>
+                  {
+                    <ul>
+                        {courses.map((course) => (
+                          <li key={course.id}>
+                            {course.name} -{" "}
+                            
+                          </li>
+                        ))}
+                      </ul>
+                  }
+                  
+                </>):(<></>)
+              }
+              {
+                instructorCourse?(<>
+                  {
+                    <ul>
+                        {instcourses.map((course) => (
+                          <li key={course.id}>
+                            {course.name} -{" "}
+                            
+                          </li>
+                        ))}
+                      </ul>
+                  }
+                  
+                </>):(<></>)
+              }
             </div>
           </div>
         </div>

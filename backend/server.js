@@ -1271,6 +1271,57 @@ app.put("/api/courses/:courseId/approve", async (req, res) => {
   }
 });
 
+app.get("/api/studentcourses",async(req,res)=>{
+  try {
+    const username=req.query.username
+    const purchases=await Student_Purchases.findAll();
+    if(purchases){
+      const courses=await CourseDetails.findAll();
+      if(courses){
+        
+      }
+    }
+    const user=await Institution.findOne({where:{
+      institution_name:username
+    }})
+    if(user){
+      const courses=await CourseDetails.findAll({
+        where:{
+          institution_code:user.id
+        }
+      })
+      if(courses){
+        const purchase=await Student_Purchases.findAll()
+        return res.json(courses)
+      }
+    }
+  } catch (error) {
+    console.log("ERROR1278",error)
+  }
+})
+
+app.get("/api/instcourses",async(req,res)=>{
+  try {
+    const username=req.query.username
+    console.log(username)
+    const user=await Institution.findOne({where:{
+      institution_name:username
+    }})
+    if(user){
+      const courses=await CourseDetails.findAll({
+        where:{
+          institution_code:user.id
+        }
+      })
+      if(courses){
+        return res.json(courses)
+      }
+    }
+  } catch (error) {
+    console.log("ERROR1320",error)
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Server running on Port ${PORT}`);
 });
