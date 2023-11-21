@@ -30,6 +30,7 @@ const Admin = () => {
   const [studentList, setStudentList] = useState([]);
   const [pending, setPending] = useState([]);
   const [approve, setApprove] = useState(false);
+  const [data,setData]=useState([])
   const [file, setFile] = useState(null);
   const [courseView, setCourseView] = useState(false);
   const [instCourse, setInstCourse] = useState(false);
@@ -211,6 +212,22 @@ const Admin = () => {
     }
   }
 
+  const fetchData = async (username) => {
+    try {
+      const response = await axios.get(`${config.endpoint}/data`, {
+        params: {
+          username: username,
+        },
+      });
+
+      if (response && response.data) {
+       setData(response.data)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleApproveCourse = async (courseId) => {
     try {
       // Send a request to the server to approve the course
@@ -229,7 +246,9 @@ const Admin = () => {
     const username = localStorage.getItem("username");
     studentData(username);
     instructorData(username);
+    fetchData(username)
   }, []);
+ 
   useEffect(() => {
     const user = localStorage.getItem("username");
     fetchPendingCourses(user);
@@ -337,7 +356,7 @@ const Admin = () => {
             <div class="col-md-3">
               <div class="box box3">
                 <div class="details">
-                  <h3>311</h3>
+                  <h3>{data.length}</h3>
                   <h4>PURCHASES</h4>
                 </div>
                 <div id="spark3"></div>
@@ -346,7 +365,7 @@ const Admin = () => {
             <div class="col-md-3">
               <div class="box box4">
                 <div class="details">
-                  <h3>22</h3>
+                  <h3>{studentList.length}</h3>
                   <h4>STUDENTS</h4>
                 </div>
                 <div id="spark4"></div>
@@ -479,6 +498,8 @@ const Admin = () => {
                         ))}
                       </ul>
                     </>):(<>
+                    <br></br>
+                      <h5>Pending Courses for Approval:</h5>
                       <p>No courses to approve</p>
                     </>) 
                     
@@ -508,7 +529,12 @@ const Admin = () => {
               }
               {
                 instructorCourse?(<>
-                  {
+                  {<>
+                    <table>
+                      <thead>
+                        <th></th>
+                      </thead>
+                    </table>
                     <ul>
                         {instcourses.map((course) => (
                           <li key={course.id}>
@@ -517,6 +543,7 @@ const Admin = () => {
                           </li>
                         ))}
                       </ul>
+                      </>
                   }
                   
                 </>):(<></>)

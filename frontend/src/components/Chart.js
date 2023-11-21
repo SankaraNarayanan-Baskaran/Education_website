@@ -1,53 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
-
+import axios from "axios";
+import { config } from "../App";
 const ChartComponent = () => {
   const [chartData, setChartData] = useState({
     labels: ["June", "May", "April"],
     series: [71, 63, 77],
   });
-  const [circle, setCircle] = useState({
-    chart: {
-      height: 380,
-      type: "bar",
-      stacked: true,
-    },
-    plotOptions: {
-      bar: {
-        columnWidth: "30%",
-        horizontal: false,
-      },
-    },
-    series: [
-      {
-        name: "PRODUCT A",
-        data: [14, 25, 21, 17, 12, 13, 11, 19],
-      },
-      {
-        name: "PRODUCT B",
-        data: [13, 23, 20, 8, 13, 27, 33, 12],
-      },
-      {
-        name: "PRODUCT C",
-        data: [11, 17, 15, 15, 21, 14, 15, 13],
-      },
-    ],
-    xaxis: {
-      categories: [
-        "2011 Q1",
-        "2011 Q2",
-        "2011 Q3",
-        "2011 Q4",
-        "2012 Q1",
-        "2012 Q2",
-        "2012 Q3",
-        "2012 Q4",
-      ],
-    },
-    fill: {
-      opacity: 1,
-    },
+  const [barChart, setBarChart] = useState({
+    labels: [],
+    series: [],
   });
+  const fetchData = async (username) => {
+    try {
+      const response = await axios.get(`${config.endpoint}/data`, {
+        params: {
+          username: username,
+        },
+      });
+
+      if (response && response.data) {
+        const data = response.data;
+
+        const courseCounts = data.reduce((acc, entry) => {
+          const courseName = entry.course_name;
+          acc[courseName] = (acc[courseName] || 0) + 1;
+          return acc;
+        }, {});
+        console.log(courseCounts);
+        const newBarChart = {
+          labels: Object.keys(courseCounts),
+          series: Object.values(courseCounts),
+        };
+        console.log(newBarChart.labels, newBarChart.series);
+        setBarChart(newBarChart);
+        setChartOptions((prevOptions) => ({
+          ...prevOptions,
+          series: [
+            {
+              name: "Courses",
+              data: newBarChart.series, // Use dynamic data here
+            },
+          ],
+          xaxis: {
+            ...prevOptions.xaxis,
+            categories: newBarChart.labels, // Use dynamic data here
+          },
+        }));
+
+        console.log("167", newBarChart);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const [chartOptions, setChartOptions] = useState({
     chart: {
       height: 450,
@@ -61,44 +68,36 @@ const ChartComponent = () => {
         horizontal: false,
       },
     },
-    yaxis:{
+    yaxis: {
       title: {
-        text: 'Number of Students',
+        text: "Number of Students",
         style: {
-          color: 'black', // Optional: You can customize the color
-       } },
-       labels: {
+          color: "black",
+        },
+      },
+      labels: {
         formatter: function (value) {
-          // Use the toFixed method to remove decimals
           return value.toFixed(0);
         },
         style: {
-          colors: 'black',
+          colors: "black",
         },
       },
     },
-    
     series: [
       {
         name: "Courses",
-        data: [
-          4,2,3,1
-        ],
+        data: barChart.series,
       },
     ],
     xaxis: {
       title: {
-        text: 'Courses',
+        text: "Courses",
         style: {
-          color: 'black', // Optional: You can customize the color
-       } },
-      categories: [
-        "mycourse",
-        "tech course",
-        "social course",
-        "Machine Learning",
-        
-      ],
+          color: "black",
+        },
+      },
+      categories: barChart.labels,
     },
     fill: {
       colors: ["#F44336"],
@@ -168,39 +167,47 @@ const ChartComponent = () => {
           },
         },
       };
-  
-      // Update yaxis labels formatter when changing orientation
+
+      
       newOptions.yaxis.labels = {
         formatter: function (value) {
           return parseFloat(value).toFixed(0);
         },
         style: {
-          colors: 'black',
+          colors: "black",
         },
       };
-  
+      console.log("Current x-axis categories:", newOptions.xaxis.categories);
+      newOptions.xaxis.categories = barChart.labels;
+      console.log("182",barChart.labels)
+      console.log("Updated x-axis categories:", newOptions.xaxis.categories);
+
       return newOptions;
     });
-  
-  
   };
+
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    fetchData(username);
+  }, []);
+  
 
   return (
     <div>
       <ReactApexChart
         options={chartOptions}
         series={chartOptions.series}
-        type="bar"      
+        type="bar"
         height={450}
       />
-        <button onClick={handleOrientationChange}>Change Orientation</button>
+      <button onClick={handleOrientationChange}>Change Orientation</button>
       <ReactApexChart
         options={options}
         series={options.series}
         type="radialBar"
         height={450}
       />
-    
+
       <button onClick={handleDataChange}>Change Data</button>
     </div>
   );

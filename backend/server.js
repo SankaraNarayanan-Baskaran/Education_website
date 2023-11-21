@@ -1322,6 +1322,24 @@ app.get("/api/instcourses",async(req,res)=>{
   }
 })
 
+app.get("/api/data",async(req,res)=>{
+  try {
+    const username=req.query.username;
+    const user=await Institution.findOne({where:{
+      institution_name:username
+    }})
+    if(user){
+      const purchases=await Student_Purchases.findAll({where:{
+        institution_code:user.id
+      }})
+      if(purchases){
+        return res.json(purchases)
+      }
+    }
+  } catch (error) {
+    console.log("1329Error",error)
+  }
+})
 app.listen(PORT, () => {
   console.log(`Server running on Port ${PORT}`);
 });
