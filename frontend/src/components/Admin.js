@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { config } from "../App";
 import ChartComponent from "./Chart";
@@ -27,15 +27,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import "@fontawesome/fontawesome-free/css/all.min.css";
 import "./Admin.css";
 const Admin = () => {
+  const studentListRef = useRef();
+  const instructorListRef = useRef();
+  const pendingRef = useRef();
+  const instructorCourseRef = useRef();
+  const [isStudentListRendered, setIsStudentListRendered] = useState(false);
+  const [isInstructorListRendered, setIsInstructorListRendered] =
+    useState(false);
+  const [isPendingRendered, setIsPendingListRendered] = useState(false);
+  const [isInstructorCoursesRendered, setIsInstructorCoursesRendered] =
+    useState(false);
   const [studentList, setStudentList] = useState([]);
   const [pending, setPending] = useState([]);
   const [approve, setApprove] = useState(false);
-  const [data,setData]=useState([])
+  const [data, setData] = useState([]);
   const [file, setFile] = useState(null);
   const [courseView, setCourseView] = useState(false);
   const [instCourse, setInstCourse] = useState(false);
-  const [studentCourse,setStudentCourse]=useState(false);
-  const [instructorCourse,setInstructorCourse]=useState(false)
+  const [studentCourse, setStudentCourse] = useState(false);
+  const [instructorCourse, setInstructorCourse] = useState(false);
   const [student, setStudent] = useState(false);
   const [instructor, setInstructor] = useState(false);
   const [addpeople, setAddpeople] = useState(false);
@@ -47,6 +57,29 @@ const Admin = () => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
   };
+  useEffect(() => {
+    if (isStudentListRendered && studentListRef.current) {
+      studentListRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isStudentListRendered]);
+
+  useEffect(() => {
+    if (isInstructorListRendered && instructorListRef.current) {
+      instructorListRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isInstructorListRendered]);
+
+  useEffect(() => {
+    if (isPendingRendered && pendingRef.current) {
+      pendingRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isPendingRendered]);
+
+  useEffect(() => {
+    if (isInstructorCoursesRendered && instructorCourseRef.current) {
+      instructorCourseRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isInstructorCoursesRendered]);
 
   const handleUpload = async () => {
     if (file) {
@@ -180,37 +213,36 @@ const Admin = () => {
     }
   };
 
-  const handleStudentCourse=async()=>{
+  const handleStudentCourse = async () => {
     try {
-      const response=await axios.get(`${config.endpoint}/studentcourses`,{
-        params:{
-          username:username
-        }
-      })
-      if(response){
-        setCourses(response.data)
-        console.log(response.data)
+      const response = await axios.get(`${config.endpoint}/studentcourses`, {
+        params: {
+          username: username,
+        },
+      });
+      if (response) {
+        setCourses(response.data);
+        console.log(response.data);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  const handleInstructorCourse=async()=>{
+  const handleInstructorCourse = async () => {
     try {
-      const response=await axios.get(`${config.endpoint}/instcourses`,{
-        params:{
-          username:username
-        }
-      })
-      if(response){
-        setInstCourses(response.data)
-    
+      const response = await axios.get(`${config.endpoint}/instcourses`, {
+        params: {
+          username: username,
+        },
+      });
+      if (response) {
+        setInstCourses(response.data);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const fetchData = async (username) => {
     try {
@@ -221,7 +253,7 @@ const Admin = () => {
       });
 
       if (response && response.data) {
-       setData(response.data)
+        setData(response.data);
       }
     } catch (error) {
       console.log(error);
@@ -246,17 +278,18 @@ const Admin = () => {
     const username = localStorage.getItem("username");
     studentData(username);
     instructorData(username);
-    fetchData(username)
+    fetchData(username);
   }, []);
- 
+
   useEffect(() => {
     const user = localStorage.getItem("username");
     fetchPendingCourses(user);
   }, []);
   return (
     <>
-      {/* <div><Header/></div> */}
-
+      {/* <div><Header /></div> */}
+      {/* <center>  <h3>{username}</h3></center> */}
+      <div className="container-fluid">
       <div className="row">
         <div className="col-lg-3">
           <ProSidebar
@@ -278,6 +311,7 @@ const Admin = () => {
                 <MenuItem
                   onClick={() => {
                     setStudent(true);
+                    setIsStudentListRendered(true);
                   }}
                   icon={<FontAwesomeIcon icon={faGraduationCap} />}
                 >
@@ -286,6 +320,7 @@ const Admin = () => {
                 <MenuItem
                   onClick={() => {
                     setInstructor(true);
+                    setIsInstructorListRendered(true)
                   }}
                   icon={<FontAwesomeIcon icon={faChalkboardTeacher} />}
                 >
@@ -304,26 +339,29 @@ const Admin = () => {
                 title="Manage Courses"
                 icon={<FontAwesomeIcon icon={faListCheck} />}
               >
-                <MenuItem 
-                onClick={()=>{
-                  setStudentCourse(true)
-                  handleStudentCourse();
-                 
-                }}
-                icon={<FontAwesomeIcon icon={faBook} />}>
+                <MenuItem
+                  onClick={() => {
+                    setStudentCourse(true);
+                    handleStudentCourse();
+                  }}
+                  icon={<FontAwesomeIcon icon={faBook} />}
+                >
                   Student Courses
                 </MenuItem>
-                <MenuItem 
-                onClick={()=>{
-                  setInstructorCourse(true)
-                  handleInstructorCourse();
-                }}
-                icon={<FontAwesomeIcon icon={faChalkboardUser} />}>
+                <MenuItem
+                  onClick={() => {
+                    setInstructorCourse(true);
+                    handleInstructorCourse();
+                    setIsInstructorCoursesRendered(true)
+                  }}
+                  icon={<FontAwesomeIcon icon={faChalkboardUser} />}
+                >
                   Instructor Courses
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
                     setApprove(true);
+                    setIsPendingListRendered(true)
                   }}
                   icon={<FontAwesomeIcon icon={faPersonCircleCheck} />}
                 >
@@ -392,33 +430,76 @@ const Admin = () => {
               <></>
             )}
 
-          
             <div>
-              
               {student ? (
                 <>
-                  <h3>Student List</h3>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Student Name</th>
-                        <th>Courses</th>
-                        <th>Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {studentList.map((student) => (
+                  <div ref={isStudentListRendered ? studentListRef : null}>
+                    <h3>Student List</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Student Name</th>
+                          <th>Courses</th>
+                          <th>Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {studentList.map((student) => (
+                          <tr>
+                            <td>
+                              {" "}
+                              <p>{student.username}</p>
+                            </td>
+                            <td>
+                              {" "}
+                              <button
+                                onClick={() => {
+                                  handleManageCourses(student.id);
+                                  setCourseView(true);
+                                }}
+                              >
+                                Manage Courses
+                              </button>{" "}
+                            </td>
+                            <td>
+                              <button
+                                onClick={() => {
+                                  handleRemoveUser(student.id);
+                                }}
+                              >
+                                Delete user
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
+              <></>
+
+              {instructor ? (
+                <>
+                  <div
+                    ref={isInstructorListRendered ? instructorListRef : null}
+                  >
+                    <h3>Instructor List</h3>
+                    <table>
+                      {instructorList.map((instructor) => (
                         <tr>
                           <td>
                             {" "}
-                            <p>{student.username}</p>
+                            <p>{instructor.name}</p>
                           </td>
                           <td>
                             {" "}
                             <button
                               onClick={() => {
-                                handleManageCourses(student.id);
-                                setCourseView(true);
+                                handleInstructor(instructor.id);
+                                setInstCourse(true);
                               }}
                             >
                               Manage Courses
@@ -427,56 +508,16 @@ const Admin = () => {
                           <td>
                             <button
                               onClick={() => {
-                                handleRemoveUser(student.id);
+                                handleRemoveInst(instructor.id);
                               }}
                             >
-                              Delete user
+                              Delete Instructor
                             </button>
                           </td>
                         </tr>
                       ))}
-                    </tbody>
-                  </table>
-                </>
-              ) : (
-                <></>
-              )}
-              <></>
-
-             
-              {instructor ? (
-                <>
-                  <h3>Instructor List</h3>
-                  <table>
-                    {instructorList.map((instructor) => (
-                      <tr>
-                        <td>
-                          {" "}
-                          <p>{instructor.name}</p>
-                        </td>
-                        <td>
-                          {" "}
-                          <button
-                            onClick={() => {
-                              handleInstructor(instructor.id);
-                              setInstCourse(true);
-                            }}
-                          >
-                            Manage Courses
-                          </button>{" "}
-                        </td>
-                        <td>
-                          <button
-                            onClick={() => {
-                              handleRemoveInst(instructor.id);
-                            }}
-                          >
-                            Delete Instructor
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </table>
+                    </table>
+                  </div>
                 </>
               ) : (
                 <></>
@@ -484,73 +525,79 @@ const Admin = () => {
               <></>
               {approve ? (
                 <>
-                  {pending.length > 0 ?(<><h3>Pending Courses for Approval</h3>
-                      <ul>
-                        {pending.map((course) => (
-                          <li key={course.id}>
-                            {course.name} -{" "}
-                            <button
-                              onClick={() => handleApproveCourse(course.id)}
-                            >
-                              Approve
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </>):(<>
-                    <br></br>
-                      <h5>Pending Courses for Approval:</h5>
-                      <p>No courses to approve</p>
-                    </>) 
-                    
-                      
-                  
+                  <div ref={isPendingRendered ? pendingRef : null}>
+                    {pending.length > 0 ? (
+                      <>
+                        <h3>Pending Courses for Approval</h3>
+                        <ul>
+                          {pending.map((course) => (
+                            <li key={course.id}>
+                              {course.name} -{" "}
+                              <button
+                                onClick={() => handleApproveCourse(course.id)}
+                              >
+                                Approve
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    ) : (
+                      <>
+                        <br></br>
+                        <h5>Pending Courses for Approval:</h5>
+                        <p>No courses to approve</p>
+                      </>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
+              {studentCourse ? (
+                <>
+                  {
+                    <ul>
+                      {courses.map((course) => (
+                        <li key={course.id}>{course.name} - </li>
+                      ))}
+                    </ul>
                   }
                 </>
               ) : (
-                <>
-                 
-                </>
+                <></>
               )}
-              {
-                studentCourse?(<>
-                  {
-                    <ul>
-                        {courses.map((course) => (
-                          <li key={course.id}>
-                            {course.name} -{" "}
-                            
-                          </li>
-                        ))}
-                      </ul>
-                  }
-                  
-                </>):(<></>)
-              }
-              {
-                instructorCourse?(<>
-                  {<>
-                    <table>
-                      <thead>
-                        <th></th>
-                      </thead>
-                    </table>
-                    <ul>
-                        {instcourses.map((course) => (
-                          <li key={course.id}>
-                            {course.name} -{" "}
-                            
-                          </li>
-                        ))}
-                      </ul>
+
+              {instructorCourse ? (
+                <>
+                  <div
+                    ref={
+                      isInstructorCoursesRendered ? instructorCourseRef : null
+                    }
+                  >
+                    {
+                      <>
+                        <table>
+                          <thead>
+                            <th></th>
+                          </thead>
+                        </table>
+                        <ul>
+                          {instcourses.map((course) => (
+                            <li key={course.id}>{course.name} - </li>
+                          ))}
+                        </ul>
                       </>
-                  }
-                  
-                </>):(<></>)
-              }
+                    }
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

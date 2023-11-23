@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Header from "./Header";
-import UploadCourse from "./UploadCourse";
-import Footer from "./Footer";
+import Header from "../components/Header";
+import UploadCourse from "../components/UploadCourse";
+import Footer from "../components/Footer";
 import axios from "axios";
 import { config } from "../App";
 import "./Login.css";
@@ -58,7 +58,7 @@ const Login = () => {
 
   const logged = async (formData) => {
     try {
-      const res = await axios.post(config.endpoint + "/loginuser", {
+      const res = await axios.post(config.endpoint + "/user/loginuser", {
         username: formData.username,
         password: formData.password,
       });
@@ -75,7 +75,7 @@ const Login = () => {
   };
   const loggedInst = async (formData) => {
     try {
-      const res = await axios.post(config.endpoint + "/logininst", {
+      const res = await axios.post(config.endpoint + "/inst/logininst", {
         username: formData.username,
         password: formData.password,
       });

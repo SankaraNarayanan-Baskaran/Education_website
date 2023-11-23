@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Header from "./Header";
+import Header from "../components/Header";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { config } from "../App";
@@ -8,7 +8,7 @@ import { GoogleLoginButton } from "react-social-login-buttons";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import { useSnackbar } from "notistack";
 import Papa from "papaparse";
-import Footer from "./Footer";
+import Footer from "../components/Footer";
 import "./Register.css";
 const Register = () => {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const Register = () => {
   const [isEmailClicked, setIsEmailClicked] = useState(false);
   const [instructor, setInstructor] = useState(false);
   const [institution, setInstitution] = useState(false);
-  const [type, setType] = useState("adduser");
+  const [type, setType] = useState("user");
   const handleCriteria = () => {
     return formData.username.length < 6
       ? "Username should have atleast 6 characters"
@@ -114,7 +114,7 @@ const Register = () => {
     try {
       const type = localStorage.getItem("type");
       console.log(type);
-      const response = await axios.post(`${config.endpoint}/${type}`, {
+      const response = await axios.post(`${config.endpoint}/${type}/adduser`, {
         username: formData.username,
         password: formData.password,
         email: formData.emailaddress,
@@ -165,26 +165,7 @@ const Register = () => {
     }
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-  };
-
-  const handleUpload = async () => {
-    if (file) {
-      const formData = new FormData();
-      formData.append('csvFile', file);
-
-      try {
-        const response = await axios.post(`${config.endpoint}/upload-csv`,formData);
-        if (response.ok) {
-          alert('CSV file uploaded and data inserted successfully.');
-        }
-      } catch (error) {
-        console.error('Error uploading CSV file:', error);
-      }
-    }
-  };
+ 
   return (
     <div>
       <Header isAuthorised />
@@ -512,7 +493,7 @@ const Register = () => {
                   <></>
                 ) : (
                   <>
-                    {localStorage.setItem("type", "adduser")}
+                    {localStorage.setItem("type", "user")}
                     <textarea
                       className="col-sm-12"
                       rows={5}

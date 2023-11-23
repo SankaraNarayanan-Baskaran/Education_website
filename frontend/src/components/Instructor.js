@@ -27,7 +27,7 @@ const Instructor = () => {
       console.log("INST:", newCourse);
       const courseData = { ...newCourse };
     
-      await axios.post(`${config.endpoint}/courses`, courseData);
+      await axios.post(`${config.endpoint}/course/addcourse`, courseData);
       setNewCourse({ name: "", description: "", price: "", video_url: "" ,approved:false});
       fetchcourses();
     } catch (error) {
@@ -104,10 +104,12 @@ const Instructor = () => {
     }
   };
 
-  const fetchcourses = async () => {
+  const fetchcourses = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/student`, {
-        params: queryParams,
+      const response = await axios.get(`${config.endpoint}/instructorview`, {
+        params:{
+          username:username
+        },
       });
       console.log("Response:", response.data);
       setCourses(response.data);
@@ -119,7 +121,8 @@ const Instructor = () => {
 
   useEffect(() => {
     // Fetch all courses when the component mounts
-    fetchcourses();
+    const username=localStorage.getItem("username")
+    fetchcourses(username);
   }, []);
   const handleCreateCourse = () => {
     return <div></div>;

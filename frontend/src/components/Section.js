@@ -84,7 +84,7 @@ const [students,setStudents]=useState({});
   }
   const fetchcourses = async () => {
     try {
-      const response = await axios.get(`${config.endpoint}/student`, {
+      const response = await axios.get(`${config.endpoint}/instructorview`, {
         params: {
           username: username,
         },

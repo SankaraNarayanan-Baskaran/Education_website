@@ -67,21 +67,7 @@ const Home = () => {
     }
   };
 
-  const fetchsections = async (id) => {
-    try {
-      console.log("ID:", id);
-      const response = await axios.get(`${config.endpoint}/section`, {
-        params: {
-          course_id: id,
-        },
-      });
-      console.log("Response Data:", response.data);
-      setSections(response.data);
-      console.log("Courses:", courses);
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-    }
-  };
+ 
 
   const handlePurchase = async (course) => {
     try {
@@ -176,7 +162,7 @@ const Home = () => {
   const checkInstructor = async (username) => {
     try {
       console.log(username);
-      const resp = await axios.get(`${config.endpoint}/instructor`, {
+      const resp = await axios.get(`${config.endpoint}/isInstructor`, {
         params: {
           name: username,
         },
