@@ -4,7 +4,7 @@ import { ReactDOM } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./pages/Login";
-import Admin from "./components/Admin";
+import Admin from "./pages/Admin";
 import Register from "./pages/Register";
 import CourseDetails from "./components/CourseDetails";
 import Instructor from "./components/Instructor";
