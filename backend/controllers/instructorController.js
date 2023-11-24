@@ -1,4 +1,4 @@
-const { Instructor } = require("../models/usermodels");
+const { Instructor,CourseDetails ,Accounts,Course_Section,Student_Purchases} = require("../models/usermodels");
 const adduser = async (req, res) => {
   try {
     const { username, password, email } = req.body;
@@ -28,29 +28,110 @@ const adduser = async (req, res) => {
   }
 };
 
+const logininst = async (req, res) => {
+  try {
+    // console.log(req.body.username);
+    const { username, password } = req.body;
+    // console.log(username,password);
+    const user = await Instructor.findOne({
+      where: { name: username, password: password },
+    });
+    if (user) {
+      return res.status(201).json({
+        success: "true",
+      });
+    } else
+      return res.status(500).json({
+        success: "false",
+      });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
+const instructorview = async (req, res) => {
+  try {
+    if (req.query.username) {
+      const name = req.query.username;
 
-const logininst=async(req,res)=>{
-   
-    try {
-        // console.log(req.body.username);
-        const { username, password } = req.body;
-        // console.log(username,password);
-        const user = await Instructor.findOne({
-          where: { name: username, password: password },
+      const user = await Instructor.findOne({
+        where: {
+          name: name,
+        },
+      });
+      if (user) {
+        const courses = await CourseDetails.findAll({
+          where: {
+            user_id: user.id,
+            institution_code: user.institution_code,
+            approved: true,
+          },
         });
-        if (user) {
-          return res.status(201).json({
-            success: "true",
-          });
-        } else
-          return res.status(500).json({
-            success: "false",
-          });
-      } catch (error) {
-        console.error("Error logging in:", error);
-        res.status(500).json({ error: "Internal server error" });
+        if (courses) {
+          console.log("247C", courses);
+
+          return res.json(courses);
+        }
       }
+    } else {
+      const details = await CourseDetails.findAll({
+        where: {
+          institution_code: null,
+        },
+      });
+      return res.json(details);
+    }
+  } catch (error) {
+    console.error("Error fetching details:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const isInstructor=async(req,res)=>{
+ 
+  
+    try {
+     if(req.query.name){
+      const name=req.query.name
+      const user = await Instructor.findOne({
+        where: {
+          name: name,
+        },
+      });
+      if (user) {
+        console.log(user);
+        return res.status(201).json({ message: "Success" });
+      } else {
+        return res.status(202).json({ message: "success" });
+      }
+     }
       
+    } catch (error) {
+      console.log("ERRORRR:", error);
+    }
+ 
 }
-module.exports={adduser,logininst}
+const convertToInstructor=async(req,res)=>{
+    try {
+      const { name } = req.body;
+      console.log(name);
+      const user = await Instructor.findOne({ where: { name: name } });
+      if (user) {
+        return res.status(299).json("Already an Instructor");
+      }
+      const inst = await Accounts.findOne({ where: { username: name } });
+      if (inst) {
+        const student = await Instructor.create({
+          name: name,
+          password: inst.password,
+          mail: inst.email,
+        });
+        return res.status(201).json("Instructor");
+      }
+    } catch (error) {
+      console.log("Error:", error);
+    }
+ 
+}
+module.exports = { adduser, logininst, instructorview,isInstructor,convertToInstructor };

@@ -3,7 +3,7 @@ import { config } from "../App";
 import axios from "axios";
 import Header from "./Header";
 import { useNavigate } from "react-router-dom";
-import "./Section.css";
+import "../styles/Section.css";
 import Instructor from "./Instructor";
 import { enqueueSnackbar } from "notistack";
 const Section = ({ courseName }) => {
@@ -41,7 +41,7 @@ const [students,setStudents]=useState({});
   const handleSection = async () => {
     try {
       console.log("SEction",newSection);
-      await axios.post(`${config.endpoint}/section`, newSection);
+      await axios.post(`${config.endpoint}/course/section`, newSection);
       setAddSection({
         
         section_name: "",
@@ -57,7 +57,7 @@ const [students,setStudents]=useState({});
   const updateSection=async()=>{
     try {
       
-      const response=await axios.post(`${config.endpoint}/updateSection`,editSection)
+      const response=await axios.post(`${config.endpoint}/section/updateSection`,editSection)
       setEditSection({
         section_name: "",
        
@@ -72,7 +72,7 @@ const [students,setStudents]=useState({});
 
   const fetchsections=async (courseId)=>{
     try {
-      const response=await axios.get(`${config.endpoint}/section`,{
+      const response=await axios.get(`${config.endpoint}/course/section`,{
         params:{
           course_id:courseId
         }
@@ -84,7 +84,7 @@ const [students,setStudents]=useState({});
   }
   const fetchcourses = async () => {
     try {
-      const response = await axios.get(`${config.endpoint}/instructorview`, {
+      const response = await axios.get(`${config.endpoint}/inst/instructorview`, {
         params: {
           username: username,
         },
@@ -97,7 +97,7 @@ const [students,setStudents]=useState({});
     }
   };
   const learners=async(courseId)=>{
-    const response=await axios.get(`${config.endpoint}/learners`,{
+    const response=await axios.get(`${config.endpoint}/student/learners`,{
       params:{
         course_id:courseId
       }

@@ -3,7 +3,7 @@ import VideoPlayer from "./Video";
 import Header from "./Header";
 import Course from "./Course";
 import Footer from "./Footer";
-import "./Home.css";
+import "../styles/Home.css";
 import { styled } from "@mui/system";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -46,22 +46,17 @@ const Home = () => {
   const [selectedCourseDescription, setSelectedCourseDescription] =
     useState("");
   const [description, setDescription] = useState(false);
-  // const queryParams={
-  //   username:username,
-  //   course_name:cou
-  // }
+  
   const fetchCourses = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/student`, {
+      const response = await axios.get(`${config.endpoint}/student/studentview`, {
         params: {
           username: username,
         },
       });
       setCourses(response.data);
 
-      // const purchasedResponse=await axios.get(`${config.endpoint}/purchased`,{
-      //   params:{username}
-      // })
+     
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -73,7 +68,7 @@ const Home = () => {
     try {
       setSelectedCourse(course);
       console.log("SEL:", selectedCourse);
-      const res = await axios.post(`${config.endpoint}/learning`, {
+      const res = await axios.post(`${config.endpoint}/course/learningpurchase`, {
         course_name: course.name,
         course_description: course.description,
         video_url: course.video_url,
@@ -110,7 +105,7 @@ const Home = () => {
     if (username) {
       const fetchPurchased = async () => {
         try {
-          const res = await axios.get(`${config.endpoint}/learning`, {
+          const res = await axios.get(`${config.endpoint}/course/learning`, {
             params: {
               username: username,
             },
@@ -131,7 +126,7 @@ const Home = () => {
 
   const handleCategorySelect = async (event) => {
     setSelectedCategory(event.target.value);
-    const res = await axios.get(`${config.endpoint}/filter`, {
+    const res = await axios.get(`${config.endpoint}/course/filter`, {
       params: {
         category: event.target.value,
         username: username,
@@ -145,7 +140,7 @@ const Home = () => {
   };
   const addtoInstructor = async () => {
     try {
-      const res = await axios.post(`${config.endpoint}/convertInst`, {
+      const res = await axios.post(`${config.endpoint}/inst/convertToInstructor`, {
         name: username,
       });
       console.log(res);
@@ -162,7 +157,7 @@ const Home = () => {
   const checkInstructor = async (username) => {
     try {
       console.log(username);
-      const resp = await axios.get(`${config.endpoint}/isInstructor`, {
+      const resp = await axios.get(`${config.endpoint}/inst/isInstructor`, {
         params: {
           name: username,
         },
@@ -185,7 +180,7 @@ const Home = () => {
   const handleSearch = async () => {
     if (searchQuery.trim() !== "") {
       console.log("Search:", searchQuery);
-      const response = await axios.get(`${config.endpoint}/search`, {
+      const response = await axios.get(`${config.endpoint}/course/search`, {
         params: {
           query: searchQuery,
         },

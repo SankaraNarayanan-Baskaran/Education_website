@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Header.css";
+import "../styles/Header.css";
 import toast, { Toaster } from "react-hot-toast";
 import Course from "./Course";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,7 +8,7 @@ import { FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { config } from "../App";
 import axios from "axios";
-import "./Home.css";
+import "../styles/Home.css";
 const Header = ({ isAuthorised, prop, student, children, instr }) => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
@@ -75,7 +75,9 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                 <button
                   class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                   onClick={() => {
+                    // window.location.reload()
                     localStorage.clear();
+                    
                     navigate("/");
                   }}
                 >
@@ -132,7 +134,9 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
+                          // window.location.reload()
                           localStorage.clear();
+                          
                           navigate("/");
                         }}
                       >
@@ -184,7 +188,9 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
+                          // window.location.reload()
                           localStorage.clear();
+                      
                           navigate("/");
                         }}
                       >

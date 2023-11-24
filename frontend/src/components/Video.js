@@ -1,6 +1,6 @@
 import React from "react";
 import video from "../Videos/video.mp4";
-import "./Video.css"
+import "../styles//Video.css"
 const VideoPlayer = ({source}) => {
   return (
     <div className="centered-controls">

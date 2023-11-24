@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { config } from "../App";
 import Footer from "./Footer";
 import { ProgressBar } from "react-bootstrap";
-import "./Course.css";
+import "../styles/Course.css";
 
 const Course = () => {
  
@@ -49,7 +49,7 @@ const Course = () => {
 
   const fetchProgress = async (courseId) => {
     try {
-      const response = await axios.get(`${config.endpoint}/getProgress`, {
+      const response = await axios.get(`${config.endpoint}/course/getProgress`, {
         params: {
           username: username,
           course_id: courseId,
@@ -110,7 +110,7 @@ const Course = () => {
 
   const fetchcourses = async () => {
     try {
-      const response = await axios.get(`${config.endpoint}/learning`, {
+      const response = await axios.get(`${config.endpoint}/course/learning`, {
         params: queryParams,
       });
       setCourses(response.data);
@@ -122,7 +122,7 @@ const Course = () => {
 
   const fetchsections = async (courseId) => {
     try {
-      const response = await axios.get(`${config.endpoint}/section`, {
+      const response = await axios.get(`${config.endpoint}/course/section`, {
         params: {
           course_id: courseId,
         },

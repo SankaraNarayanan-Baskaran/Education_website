@@ -25,7 +25,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import "@fontawesome/fontawesome-free/css/all.min.css";
-import "./Admin.css";
+import "../styles/Admin.css";
 const Admin = () => {
   const studentListRef = useRef();
   const instructorListRef = useRef();
@@ -88,7 +88,7 @@ const Admin = () => {
       console.log(formData.get("csvFile"));
       try {
         const response = await axios.post(
-          `${config.endpoint}/upload-csv`,
+          `${config.endpoint}/admin/upload-csv`,
           formData
         );
         if (response.ok) {
@@ -101,7 +101,7 @@ const Admin = () => {
   };
   const studentData = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/studentinfo`, {
+      const response = await axios.get(`${config.endpoint}/admin/studentinfo`, {
         params: {
           username: username,
         },
@@ -119,7 +119,7 @@ const Admin = () => {
 
   const instructorData = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/instructorinfo`, {
+      const response = await axios.get(`${config.endpoint}/admin/instructorinfo`, {
         params: {
           username: username,
         },
@@ -137,7 +137,7 @@ const Admin = () => {
   };
   const handleRemoveUser = async (id) => {
     try {
-      const response = await axios.delete(`${config.endpoint}/user/${id}`);
+      const response = await axios.delete(`${config.endpoint}/admin/user/${id}`);
       if (response) {
         enqueueSnackbar("User removed", { variant: "success" });
         // window.location.reload()
@@ -154,7 +154,7 @@ const Admin = () => {
   const handleRemoveInst = async (id) => {
     try {
       const response = await axios.delete(
-        `${config.endpoint}/instructor/${id}`
+        `${config.endpoint}/admin/instructor/${id}`
       );
       if (response) {
         enqueueSnackbar("Instructor removed", { variant: "success" });
@@ -172,7 +172,7 @@ const Admin = () => {
   const handleManageCourses = async (id) => {
     try {
       const response = await axios.get(
-        `${config.endpoint}/managecourses/${id}`
+        `${config.endpoint}/admin/managecourses/${id}`
       );
       if (response) {
         console.log(response.data);
@@ -186,7 +186,7 @@ const Admin = () => {
   const handleInstructor = async (id) => {
     try {
       const response = await axios.get(
-        `${config.endpoint}/manageinstcourses/${id}`
+        `${config.endpoint}/admin/manageinstcourses/${id}`
       );
       if (response) {
         console.log(response.data);
@@ -199,7 +199,7 @@ const Admin = () => {
 
   const fetchPendingCourses = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/pending`, {
+      const response = await axios.get(`${config.endpoint}/admin/pending`, {
         params: {
           username: username,
         },
@@ -215,7 +215,7 @@ const Admin = () => {
 
   const handleStudentCourse = async () => {
     try {
-      const response = await axios.get(`${config.endpoint}/studentcourses`, {
+      const response = await axios.get(`${config.endpoint}/admin/studentcourses`, {
         params: {
           username: username,
         },
@@ -231,7 +231,7 @@ const Admin = () => {
 
   const handleInstructorCourse = async () => {
     try {
-      const response = await axios.get(`${config.endpoint}/instcourses`, {
+      const response = await axios.get(`${config.endpoint}/admin/instcourses`, {
         params: {
           username: username,
         },
@@ -246,7 +246,7 @@ const Admin = () => {
 
   const fetchData = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/data`, {
+      const response = await axios.get(`${config.endpoint}/admin/data`, {
         params: {
           username: username,
         },
@@ -264,7 +264,7 @@ const Admin = () => {
     try {
       // Send a request to the server to approve the course
       const response = await axios.put(
-        `${config.endpoint}/courses/${courseId}/approve`
+        `${config.endpoint}/admin/courses/${courseId}/approve`
       );
 
       if (response.status === 200) {

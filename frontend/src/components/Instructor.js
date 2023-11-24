@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import VideoInput from "./VideoInput";
-import "./Instructor.css";
+import "../styles/Instructor.css";
 import Footer from "./Footer";
 import UploadCourse from "./UploadCourse";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +36,7 @@ const Instructor = () => {
   };
   const addToStudent = async () => {
     try {
-      const res = await axios.post(`${config.endpoint}/convert`, {
+      const res = await axios.post(`${config.endpoint}/student/convertToStudent`, {
         name: username,
       });
       console.log(res);
@@ -52,7 +52,7 @@ const Instructor = () => {
   const checkStudent = async (username) => {
     try {
       console.log(username);
-      const resp = await axios.get(`${config.endpoint}/isStudent`, {
+      const resp = await axios.get(`${config.endpoint}/student/isStudent`, {
         params: {
           name: username,
         },
@@ -93,7 +93,7 @@ const Instructor = () => {
   const handleSelect = async (courseid) => {
     try {
       console.log(courseid);
-      const response = await axios.get(`${config.endpoint}/learners`, {
+      const response = await axios.get(`${config.endpoint}/student/learners`, {
         params: { username: username, course_id: courseid },
       });
       console.log(response.data);
@@ -106,7 +106,7 @@ const Instructor = () => {
 
   const fetchcourses = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/instructorview`, {
+      const response = await axios.get(`${config.endpoint}/inst/instructorview`, {
         params:{
           username:username
         },

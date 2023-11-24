@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import VideoPlayer from "./Video";
-import "./CourseDetails.css"; // Make sure this CSS file is properly linked
+import "../styles/CourseDetails.css"; // Make sure this CSS file is properly linked
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -30,7 +30,7 @@ const CourseDetails = (courseid) => {
 
   const fetchsections = async (courseId) => {
     try {
-      const response = await axios.get(`${config.endpoint}/section`, {
+      const response = await axios.get(`${config.endpoint}/course/section`, {
         params: {
           course_id: courseId,
         },
@@ -54,7 +54,7 @@ const CourseDetails = (courseid) => {
       [courseId]: [...(prevCompletedSections[courseId] || []), sectionId],
     }));
 
-    await axios.post(`${config.endpoint}/progress`, {
+    await axios.post(`${config.endpoint}/course/progress`, {
       sectionId: sectionId,
       courseId: courseId,
       username: username,
@@ -63,7 +63,7 @@ const CourseDetails = (courseid) => {
   };
   const fetchProgress = async (courseId) => {
     try {
-      const response = await axios.get(`${config.endpoint}/getProgress`, {
+      const response = await axios.get(`${config.endpoint}/course/getProgress`, {
         params: {
           username: username,
           course_id: courseId,

@@ -9,7 +9,7 @@ import { LoginSocialGoogle } from "reactjs-social-login";
 import { useSnackbar } from "notistack";
 import Papa from "papaparse";
 import Footer from "../components/Footer";
-import "./Register.css";
+import "../styles/Register.css";
 const Register = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -133,7 +133,7 @@ const Register = () => {
 
   const Institute = async (institutionData) => {
     try {
-      const response = await axios.post(`${config.endpoint}/institution`, {
+      const response = await axios.post(`${config.endpoint}/admin/institution`, {
         institution_name: institutionData.institution_name,
         password: institutionData.password,
         email: institutionData.email,
@@ -151,7 +151,7 @@ const Register = () => {
   };
   const handleggl = async (userData) => {
     try {
-      const res = await axios.post(config.endpoint + "/google", {
+      const res = await axios.post(config.endpoint + "/student/google", {
         username: userData.username,
         password: userData.password,
         email: userData.email,
@@ -493,7 +493,7 @@ const Register = () => {
                   <></>
                 ) : (
                   <>
-                    {localStorage.setItem("type", "user")}
+                    {localStorage.setItem("type", "student")}
                     <textarea
                       className="col-sm-12"
                       rows={5}

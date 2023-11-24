@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import image from "../Images/download.jpg";
 import { useNavigate } from "react-router-dom";
 import video from "../Videos/video.mp4";
-import "./UploadCourse.css";
+import "../styles/UploadCourse.css";
 import VideoPlayer from "./Video";
 const UploadCourse = () => {
   const navigate = useNavigate();

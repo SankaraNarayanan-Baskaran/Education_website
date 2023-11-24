@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { config } from "../App";
 import Header from "./Header";
-import "./StudentList.css";
+import "../styles/StudentList.css";
 const StudentsList = () => {
   const [list, setList] = useState([]); // Initialize list as an array
   const [newQuestion, setNewQuestion] = useState({});
@@ -20,7 +20,7 @@ const StudentsList = () => {
 
   const handleAddQuestion = async () => {
     try {
-      await axios.post(`${config.endpoint}/quiz`,quizData);
+      await axios.post(`${config.endpoint}/course/quiz`,quizData);
       setQuizData({
         question: "",
     option1: "",
@@ -40,7 +40,7 @@ const StudentsList = () => {
   const studentList = async (courseName) => {
     try {
       const response = await axios.get(
-        `${config.endpoint}/${courseName}/students`,
+        `${config.endpoint}/course/${courseName}/students`,
         {
           params: {
             courseName: courseName,

@@ -7,7 +7,7 @@ const Quiz = () => {
   const [quiz, setQuiz] = useState([]);
   const fetchQuiz = async (course) => {
     try {
-      const response = await axios.get(`${config.endpoint}/quiz`, {
+      const response = await axios.get(`${config.endpoint}/course/quiz`, {
         params: {
           course_name: course,
         },
@@ -22,7 +22,7 @@ const Quiz = () => {
   const handleSelect = async (question,event) => {
     try {
     //   console.log(event.target.value);
-      const response = await axios.get(`${config.endpoint}/answer`, {
+      const response = await axios.get(`${config.endpoint}/course/answer`, {
         params: {
           question: question,
           option: event.target.value,

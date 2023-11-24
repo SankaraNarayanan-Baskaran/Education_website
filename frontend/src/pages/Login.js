@@ -6,7 +6,7 @@ import UploadCourse from "../components/UploadCourse";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { config } from "../App";
-import "./Login.css";
+import "../styles/Login.css";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import { enqueueSnackbar } from "notistack";
@@ -58,7 +58,7 @@ const Login = () => {
 
   const logged = async (formData) => {
     try {
-      const res = await axios.post(config.endpoint + "/user/loginuser", {
+      const res = await axios.post(config.endpoint + "/student/loginuser", {
         username: formData.username,
         password: formData.password,
       });
@@ -93,7 +93,7 @@ const Login = () => {
 
   const loggedInstitution = async (formData) => {
     try {
-      const res = await axios.post(config.endpoint + "/logininstitution", {
+      const res = await axios.post(config.endpoint + "/admin/logininstitution", {
         institution_name: formData.username,
         password: formData.password,
       });
@@ -111,7 +111,7 @@ const Login = () => {
 
   const handleChangePassword = async (changePassword) => {
     try {
-      const res = await axios.put(config.endpoint + "/updatePass", {
+      const res = await axios.put(config.endpoint + "/student/updatePass", {
         oldPassword: changePassword.oldPassword,
         newPassword: changePassword.newPassword,
       });
@@ -130,7 +130,7 @@ const Login = () => {
 
   const handleForgotPassword = async (forgotPassword) => {
     try {
-      const res = await axios.put(config.endpoint + "/forgotPass", {
+      const res = await axios.put(config.endpoint + "/student/forgotPass", {
         username: forgotPassword.username,
 
         newPassword: forgotPassword.newPassword,
@@ -148,22 +148,7 @@ const Login = () => {
     }
   };
 
-  const handleggl = async (userData) => {
-    try {
-      const res = await axios.post(config.endpoint + "/google", {
-        username: userData.username,
-        password: userData.password,
-        email: userData.email,
-      });
-      if (res.status === 201) {
-        localStorage.setItem("username", userData.username);
-        navigate("/", { state: { isLogged: "true" } });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+ 
   const navigate = useNavigate();
 
   return (
