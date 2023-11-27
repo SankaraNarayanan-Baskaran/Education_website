@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const studentController = require("../controllers/studentController");
 
-router.post("/adduser",studentController.adduser);
+router.post("/addstudent",studentController.adduser);
 router.post("/loginuser",studentController.loginuser);
 router.post("/google",studentController.google);
 router.post("/convertToStudent",studentController.convertToStudent);

@@ -214,6 +214,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                     class=" btn mx-2 my-2 my-sm-0 title"
                     type="submit"
                     onClick={() => {
+                      localStorage.setItem("type","student")
                       navigate("/register");
                     }}
                   >

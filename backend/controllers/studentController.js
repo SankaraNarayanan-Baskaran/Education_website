@@ -32,7 +32,7 @@ const adduser = async (req, res, next) => {
   } catch (error) {
     console.error("Error creating User:", error);
     res.status(500).json({ error: "Internal server error" });
-    next(err);
+    next(error);
   }
 };
 

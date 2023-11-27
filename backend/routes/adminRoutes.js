@@ -3,7 +3,7 @@ const router = express.Router();
 
 const adminController = require("../controllers/adminController");
 
-router.post("/institution", adminController.institution);
+router.post("/addadmin", adminController.institution);
 router.post("/logininstitution", adminController.loginInstitution);
 router.post("/upload-csv", adminController.uploadCSV);
 

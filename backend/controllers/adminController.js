@@ -7,14 +7,15 @@ const {
   Progress,
   Instructor,
   Institution,
+  sendInstitutionMail
 } = require("../models/usermodels");
 
 const institution = async (req, res) => {
   try {
-    const { institution_name, password, email, address } = req.body;
+    const { username, password, email, address } = req.body;
     const userExists = await Institution.findOne({
       where: {
-        institution_name: institution_name,
+        institution_name: username,
       },
     });
     if (userExists) {
@@ -23,12 +24,12 @@ const institution = async (req, res) => {
       });
     } else {
       const newUser = await Institution.create({
-        institution_name,
+        institution_name:username,
         password,
         email,
         address,
       });
-      sendInstitutionMail(institution_name, email, password);
+      sendInstitutionMail(username, email, password);
       return res.status(201).json({
         success: "true",
         message: "Institution",
