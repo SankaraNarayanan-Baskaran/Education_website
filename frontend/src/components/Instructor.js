@@ -200,21 +200,6 @@ const Instructor = () => {
                         setNewCourse({ ...newCourse, category: e.target.value })
                       }
                     />
-                    {/* <input
-                      type="checkbox"
-                      id="approved"
-                      name="approved"
-                      value={newCourse.approved}
-                      onChange={(e) =>
-                        setNewCourse({
-                          ...newCourse,
-                         approved: e.target.checked,
-                        })
-                      }
-                    />
-                    <label htmlFor="approved">
-                      Submit for Admin Approval
-                    </label> */}
                     <center>
                       <button
                         className="form-button my-3"
@@ -272,17 +257,7 @@ const Instructor = () => {
         </div>
       </center>
 
-      {/* <button
-          style={{
-            marginBottom: "12px",
-          }}
-          class="btn mx-2 my-sm-0 "
-          onClick={() => {
-            addToStudent();
-          }}
-        >
-          Want to be a Student?
-        </button> */}
+     
 
       <Footer />
     </div>

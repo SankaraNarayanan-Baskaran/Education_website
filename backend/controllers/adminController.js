@@ -67,10 +67,10 @@ const uploadCSV = async (req, res) => {
 const loginInstitution = async (req, res) => {
   try {
     // console.log(req.body.username);
-    const { institution_name, password } = req.body;
+    const { username, password } = req.body;
     // console.log(username,password);
     const user = await Institution.findOne({
-      where: { institution_name: institution_name, password: password },
+      where: { institution_name: username, password: password },
     });
     if (user) {
       return res.status(201).json({

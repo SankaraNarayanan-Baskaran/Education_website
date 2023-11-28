@@ -22,19 +22,11 @@ const Register = () => {
     address: "",
     icon:""
   });
-
-  const [isClicked, setIsClicked] = useState(false);
-  const [isPasswordClicked, setIsPasswordClicked] = useState(false);
-  const [isConfirmClicked, setIsConfirmClicked] = useState(false);
-  const [isEmailClicked, setIsEmailClicked] = useState(false);
   const [instructor, setInstructor] = useState(false);
   const [institution, setInstitution] = useState(false);
   const [type, setType] = useState(("Student"));
 
-  const handleClick = () => {
-    setIsClicked(true);
-  };
-
+ 
   const validateEmail = (email) =>
     /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email);
 
@@ -51,27 +43,13 @@ const Register = () => {
       });
       return false;
     }
-    // if (data.username.length < 6) {
-    //   enqueueSnackbar("Username should have at least 6 characters", {
-    //     variant: "error",
-    //   });
-    //   return false;
-    // }
+    
 
     if (data.password === "") {
       enqueueSnackbar("Password cannot be empty", { variant: "error" });
       return false;
     }
-    // if (data.password.length < 6) {
-    //   enqueueSnackbar("Password should have at least 6 characters", {
-    //     variant: "error",
-    //   });
-    //   return false;
-    // }
-    // if (data.password !== data.confirmPassword) {
-    //   enqueueSnackbar("Passwords do not match", { variant: "error" });
-    //   return false;
-    // }
+   
 
     return true;
   };
