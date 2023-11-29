@@ -79,7 +79,9 @@ const Course = () => {
       <Header isAuthorised={false} prop student>
         <button
           onClick={() => {
+        
             navigate("/", { state: { isLogged: "true" } });
+            window.location.reload()
           }}
         >
           Back to Home
