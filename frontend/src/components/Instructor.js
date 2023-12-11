@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
-import VideoInput from "./VideoInput";
+
 import "../styles/Instructor.css";
 import Footer from "./Footer";
 import UploadCourse from "./UploadCourse";

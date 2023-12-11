@@ -6,12 +6,9 @@ import axios from "axios";
 import { config } from "../App";
 import { enqueueSnackbar } from "notistack";
 import "../styles/Login.css";
+import withAuthentication from "../components/HOC";
 
-const Login = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
+const Login = ({formData,setFormData,handleLogin,validateInput}) => {
 
   const [changePassword, setChangePassword] = useState({
     oldPassword: "",
@@ -20,7 +17,6 @@ const Login = () => {
   });
 
   const [forgotPass, setForgotPass] = useState(false);
-
   const [forgotPassword, setForgotPassword] = useState({
     username: "",
     newPassword: "",
@@ -34,16 +30,6 @@ const Login = () => {
 
   const [type, setType] = useState("Student");
 
-  const validateInput = (data) => {
-    if (data.username === "" || data.password === "") {
-      enqueueSnackbar("Username and Password are required fields", {
-        variant: "error",
-      });
-      return false;
-    }
-    return true;
-  };
-
   const renderInputField = (type, placeholder, value, onChange) => (
     <input
       type={type}
@@ -52,31 +38,6 @@ const Login = () => {
       onChange={onChange}
     />
   );
-
-  const handleLogin = async () => {
-    try {
-      const types = localStorage.getItem("type");
-      const res = await axios.post(
-        config.endpoint + `/${types}/login${types}`,
-        formData
-      );
-      if (res.status === 201) {
-        localStorage.setItem("username", formData.username);
-        enqueueSnackbar("Logged in Successfully", { variant: "success" });
-
-        const redirectPath = {
-          student: "/",
-          inst: "/instructor",
-          admin: "/admin",
-        };
-
-        navigate(redirectPath[types], { state: { isLogged: "true" } });
-      }
-    } catch (error) {
-      enqueueSnackbar("Invalid Credentials", { variant: "error" });
-      console.log(error);
-    }
-  };
 
   const handleAction = async (action, data) => {
     try {
@@ -248,4 +209,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withAuthentication(Login)

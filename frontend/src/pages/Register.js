@@ -10,18 +10,11 @@ import Papa from "papaparse";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styles/Register.css";
-
-const Register = () => {
+import withAuthentication from "../components/HOC";
+const Register = ({formData,setFormData,handleRegister}) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    confirmPassword: "",
-    email: "",
-    address: "",
-    icon:""
-  });
+  
   const [instructor, setInstructor] = useState(false);
   const [institution, setInstitution] = useState(false);
   const [type, setType] = useState(("Student"));
@@ -75,29 +68,7 @@ const Register = () => {
     />
   );
 
-  const Credentials = async (formData) => {
-    try {
-      const type = localStorage.getItem("type");
-      const response = await axios.post(
-        `${config.endpoint}/${type}/add${type}`,
-        {
-          username: formData.username,
-          password: formData.password,
-          email: formData.email,
-          address: formData.address,
-          icon:formData.icon
-        }
-      );
-      if (response.status === 201) {
-        navigate("/login");
-      } else if (response.status === 302) {
-        console.log("User already exists");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  
   const handleggl = async (userData) => {
     try {
       const res = await axios.post(config.endpoint + "/student/google", {
@@ -202,7 +173,7 @@ const Register = () => {
             className="login-button"
             onClick={() => {
               if (validateInput(formData)) {
-                Credentials(formData);
+                handleRegister(formData);
                 enqueueSnackbar("Registered successfully", {
                   variant: "success",
                 });
@@ -285,4 +256,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default withAuthentication(Register);
