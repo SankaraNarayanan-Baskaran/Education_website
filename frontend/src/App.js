@@ -1,7 +1,8 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { ReactDOM } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route,Router } from "react-router-dom";
+import Sample from "./components/Sample";
 import Home from "./components/Home";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
@@ -16,15 +17,18 @@ import StudentsList from "./components/StudentsList";
 import Feedback from "./components/Feedback";
 import Quiz from "./components/Quiz";
 import BarGraph from "./components/Bar";
+import { useNavigate } from "react-router-dom";
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };
 function App() {
+  
   const courseName=localStorage.getItem("courseName");
   const course=localStorage.getItem("COURSE")
   return (
     <div className="font-color font" >
     <SnackbarProvider>
+   
       <Routes>
         <Route exact path="/" element={<Home/>} />
         <Route path="/register" element={<Register />} />
@@ -40,8 +44,10 @@ function App() {
         <Route path="/admin" element={<Admin/>}/>
         <Route path="/feedback" element={<Feedback/>}/>
         <Route path="/bar" element={<BarGraph/>}/>
+        <Route path="/sample" element={<Sample/>}/>
         
       </Routes>
+      
       </SnackbarProvider>
     </div>
   );

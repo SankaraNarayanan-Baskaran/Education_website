@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
 import { useNavigate, useLocation } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import {
@@ -15,7 +15,7 @@ import { config } from "../App";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
+import axios from "axios";
 const Home = () => {
   const location = useLocation();
   const inst = location.state;

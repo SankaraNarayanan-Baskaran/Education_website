@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { config } from "../App";
-import toast, { Toaster } from "react-hot-toast";
+
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import { useSnackbar } from "notistack";
-import Papa from "papaparse";
+
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styles/Register.css";
 import withAuthentication from "../components/HOC";
+
 const Register = ({formData,setFormData,handleRegister}) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();

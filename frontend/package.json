@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fortawesome/fontawesome-free": "^6.4.2",
@@ -38,6 +39,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "type": "module",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -60,5 +62,21 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.5.1",
+    "jest-transform-stub": "^2.0.0"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios)"
+    ],
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest",
+      "\\.(css)$": "jest-transform-stub"
+    }
   }
 }
