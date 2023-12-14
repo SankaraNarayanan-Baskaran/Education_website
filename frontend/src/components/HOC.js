@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import axios from "axios";
 import { config } from "../App";
-
+import { useSnackbar } from "notistack";
 const withAuthentication = (WrappedComponent) => {
   const WithAuthenticationComponent = (props) => {
+    const {enqueueSnackbar}=useSnackbar()
     const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -14,6 +15,7 @@ const withAuthentication = (WrappedComponent) => {
     email: "",
     address: "",
     icon:""
+
   });
     const navigate = useNavigate();
 

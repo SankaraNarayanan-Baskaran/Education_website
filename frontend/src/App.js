@@ -18,6 +18,8 @@ import Feedback from "./components/Feedback";
 import Quiz from "./components/Quiz";
 import BarGraph from "./components/Bar";
 import { useNavigate } from "react-router-dom";
+import 'resize-observer-polyfill';
+
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };

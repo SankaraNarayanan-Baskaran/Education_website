@@ -4,12 +4,12 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { config } from "../App";
-import { enqueueSnackbar } from "notistack";
+import { useSnackbar } from 'notistack';
 import "../styles/Login.css";
 import withAuthentication from "../components/HOC";
 
 const Login = ({formData,setFormData,handleLogin,validateInput}) => {
-
+  const { enqueueSnackbar } = useSnackbar();
   const [changePassword, setChangePassword] = useState({
     oldPassword: "",
     newPassword: "",
@@ -112,11 +112,12 @@ const Login = ({formData,setFormData,handleLogin,validateInput}) => {
 
               <button
                 className="login-button mb-3"
-                onClick={() =>
+                onClick={() =>{
+                enqueueSnackbar("Successfull",{variant:"success"})
                   forgotPass
                     ? handleAction("forgotPass", forgotPassword)
                     : handleAction("updatePass", changePassword)
-                }
+                }}
               >
                 Confirm
               </button>

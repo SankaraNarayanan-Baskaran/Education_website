@@ -16,7 +16,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "apexcharts": "^3.44.0",
+    "apexcharts": "^3.44.2",
     "axios": "^1.5.0",
     "chart.js": "^4.4.0",
     "nodemailer": "^6.9.5",
@@ -68,7 +68,8 @@
     "@babel/preset-react": "^7.23.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
-    "jest-transform-stub": "^2.0.0"
+    "jest-transform-stub": "^2.0.0",
+    "resize-observer-polyfill": "^1.5.1"
   },
   "jest": {
     "transformIgnorePatterns": [
