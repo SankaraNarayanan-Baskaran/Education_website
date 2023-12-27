@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import RegisterFormFields from "../components/RegisterFormFields";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { config } from "../App";
@@ -13,17 +13,13 @@ import Footer from "../components/Footer";
 import "../styles/Register.css";
 import withAuthentication from "../components/HOC";
 
-const Register = ({formData,setFormData,handleRegister}) => {
+const Register = ({ formData, setFormData, handleRegister }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  
+
   const [instructor, setInstructor] = useState(false);
   const [institution, setInstitution] = useState(false);
-  const [type, setType] = useState(("Student"));
-
- 
-  const validateEmail = (email) =>
-    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email);
+  const [type, setType] = useState("Student");
 
   const validateInput = (data) => {
     const alphanumericRegex = /^[a-zA-Z0-9]+$/;
@@ -38,13 +34,11 @@ const Register = ({formData,setFormData,handleRegister}) => {
       });
       return false;
     }
-    
 
     if (data.password === "") {
       enqueueSnackbar("Password cannot be empty", { variant: "error" });
       return false;
     }
-   
 
     return true;
   };
@@ -60,17 +54,7 @@ const Register = ({formData,setFormData,handleRegister}) => {
 
     return password;
   }
-  const renderInputField = (type, placeholder, value, onChange, className) => (
-    <input
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      className={className}
-    />
-  );
 
-  
   const handleggl = async (userData) => {
     try {
       const res = await axios.post(config.endpoint + "/student/google", {
@@ -86,13 +70,17 @@ const Register = ({formData,setFormData,handleRegister}) => {
       console.log(error);
     }
   };
-  const showError = (condition, errorMessage) => {
-    return condition ? (
-      <div style={{ color: "red", textAlign: "left" }}>
-        <p>{errorMessage}</p>
-      </div>
-    ) : null;
-  };
+  useEffect(() => {
+    // Perform actions after the initial render (mounting)
+    // For example, fetch initial data, subscribe to events, etc.
+    console.log("Component is mounted");
+
+    return () => {
+      // Cleanup function for unmounting
+      // For example, unsubscribe from events or clear timers
+      console.log("Component will unmount");
+    };
+  }, []);
 
   return (
     <div>
@@ -100,77 +88,16 @@ const Register = ({formData,setFormData,handleRegister}) => {
       <center>
         <div className="login-container">
           <h3>{type} Registration</h3>
+          <RegisterFormFields
+            formData={formData}
+            setFormData={setFormData}
+            handleRegister={handleRegister}
+            institution={institution}
+            instructor={instructor}
+            setType={setType}
+            type={type}
+          />
 
-          <div className="input-container">
-            {renderInputField(
-              "text",
-              `Name of the ${type}`,
-              formData.username,
-              (e) => setFormData({ ...formData, username: e.target.value }),
-              formData.username.length < 6 ? "clicked-input" : ""
-            )}
-            {showError(
-             formData.username.length!==0&& formData.username.length < 6,
-              "*Username should have at least 6 characters"
-            )}
-
-            {renderInputField(
-              "password",
-              "Password",
-              formData.password,
-              (e) => setFormData({ ...formData, password: e.target.value }),
-              formData.password.length < 6 ? "clicked-input" : ""
-            )}
-            {showError(
-              formData.password.length!==0&& formData.password.length < 6,
-              "*Password should have at least 6 characters"
-            )}
-
-            {renderInputField(
-              "password",
-              "Confirm Password",
-              formData.confirmPassword,
-              (e) =>
-                setFormData({ ...formData, confirmPassword: e.target.value }),
-              formData.confirmPassword.length < 6 ? "clicked-input" : ""
-            )}
-            {showError(
-              formData.password !== formData.confirmPassword,
-              "*Passwords do not match"
-            )}
-
-            {renderInputField(
-              "email",
-              "Email-Address",
-              formData.email,
-              (e) => setFormData({ ...formData, email: e.target.value }),
-              !validateEmail(formData.email) ? "clicked-input" : ""
-            )}
-            {showError(
-              formData.email.length !==0 &&
-              !validateEmail(formData.email),
-              "*Invalid Email Address"
-            )}
-            {institution&&(<>
-                  {renderInputField("text","Institution Icon",formData.icon,(e)=>{
-                    setFormData({...formData,icon:e.target.value})
-                  },"")}
-                </>)}{
-              instructor?(<>
-                
-              </>):(<><textarea
-              className="col-sm-12"
-              rows={5}
-              cols={74}
-              placeholder="Address"
-              value={formData.address}
-              onChange={(e) =>
-                setFormData({ ...formData, address: e.target.value })
-              }
-            ></textarea></>)
-            }
-            
-          </div>
           <button
             className="login-button"
             onClick={() => {
@@ -220,9 +147,8 @@ const Register = ({formData,setFormData,handleRegister}) => {
                     <button
                       className="login-button"
                       onClick={() => {
-                        
                         setType("Instructor");
-                        localStorage.setItem("type","inst")
+                        localStorage.setItem("type", "inst");
                         setInstructor(true);
                       }}
                     >
@@ -231,9 +157,7 @@ const Register = ({formData,setFormData,handleRegister}) => {
                   </>
                 )}
                 {institution ? (
-                  <>
-                   
-                  </>
+                  <></>
                 ) : (
                   <>
                     <button
@@ -241,7 +165,7 @@ const Register = ({formData,setFormData,handleRegister}) => {
                       onClick={() => {
                         setInstitution(true);
                         setType("Institution");
-                        localStorage.setItem("type","admin")
+                        localStorage.setItem("type", "admin");
                       }}
                     >
                       Register As an Institution
