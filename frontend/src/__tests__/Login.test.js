@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { BrowserRouter } from 'react-router-dom';
 import Login from '../pages/Login';
-
+import axios from 'axios';
+import withAuthentication from '../components/HOC';
 jest.mock('axios'); // Assuming you are using axios for API calls
 
 describe('Login Component', () => {
@@ -33,10 +34,7 @@ describe('Login Component', () => {
     fireEvent.click(getByText('Login'));
 
     // Simulate successful login response
-    jest.spyOn(global, 'fetch').mockResolvedValue({
-      json: () => Promise.resolve({ message: 'Login successful' }),
-      status: 200,
-    });
+    axios.post.mockResolvedValue({ status: 201 });
 
     // await waitFor(() => {
     //   expect(getByText('Login successful')).toBeInTheDocument();
@@ -65,10 +63,7 @@ describe('Login Component', () => {
     fireEvent.click(getByText('Confirm'));
 
     // Simulate successful password change response
-    jest.spyOn(global, 'fetch').mockResolvedValue({
-      json: () => Promise.resolve({ message: 'Password Changed Successfully' }),
-      status: 201,
-    });
+    axios.post.mockResolvedValue({ status: 201 });
 
     // await waitFor(() => {
     //   expect(getByText('Password Changed Successfully')).toBeInTheDocument();
@@ -84,7 +79,6 @@ describe('Login Component', () => {
 
     fireEvent.click(getByText('Forgot Password'));
 
-    
     expect(getByPlaceholderText('Username')).toBeInTheDocument();
     expect(getByPlaceholderText('New Password')).toBeInTheDocument();
     expect(getByPlaceholderText('Confirm New Password')).toBeInTheDocument();
@@ -96,10 +90,7 @@ describe('Login Component', () => {
     fireEvent.click(getByText('Confirm'));
 
     // Simulate successful password recovery response
-    jest.spyOn(global, 'fetch').mockResolvedValue({
-      json: () => Promise.resolve({ message: 'Password Changed Successfully' }),
-      status: 201,
-    });
+    axios.post.mockResolvedValue({ status: 201 });
 
     // await waitFor(() => {
     //   expect(getByText('Password Changed Successfully')).toBeInTheDocument();
@@ -107,4 +98,46 @@ describe('Login Component', () => {
   });
 
   // Add more test cases as needed
+
+  test("successful login navigates to home page", async () => {
+    render(
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
+    );
+
+    // Mocking axios post request for successful login
+    axios.post.mockResolvedValue({ status: 201 });
+
+    // Filling in login form data
+    fireEvent.change(screen.getByPlaceholderText("Username"), {
+      target: { value: "testuser" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Password"), {
+      target: { value: "testpassword" },
+    });
+
+    // Clicking the Login button
+    fireEvent.click(screen.getByText("Login"));
+
+    // Wait for the axios post request to resolve
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalled();
+      expect(axios.post).toHaveBeenCalledWith(
+        expect.stringContaining(/\/api\/.*\/login.*/),
+        {
+          username: "testuser",
+          password: "testpassword",
+          // Other expected properties based on your Login component
+        }
+      );
+    });
+
+    // Wait for the navigation to home page
+    await waitFor(() => {
+      expect(screen.getByText("Logged in successfully")).toBeInTheDocument();
+      // Adjust the above line based on the text or element you expect on the home page
+    });
+  });
+
 });
