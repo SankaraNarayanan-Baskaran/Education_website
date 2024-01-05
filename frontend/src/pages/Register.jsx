@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import RegisterFormFields from "../components/RegisterFormFields";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -12,11 +12,12 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styles/Register.css";
 import withAuthentication from "../components/HOC";
+import { MyContext, useFormData } from "../components/FormContext";
 
-const Register = ({ formData, setFormData, handleRegister }) => {
+const Register = ({handleRegister }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-
+  const {formData,setFormData}=useFormData()
   const [instructor, setInstructor] = useState(false);
   const [institution, setInstitution] = useState(false);
   const [type, setType] = useState("Student");

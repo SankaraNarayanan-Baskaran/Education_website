@@ -12,6 +12,7 @@ router.get("/fetchcourses", courseController.fetchcourses);
 router.get("/learning", courseController.learning);
 router.get("/search",courseController.search);
 router.get("/:courseName/students",courseController.courseName)
+router.get("/filter", courseController.filter);
 
 router.post("/learningpurchase", purchaseController.learningpurchase);
 router.get("/purchased", purchaseController.purchased);

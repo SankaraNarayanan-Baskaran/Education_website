@@ -119,6 +119,7 @@ const search = async (req, res) => {
 const filter = async (req, res) => {
   try {
     const category = req.query.category;
+    console.log("122",category)
     if (req.query.username) {
       const username = req.query.username;
       const user = await Accounts.findOne({
@@ -130,9 +131,9 @@ const filter = async (req, res) => {
       if (user) {
         if (category === "All") {
           const ans = await CourseDetails.findAll({
-            where: {
-              institution_code: user.institution_code,
-            },
+            where:{
+              institution_code:user.institution_code
+            }
           });
           console.log(ans);
           return res.json(ans);
@@ -140,17 +141,23 @@ const filter = async (req, res) => {
           const course = await CourseDetails.findAll({
             where: {
               category: category,
-              institution_code: user.institution_code,
+              institution_code:user.institution_code
             },
           });
           if (course) {
-            res.json(course);
+           return res.json(course);
           }
         }
       }
+      else
+      {
+        console.log(username,category)
+      }
     }
   } catch (error) {
-    console.log("error:", error);
+    const category = req.query.category;
+    const username=req.query.username;
+    console.log(category,username);
   }
 };
 const courseName=async(req,res)=>{

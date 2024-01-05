@@ -1,22 +1,15 @@
 // withAuthentication.jsx
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import axios from "axios";
 import { config } from "../App";
 import { useSnackbar } from "notistack";
+import { useFormData } from "./FormContext";
 const withAuthentication = (WrappedComponent) => {
   const WithAuthenticationComponent = (props) => {
     const {enqueueSnackbar}=useSnackbar()
-    const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    confirmPassword: "",
-    email: "",
-    address: "",
-    icon:""
-
-  });
+    const {formData,setFormData}=useFormData()
     const navigate = useNavigate();
 
     const handleLogin = async () => {

@@ -80,6 +80,7 @@ const Home = () => {
 
   const handleCategorySelect = async (event) => {
     setSelectedCategory(event.target.value);
+    console.log(event.target.value,username)
     const res = await axios.get(`${config.endpoint}/course/filter`, {
       params: {
         category: event.target.value,
@@ -88,6 +89,10 @@ const Home = () => {
     });
     if (res) {
       setFilteredCourses(res.data);
+      console.log(res.data)
+    }
+    else{
+      console.log("HHHH")
     }
 
     setShowFilteredCourses(true);
