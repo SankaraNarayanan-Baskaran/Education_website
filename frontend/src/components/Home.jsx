@@ -142,7 +142,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const username = localStorage.getItem("username");
     fetchCourses(username);
   }, []);
 

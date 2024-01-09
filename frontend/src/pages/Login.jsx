@@ -7,9 +7,10 @@ import { config } from "../App";
 import { useSnackbar } from 'notistack';
 import "../styles/Login.css";
 import withAuthentication from "../components/HOC";
-
-const Login = ({formData,setFormData,handleLogin,validateInput}) => {
+import { MyContext, useFormData } from "../components/FormContext";
+const Login = ({handleLogin,validateInput}) => {
   const { enqueueSnackbar } = useSnackbar();
+  const {formData,setFormData}=useFormData();
   const [changePassword, setChangePassword] = useState({
     oldPassword: "",
     newPassword: "",

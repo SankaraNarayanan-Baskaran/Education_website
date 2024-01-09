@@ -17,7 +17,7 @@ import { MyContext, useFormData } from "../components/FormContext";
 const Register = ({handleRegister }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const {formData,setFormData}=useFormData()
+  const {formData,setFormData}=useFormData();
   const [instructor, setInstructor] = useState(false);
   const [institution, setInstitution] = useState(false);
   const [type, setType] = useState("Student");
