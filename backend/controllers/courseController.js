@@ -7,7 +7,7 @@ const {
   Progress,
   Instructor,
 } = require("../models/usermodels");
-
+const { Sequelize } = require('sequelize');
 const addcourse = async (req, res) => {
   try {
     const {
@@ -102,17 +102,31 @@ const learning = async (req, res) => {
 
 const search = async (req, res) => {
   try {
-    const results = await CourseDetails.findAll({
-      where: {
-        name: {
-          [Sequelize.Op.iLike]: `%${req.query.query}%`,
+    const query = req.query.query || ''; // If the query parameter is undefined, set it to an empty string
+
+    // Check if the query is empty
+    if (query.trim() === '') {
+      // Handle the case when the query is empty
+      // For example, return all records or provide a default view
+      // You can modify this part based on your application's requirements
+      const allResults = await CourseDetails.findAll();
+      console.log("All Results:", allResults);
+      res.json(allResults);
+    } else {
+      // Perform the search if the query is not empty
+      const results = await CourseDetails.findAll({
+        where: {
+          name: {
+            [Sequelize.Op.iLike]: `%${query}%`,
+          },
         },
-      },
-    });
-    console.log("Query:", results);
-    res.json(results);
+      });
+      console.log("Query Results:", results);
+      res.json(results);
+    }
   } catch (error) {
-    console.log("Error:", error);
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

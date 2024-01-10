@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { FormDataProvider } from "./components/FormContext";
 import { UsernameDataProvider } from "./components/UserContext";
 import 'resize-observer-polyfill';
-
+import { CourseProvider } from "./components/CourseContext";
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };
@@ -39,6 +39,7 @@ function App() {
     
     <SnackbarProvider>
     <FormDataProvider>
+    <CourseProvider>
 
       <Routes>
         <Route exact path="/" element={<Home/>} />
@@ -59,7 +60,7 @@ function App() {
         <Route path="/sample" element={<Sample/>}/>
         
       </Routes>
-     
+      </CourseProvider>
       </FormDataProvider>
       </SnackbarProvider>
     </div>

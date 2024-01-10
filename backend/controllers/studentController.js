@@ -5,6 +5,7 @@ const {
   Student_Purchases,
   Instructor,
 } = require("../models/usermodels");
+const jwtUtils = require("../utils/jwtUtils");
 const adduser = async (req, res, next) => {
   try {
     const { username, password, email, address } = req.body;
@@ -45,6 +46,8 @@ const loginuser = async (req, res) => {
       where: { username: username, password: password },
     });
     if (user) {
+      const token = jwtUtils.generateToken(username, 'student');
+      console.log('Generated Token:', token);
       return res.status(201).json({
         success: "true",
       });

@@ -128,6 +128,7 @@
     "cors": "^2.8.5",
     "cosmiconfig": "^7.1.0",
     "cross-spawn": "^7.0.3",
+    "crypto": "^1.0.1",
     "crypto-random-string": "^2.0.0",
     "css-blank-pseudo": "^3.0.3",
     "css-declaration-sorter": "^6.4.1",

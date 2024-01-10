@@ -12,7 +12,9 @@ const app = express();
 const { Sequelize, DataTypes } = require("sequelize");
 const coursedetails = require("./models/coursedetails");
 const storage = multer.memoryStorage();
+const authenticateToken = require('./utils/jwtUtils');
 const upload = multer({ storage: storage });
+
 app.use(bodyParser.json());
 // app.use(express.json());
 app.use(cors());
@@ -29,6 +31,9 @@ const studentRoutes = require("./routes/studentRoutes");
 const instructorRoutes=require("./routes/instructorRoutes");
 const courseRoutes=require("./routes/courseRoutes");
 const adminRoutes=require("./routes/adminRoutes")
+
+
+
 
 app.use("/api/student", studentRoutes);
 app.use("/api/inst",instructorRoutes);
