@@ -49,8 +49,10 @@ const loginuser = async (req, res) => {
       const token = jwtUtils.generateToken(username, 'student');
       console.log('Generated Token:', token);
       return res.status(201).json({
-        success: "true",
+        success: true,
+        data: token, // Assuming res.data contains the data you want to return
       });
+      
     } else
       return res.status(500).json({
         success: "false",

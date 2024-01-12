@@ -6,7 +6,9 @@ import axios from "axios";
 import { config } from "../App";
 import { useSnackbar } from "notistack";
 import { useFormData } from "./FormContext";
+
 const withAuthentication = (WrappedComponent) => {
+  
   const WithAuthenticationComponent = (props) => {
     const {enqueueSnackbar}=useSnackbar()
     const {formData,setFormData}=useFormData()
@@ -20,6 +22,43 @@ const withAuthentication = (WrappedComponent) => {
           formData
         );
         if (res.status === 201) {
+          // const { token } = res.data;
+          // const decodedToken = jwt.decode(token);
+         
+          // // Access the decoded data
+          // console.log(decodedToken);
+
+          const parseJwt = (token) => {
+            if (typeof token !== 'string') {
+              console.error('Invalid token format:', token);
+              return null;
+            }
+          
+            try {
+              const base64Url = token.split('.')[1];
+              const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+              const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+              }).join(''));
+          
+              const payload = JSON.parse(jsonPayload);
+              return payload;
+            } catch (error) {
+              console.error('Error decoding token:', error);
+              return null;
+            }
+          };
+          const decodedToken = parseJwt(res.data);
+          if (decodedToken) {
+            console.log(decodedToken.username); // Display the username
+            console.log(decodedToken.type);     // Display the type
+          } else {
+            console.log('Failed to decode token.');
+            console.log(decodedToken); // Display the username
+            console.log(decodedToken);
+          }
+    
+        
           localStorage.setItem("username", formData.username);
           enqueueSnackbar("Logged in Successfully", { variant: "success" });
 

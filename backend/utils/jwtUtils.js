@@ -2,15 +2,22 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-function generateToken(username, type) {
-  const secretKey = generateStrongSecretKey();
+const generateToken = (username, type) => {
+  const SECRET_KEY=generateStrongSecretKey()
+  const tokenData = {
+    username: username,
+    type: 'student',
+    // Add other claims or data you want in the token
+  };
 
-  return jwt.sign(
-    {username, type },
-    secretKey,
-    { algorithm: 'HS256', expiresIn: '1h' } // Adjust expiresIn as needed
-  );
-}
+  const options = {
+    expiresIn: '1h', // Set the token expiration time as needed
+  };
+
+
+  const token = jwt.sign(tokenData, SECRET_KEY, options);
+  return token;
+};
 
 function generateStrongSecretKey() {
   const key = crypto.randomBytes(32); // 32 bytes = 256 bits

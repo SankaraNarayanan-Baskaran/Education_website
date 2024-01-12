@@ -19,7 +19,9 @@
     "apexcharts": "^3.44.2",
     "axios": "^1.5.0",
     "axios-mock-adapter": "^1.22.0",
+    "buffer": "^6.0.3",
     "chart.js": "^4.4.0",
+    "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.5",
     "notistack": "^3.0.1",
     "papaparse": "^5.4.1",
@@ -37,14 +39,15 @@
     "react-social-login-buttons": "^3.6.1",
     "reactjs-social-login": "^2.5.6",
     "recharts": "^2.9.3",
+    "util": "^0.12.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "type": "module",
     "start": "react-scripts start",
-    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build": "webpack"
   },
   "eslintConfig": {
     "extends": [
@@ -70,7 +73,9 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
     "jest-transform-stub": "^2.0.0",
-    "resize-observer-polyfill": "^1.5.1"
+    "resize-observer-polyfill": "^1.5.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
   },
   "jest": {
     "transformIgnorePatterns": [
