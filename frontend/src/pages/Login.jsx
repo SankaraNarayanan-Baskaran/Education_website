@@ -8,6 +8,7 @@ import { useSnackbar } from 'notistack';
 import "../styles/Login.css";
 import withAuthentication from "../components/HOC";
 import { MyContext, useFormData } from "../components/FormContext";
+import Cookies from "universal-cookie";
 const Login = ({handleLogin,validateInput}) => {
   const { enqueueSnackbar } = useSnackbar();
   const {formData,setFormData}=useFormData();
@@ -16,7 +17,8 @@ const Login = ({handleLogin,validateInput}) => {
     newPassword: "",
     confirmPassword: "",
   });
-
+// const cookies=new Cookies();
+// cookies.set("username","Smudge")
   const [forgotPass, setForgotPass] = useState(false);
   const [forgotPassword, setForgotPassword] = useState({
     username: "",

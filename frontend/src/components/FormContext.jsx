@@ -11,6 +11,7 @@ export const FormDataProvider = ({ children }) => {
     email: "",
     address: "",
     icon: "",
+    type:""
   });
 
   return (

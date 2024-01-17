@@ -1,4 +1,5 @@
 const { Instructor,CourseDetails ,Accounts,Course_Section,Student_Purchases} = require("../models/usermodels");
+const jwtUtils = require("../utils/jwtUtils");
 const adduser = async (req, res) => {
   try {
     const { username, password, email } = req.body;
@@ -37,8 +38,12 @@ const logininst = async (req, res) => {
       where: { name: username, password: password },
     });
     if (user) {
-      return res.status(201).json({
-        success: "true",
+      const token = jwtUtils.generateToken(user.mail,username);
+      console.log('Generated Token:', token);
+
+return res.status(201).json({
+        success: true,
+        data: token, // Assuming res.data contains the data you want to return
       });
     } else
       return res.status(500).json({

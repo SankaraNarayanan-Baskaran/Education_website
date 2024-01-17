@@ -10,8 +10,14 @@ import { config } from "../App";
 import VideoPlayer from "./Video";
 import { enqueueSnackbar } from "notistack";
 import Section from "./Section";
+import { useUserData } from "./UserContext";
+import parseJwt from "./Decode";
+import {Cookies} from "react-cookie"
 const Instructor = () => {
+  const cookies=new Cookies();
   const username = localStorage.getItem("username");
+  const {token,setToken}=useUserData();
+  const decodedToken=parseJwt(token);
   const [student, setStudent] = useState(false);
   const [newCourse, setNewCourse] = useState({
     name: "",
@@ -121,16 +127,18 @@ const Instructor = () => {
 
   useEffect(() => {
     // Fetch all courses when the component mounts
-    const username=localStorage.getItem("username")
+    const username=localStorage.getItem("username");
+    console.log(decodedToken)
     fetchcourses(username);
   }, []);
-  const handleCreateCourse = () => {
-    return <div></div>;
-  };
+ 
 
   return (
     <div>
-      <Header isAuthorised={false} prop student instr />
+    {
+      token && decodedToken.username === cookies.get("username") &&
+      decodedToken.email === cookies.get("email")?(<>
+        <Header isAuthorised={false} prop student instr />
       <center>
         <div className="mx-2 my-2 container">
           <h3>Jump into Course creation</h3>
@@ -260,6 +268,9 @@ const Instructor = () => {
      
 
       <Footer />
+      </>):null
+    }
+     
     </div>
   );
 };

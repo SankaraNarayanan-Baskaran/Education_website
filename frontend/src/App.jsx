@@ -21,7 +21,7 @@ import { MyContext } from "./components/FormContext";
 import withAuthentication from "./components/HOC";
 import { useNavigate } from "react-router-dom";
 import { FormDataProvider } from "./components/FormContext";
-import { UsernameDataProvider } from "./components/UserContext";
+import {UsernameDataProvider} from "./components/UserContext";
 import 'resize-observer-polyfill';
 import { CourseProvider } from "./components/CourseContext";
 export const config = {
@@ -38,6 +38,7 @@ function App() {
    
     
     <SnackbarProvider>
+    <UsernameDataProvider>
     <FormDataProvider>
     <CourseProvider>
 
@@ -62,6 +63,7 @@ function App() {
       </Routes>
       </CourseProvider>
       </FormDataProvider>
+      </UsernameDataProvider>
       </SnackbarProvider>
     </div>
   );

@@ -27,8 +27,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import "@fontawesome/fontawesome-free/css/all.min.css";
 import "../styles/Admin.css";
+import { useUserData } from "../components/UserContext";
+import {Cookies} from "react-cookie"
+import parseJwt from "../components/Decode";
 const Admin = () => {
   const studentListRef = useRef();
+  const {token,setToken}=useUserData();
+  const decodedToken=parseJwt(token);
+  const cookies=new Cookies();
   const instructorListRef = useRef();
   const pendingRef = useRef();
   const instructorCourseRef = useRef();
@@ -299,7 +305,9 @@ const Admin = () => {
       {/* <div><Header /></div> */}
       {/* <center>  <h3>{username}</h3></center> */}
       <div className="container-fluid">
-        <div className="row">
+      {
+        token && decodedToken.username === cookies.get("username") &&
+      decodedToken.email === cookies.get("email")?(<> <div className="row">
           <div className="col-lg-3">
             <ProSidebar
               style={{
@@ -606,7 +614,9 @@ const Admin = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div></>):null
+      }
+       
       </div>
     </>
   );

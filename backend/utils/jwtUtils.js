@@ -1,19 +1,19 @@
 // src/utils/jwtUtils.js
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
-const generateToken = (username, type) => {
-  const SECRET_KEY=generateStrongSecretKey()
+const generateToken = (email, username) => {
+  const SECRET_KEY = generateStrongSecretKey();
   const tokenData = {
+    email: email,
     username: username,
-    type: 'student',
+
     // Add other claims or data you want in the token
   };
 
   const options = {
-    expiresIn: '1h', // Set the token expiration time as needed
+    expiresIn: "1h", // Set the token expiration time as needed
   };
-
 
   const token = jwt.sign(tokenData, SECRET_KEY, options);
   return token;
@@ -21,7 +21,7 @@ const generateToken = (username, type) => {
 
 function generateStrongSecretKey() {
   const key = crypto.randomBytes(32); // 32 bytes = 256 bits
-  return key.toString('base64').replace(/=/g, ''); // Remove padding
+  return key.toString("base64").replace(/=/g, ""); // Remove padding
 }
 
 module.exports = {

@@ -21,6 +21,7 @@
     "axios-mock-adapter": "^1.22.0",
     "buffer": "^6.0.3",
     "chart.js": "^4.4.0",
+    "cookies": "^0.9.1",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.5",
     "notistack": "^3.0.1",
@@ -29,6 +30,7 @@
     "react-apexcharts": "^1.4.1",
     "react-bootstrap": "^2.9.0",
     "react-chartjs-2": "^5.2.0",
+    "react-cookie": "^7.0.1",
     "react-dom": "^18.2.0",
     "react-dropdown": "^1.11.0",
     "react-hot-toast": "^2.4.1",
@@ -39,6 +41,7 @@
     "react-social-login-buttons": "^3.6.1",
     "reactjs-social-login": "^2.5.6",
     "recharts": "^2.9.3",
+    "universal-cookie": "^7.0.1",
     "util": "^0.12.5",
     "web-vitals": "^2.1.4"
   },

@@ -9,8 +9,11 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { config } from "../App";
 import axios from "axios";
 import "../styles/Home.css";
+import {Cookies} from "react-cookie";
+
 const Header = ({ isAuthorised, prop, student, children, instr }) => {
   const navigate = useNavigate();
+  const cookiys=new Cookies();
   const [data, setData] = useState(null);
   const user = localStorage.getItem("username");
   const fetchInstitution = async (username) => {
@@ -77,6 +80,10 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                   onClick={() => {
                     // window.location.reload()
                     localStorage.clear();
+                    const cookies = cookies.get();
+        for (const cookie in cookies) {
+          cookies.remove(cookie);
+        }
                     
                     navigate("/");
                   }}
@@ -136,7 +143,10 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         onClick={() => {
                           // window.location.reload()
                           localStorage.clear();
-                          
+                          const cookies = cookies.get();
+        for (const cookie in cookies) {
+          cookies.remove(cookie);
+        }
                           navigate("/");
                         }}
                       >
@@ -190,7 +200,10 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         onClick={() => {
                           // window.location.reload()
                           localStorage.clear();
-                      
+                          const cookies = cookies.get();
+        for (const cookie in cookies) {
+          cookies.remove(cookie);
+        }
                           navigate("/");
                         }}
                       >

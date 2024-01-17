@@ -46,7 +46,7 @@ const loginuser = async (req, res) => {
       where: { username: username, password: password },
     });
     if (user) {
-      const token = jwtUtils.generateToken(username, 'student');
+      const token = jwtUtils.generateToken(user.email,username);
       console.log('Generated Token:', token);
       return res.status(201).json({
         success: true,
@@ -67,14 +67,18 @@ const google = async (req, res) => {
   try {
     const { username, password, email, address } = req.body;
     sendWelcomeEmail(username, email, password);
+   
     const userExists = await Accounts.findOne({
       where: {
         username: username,
       },
     });
+
     if (userExists) {
+      const token = jwtUtils.generateToken(userExists.id,username);
       return res.status(201).json({
-        success: "true",
+        success: true,
+        data: token, // Assuming res.data contains the data you want to return
       });
     } else {
       const newUser = await Accounts.create({
@@ -83,8 +87,10 @@ const google = async (req, res) => {
         email,
         address,
       });
+      const token = jwtUtils.generateToken(newUser.id,username);
       return res.status(201).json({
-        success: "true",
+        success: true,
+        data: token, // Assuming res.data contains the data you want to return
       });
     }
   } catch (error) {

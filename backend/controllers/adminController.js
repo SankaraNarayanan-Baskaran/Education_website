@@ -7,9 +7,9 @@ const {
   Progress,
   Instructor,
   Institution,
-  sendInstitutionMail
+  sendInstitutionMail,
 } = require("../models/usermodels");
-
+const jwtUtils = require("../utils/jwtUtils");
 const institution = async (req, res) => {
   try {
     const { username, password, email, address } = req.body;
@@ -24,7 +24,7 @@ const institution = async (req, res) => {
       });
     } else {
       const newUser = await Institution.create({
-        institution_name:username,
+        institution_name: username,
         password,
         email,
         address,
@@ -73,8 +73,12 @@ const loginInstitution = async (req, res) => {
       where: { institution_name: username, password: password },
     });
     if (user) {
+      const token = jwtUtils.generateToken(user.email, username);
+      console.log("Generated Token:", token);
+
       return res.status(201).json({
-        success: "true",
+        success: true,
+        data: token, // Assuming res.data contains the data you want to return
       });
     } else
       return res.status(500).json({
@@ -399,5 +403,5 @@ module.exports = {
   approve,
   loginInstitution,
   deleteInstructor,
-  deleteUser
+  deleteUser,
 };
