@@ -24,6 +24,8 @@ import { FormDataProvider } from "./components/FormContext";
 import {UsernameDataProvider} from "./components/UserContext";
 import 'resize-observer-polyfill';
 import { CourseProvider } from "./components/CourseContext";
+import PrivateRoute from "./components/PrivateRoute";
+import Unauthorized from "./components/Unauthorized";
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };
@@ -49,13 +51,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/student" element={<Home />} />
         <Route path="/coursedetails" element={<CourseDetails/>}/>
-        <Route path="/instructor" element={<Instructor/>}/>
+       <Route path="/unauthorized" element={<Unauthorized/>}/>
         <Route path="/uploadcourse" element={<UploadCourse/>}/>
         <Route path="/course" element={<Course/>}/>
         <Route path="/section" element={<Section/>}/>
         <Route path="/instructor/:courseName/students" element={<StudentsList/>}/>
         <Route path="/course/:course/quiz" element={<Quiz/>}/>
-        <Route path="/admin" element={<Admin/>}/>
+        <PrivateRoute path="/instructor" element={<Instructor />} role="instructor" />
+        <PrivateRoute path="/admin" element={<Admin />} role="admin" />
         <Route path="/feedback" element={<Feedback/>}/>
         <Route path="/bar" element={<BarGraph/>}/>
         <Route path="/sample" element={<Sample/>}/>

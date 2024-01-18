@@ -2,12 +2,12 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
-const generateToken = (email, username) => {
+const generateToken = (email, username,type) => {
   const SECRET_KEY = generateStrongSecretKey();
   const tokenData = {
     email: email,
     username: username,
-
+    type:type
     // Add other claims or data you want in the token
   };
 

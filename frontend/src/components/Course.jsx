@@ -79,15 +79,15 @@ const Course = () => {
       <Header isAuthorised={false} prop student>
         <button
           onClick={() => {
-        
             navigate("/", { state: { isLogged: "true" } });
-            window.location.reload()
           }}
         >
           Back to Home
         </button>
       </Header>
-
+      {/* {
+  token && decodedtoken.username===cookies.get("username") &&
+} */}
       <h4>Purchased Courses</h4>
       <div className="product-card">
         {courses.map((course, index) => (
@@ -105,21 +105,17 @@ const Course = () => {
                 </div>
 
                 <>
-                  <ProgressBar
-                    now={courseProgress[course.course_id] || 0}
-                    label={`Progress:${
-                      courseProgress[course.course_id] || 0
-                    }% `}
-                    style={{
-                      // position:"absolute",
-                      margin: "0 8px 8px 0",
-
-                      // width: "85%",
-                      // zIndex: "1",
-                    }}
-                  />
-
-                  {console.log("Progress:", progress)}
+                  {courseProgress && (
+                    <ProgressBar
+                      now={courseProgress?.[course.course_id] || 0}
+                      label={`Progress:${
+                        courseProgress?.[course.course_id] || 0
+                      }% `}
+                      style={{
+                        margin: "0 8px 8px 0",
+                      }}
+                    />
+                  )}
                 </>
                 {/* )} */}
                 <button
@@ -131,8 +127,9 @@ const Course = () => {
                   }}
                   onClick={() => {
                     localStorage.setItem("courseId", course.course_id);
-
+                  
                     navigate("/courseDetails");
+                    setTimeout(window.location.reload(), 1000)
                     setSection(true);
                   }}
                 >

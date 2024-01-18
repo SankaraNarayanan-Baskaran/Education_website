@@ -6,12 +6,17 @@ import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { config } from "../App";
-
+import { useUserData } from "./UserContext";
+import parseJwt from "./Decode";
+import {Cookies} from "react-cookie"
 const CourseDetails = (courseid) => {
   const [courses, setCourses] = useState([]);
+  const cookies=new Cookies();
   const [completedSections, setCompletedSections] = useState([{}]);
   const [completedCourseId, setCompletedCourseId] = useState([{}]);
   const username = localStorage.getItem("username");
+  const {token,setToken}=useUserData();
+  const decodedToken=parseJwt(token);
   const queryParams = {
     course_id: courseid,
   };
@@ -87,7 +92,9 @@ const CourseDetails = (courseid) => {
 
   return (
     <div>
-      <Header isAuthorised={false} prop inst />
+    {
+      token&& decodedToken.username===cookies.get("username") && decodedToken.email===cookies.get("email")?(<>
+        <Header isAuthorised={false} prop inst />
       <>
         <h4>Course Sections:</h4>
         {courses.map((section) => (
@@ -155,6 +162,9 @@ const CourseDetails = (courseid) => {
           </div>
         ))}
       </>
+      </>):null
+    }
+      
     </div>
   );
 };

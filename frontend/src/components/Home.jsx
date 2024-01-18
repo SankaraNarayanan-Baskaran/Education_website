@@ -183,8 +183,7 @@ const Home = () => {
 
   return (
     <div>
-      {token && decodedToken.username === cookies.get("username") &&
-      decodedToken.email === cookies.get("email") ? (
+     
         <>
           <Header prop={inst}>
             <select value={selectedCategory} onChange={handleCategorySelect}>
@@ -483,7 +482,7 @@ const Home = () => {
 
           <Footer />
         </>
-      ) : null}
+     
     </div>
   );
 };

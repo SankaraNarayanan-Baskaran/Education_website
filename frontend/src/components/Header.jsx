@@ -9,24 +9,28 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { config } from "../App";
 import axios from "axios";
 import "../styles/Home.css";
-import {Cookies} from "react-cookie";
+import { useCookies } from "react-cookie";
 
 const Header = ({ isAuthorised, prop, student, children, instr }) => {
   const navigate = useNavigate();
-  const cookiys=new Cookies();
+  const [cookies, setCookies, removeCookies] = useCookies([
+    "token",
+    "username",
+    "email",
+  ]);
+
   const [data, setData] = useState(null);
   const user = localStorage.getItem("username");
   const fetchInstitution = async (username) => {
     try {
-    
       const response = await axios.get(`${config.endpoint}/admin/icon`, {
         params: {
           username: username,
         },
       });
       if (response) {
-        console.log("USERNAME",username)
-        console.log(response.data)
+        console.log("USERNAME", username);
+        console.log(response.data);
         setData(response.data);
       }
     } catch (error) {
@@ -79,12 +83,12 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                   class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                   onClick={() => {
                     // window.location.reload()
+                  
+                    removeCookies("token");
+                    removeCookies("username");
+                    removeCookies("email");
                     localStorage.clear();
-                    const cookies = cookies.get();
-        for (const cookie in cookies) {
-          cookies.remove(cookie);
-        }
-                    
+                    // window.location.reload();
                     navigate("/");
                   }}
                 >
@@ -98,7 +102,6 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
             <>
               {prop ? (
                 <>
-          
                   {!student ? (
                     <>
                       {data ? (
@@ -142,11 +145,13 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
                           // window.location.reload()
+                        
+                          removeCookies("token");
+                          removeCookies("username");
+                          removeCookies("email");
                           localStorage.clear();
-                          const cookies = cookies.get();
-        for (const cookie in cookies) {
-          cookies.remove(cookie);
-        }
+
+                          // window.location.reload();
                           navigate("/");
                         }}
                       >
@@ -199,11 +204,13 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
                           // window.location.reload()
+                      
+                          
+                          removeCookies("token");
+                          removeCookies("username");
+                          removeCookies("email");
                           localStorage.clear();
-                          const cookies = cookies.get();
-        for (const cookie in cookies) {
-          cookies.remove(cookie);
-        }
+                       
                           navigate("/");
                         }}
                       >
@@ -218,7 +225,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                     class="btn mx-2 my-sm-0 title"
                     type="submit"
                     onClick={() => {
-                      localStorage.setItem("type","student")
+                      localStorage.setItem("type", "student");
                       navigate("/login");
                     }}
                   >
@@ -228,7 +235,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                     class=" btn mx-2 my-2 my-sm-0 title"
                     type="submit"
                     onClick={() => {
-                      localStorage.setItem("type","student")
+                      localStorage.setItem("type", "student");
                       navigate("/register");
                     }}
                   >
