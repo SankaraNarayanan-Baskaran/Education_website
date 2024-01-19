@@ -45,7 +45,7 @@ const withAuthentication = (WrappedComponent) => {
           enqueueSnackbar("Logged in Successfully", { variant: "success" });
 
           const redirectPath = {
-            student: "/",
+            student: "/student",
             inst: "/instructor",
             admin: "/admin",
           };

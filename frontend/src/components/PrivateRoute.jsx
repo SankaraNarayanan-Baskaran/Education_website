@@ -1,27 +1,27 @@
-// PrivateRoute.js
-import React from 'react';
-import { Route, Navigate, useNavigate } from 'react-router-dom';
-import { useUserData } from './UserContext';
-import parseJwt from './Decode';
+// PrivateWrapper.js
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useUserData } from "./UserContext";
+import parseJwt from "./Decode";
 
-const PrivateRoute = ({ element, role, ...props }) => {
+const PrivateWrapper = ({ roles, children }) => {
   const { token } = useUserData();
-  const navigate=useNavigate();
- const decodedToken=parseJwt(token);
+
   if (!token) {
     // Redirect to login if the user is not authenticated
     return <Navigate to="/login" />;
   }
 
   // Assuming you have a user role field in the token payload
+  const decodedToken = parseJwt(token);
   const userRole = decodedToken.type;
-  if (!userRole.includes(role)) {
-    // Redirect to unauthorized page if the user's role doesn't match any role in the array
+  console.log(roles, userRole);
+  if (roles && !userRole.includes(roles)) {
+    // Redirect to unauthorized page if the user's role doesn't match any allowed roles
     return <Navigate to="/unauthorized" />;
   }
- 
 
-  return <Route element={element} {...props} />;
+  return <>{children}</>;
 };
 
-export default PrivateRoute;
+export default PrivateWrapper;

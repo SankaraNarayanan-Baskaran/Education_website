@@ -243,7 +243,7 @@ const Instructor = () => {
               <button
                 class="btn mx-2 my-sm-0 title"
                 onClick={() => {
-                  navigate("/", { state: { isLogged: "true" } });
+                  navigate("/student", { state: { isLogged: "true" } });
                 }}
               >
                 Switch to Student view

@@ -73,7 +73,7 @@ const loginInstitution = async (req, res) => {
       where: { institution_name: username, password: password },
     });
     if (user) {
-      const token = jwtUtils.generateToken(user.email, username);
+      const token = jwtUtils.generateToken(user.email, username,['admin']);
       console.log("Generated Token:", token);
 
       return res.status(201).json({

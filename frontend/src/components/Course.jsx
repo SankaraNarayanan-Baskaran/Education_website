@@ -79,7 +79,7 @@ const Course = () => {
       <Header isAuthorised={false} prop student>
         <button
           onClick={() => {
-            navigate("/", { state: { isLogged: "true" } });
+            navigate("/student", { state: { isLogged: "true" } });
           }}
         >
           Back to Home

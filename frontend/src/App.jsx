@@ -22,10 +22,13 @@ import withAuthentication from "./components/HOC";
 import { useNavigate } from "react-router-dom";
 import { FormDataProvider } from "./components/FormContext";
 import {UsernameDataProvider} from "./components/UserContext";
+import PrivateWrapper from "./components/PrivateRoute";
 import 'resize-observer-polyfill';
 import { CourseProvider } from "./components/CourseContext";
-import PrivateRoute from "./components/PrivateRoute";
+import AdminWrapper from "./components/AdminWrapper";
+import InstructorWrapper from "./components/AdminWrapper";
 import Unauthorized from "./components/Unauthorized";
+import { BrowserRouter as  Navigate } from 'react-router-dom';
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };
@@ -46,7 +49,14 @@ function App() {
 
       <Routes>
         <Route exact path="/" element={<Home/>} />
-        
+        {/* <Route
+          exact path="/"
+          element={
+            <PrivateWrapper roles="student">
+              <Home/>
+            </PrivateWrapper>
+          }
+        /> */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/student" element={<Home />} />
@@ -57,8 +67,22 @@ function App() {
         <Route path="/section" element={<Section/>}/>
         <Route path="/instructor/:courseName/students" element={<StudentsList/>}/>
         <Route path="/course/:course/quiz" element={<Quiz/>}/>
-        <PrivateRoute path="/instructor" element={<Instructor />} role="instructor" />
-        <PrivateRoute path="/admin" element={<Admin />} role="admin" />
+        <Route
+          path="/instructor"
+          element={
+            <PrivateWrapper roles="instructor">
+              <Instructor />
+            </PrivateWrapper>
+          }
+        />
+         <Route
+          path="/admin"
+          element={
+            <PrivateWrapper roles="admin">
+              <Admin />
+            </PrivateWrapper>
+          }
+        />
         <Route path="/feedback" element={<Feedback/>}/>
         <Route path="/bar" element={<BarGraph/>}/>
         <Route path="/sample" element={<Sample/>}/>

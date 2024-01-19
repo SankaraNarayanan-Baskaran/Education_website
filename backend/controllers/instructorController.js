@@ -1,4 +1,10 @@
-const { Instructor,CourseDetails ,Accounts,Course_Section,Student_Purchases} = require("../models/usermodels");
+const {
+  Instructor,
+  CourseDetails,
+  Accounts,
+  Course_Section,
+  Student_Purchases,
+} = require("../models/usermodels");
 const jwtUtils = require("../utils/jwtUtils");
 const adduser = async (req, res) => {
   try {
@@ -38,10 +44,10 @@ const logininst = async (req, res) => {
       where: { name: username, password: password },
     });
     if (user) {
-      const token = jwtUtils.generateToken(user.mail,username);
-      console.log('Generated Token:', token);
+      const token = jwtUtils.generateToken(user.mail, username,['instructor']);
+      console.log("Generated Token:", token);
 
-return res.status(201).json({
+      return res.status(201).json({
         success: true,
         data: token, // Assuming res.data contains the data you want to return
       });
@@ -93,12 +99,10 @@ const instructorview = async (req, res) => {
   }
 };
 
-const isInstructor=async(req,res)=>{
- 
-  
-    try {
-     if(req.query.name){
-      const name=req.query.name
+const isInstructor = async (req, res) => {
+  try {
+    if (req.query.name) {
+      const name = req.query.name;
       const user = await Instructor.findOne({
         where: {
           name: name,
@@ -110,33 +114,36 @@ const isInstructor=async(req,res)=>{
       } else {
         return res.status(202).json({ message: "success" });
       }
-     }
-      
-    } catch (error) {
-      console.log("ERRORRR:", error);
     }
- 
-}
-const convertToInstructor=async(req,res)=>{
-    try {
-      const { name } = req.body;
-      console.log(name);
-      const user = await Instructor.findOne({ where: { name: name } });
-      if (user) {
-        return res.status(299).json("Already an Instructor");
-      }
-      const inst = await Accounts.findOne({ where: { username: name } });
-      if (inst) {
-        const student = await Instructor.create({
-          name: name,
-          password: inst.password,
-          mail: inst.email,
-        });
-        return res.status(201).json("Instructor");
-      }
-    } catch (error) {
-      console.log("Error:", error);
+  } catch (error) {
+    console.log("ERRORRR:", error);
+  }
+};
+const convertToInstructor = async (req, res) => {
+  try {
+    const { name } = req.body;
+    console.log(name);
+    const user = await Instructor.findOne({ where: { name: name } });
+    if (user) {
+      return res.status(299).json("Already an Instructor");
     }
- 
-}
-module.exports = { adduser, logininst, instructorview,isInstructor,convertToInstructor };
+    const inst = await Accounts.findOne({ where: { username: name } });
+    if (inst) {
+      const student = await Instructor.create({
+        name: name,
+        password: inst.password,
+        mail: inst.email,
+      });
+      return res.status(201).json("Instructor");
+    }
+  } catch (error) {
+    console.log("Error:", error);
+  }
+};
+module.exports = {
+  adduser,
+  logininst,
+  instructorview,
+  isInstructor,
+  convertToInstructor,
+};
