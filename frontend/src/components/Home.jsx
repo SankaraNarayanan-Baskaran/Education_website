@@ -14,11 +14,12 @@ import axios from "axios";
 import { useUserData } from "./UserContext";
 import parseJwt from "./Decode";
 import { Cookies } from "react-cookie";
-const Home = () => {
+const Home = ({prop}) => {
   const cookies = new Cookies();
   const location = useLocation();
   const { token, setToken } = useUserData();
   const inst = location.state;
+  console.log(inst);
   const navigate = useNavigate();
   const username = localStorage.getItem("username");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -29,6 +30,8 @@ const Home = () => {
   const [success, setSuccess] = useState(false);
   const [courses, setCourses] = useState([]);
   const [details, setDetails] = useState(false);
+  const logging=localStorage.getItem("logged");
+  console.log(logging)
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [sections, setSections] = useState([]);
@@ -151,6 +154,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchCourses(username);
+    
   }, []);
 
   useEffect(() => {
@@ -185,7 +189,9 @@ const Home = () => {
     <div>
      
         <>
-          <Header prop={inst}>
+       
+       
+         <><Header prop={prop} >
             <select value={selectedCategory} onChange={handleCategorySelect}>
               <option value="All">All</option>
               <option value="sports">Sports</option>
@@ -214,7 +220,9 @@ const Home = () => {
                 }}
               />
             </Box>
-          </Header>
+          </Header></>
+        
+          
 
           <div className="row mx-2 my-2">
             {showFilteredCourses ? (

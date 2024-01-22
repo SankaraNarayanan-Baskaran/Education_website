@@ -90,6 +90,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                     localStorage.clear();
                     // window.location.reload();
                     navigate("/");
+                    setTimeout(window.location.reload(),1000)
                   }}
                 >
                   LOG OUT
@@ -102,6 +103,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
             <>
               {prop ? (
                 <>
+                {console.log("Prop",prop)}
                   {!student ? (
                     <>
                       {data ? (
@@ -125,7 +127,9 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                       <button
                         class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
+                          
                           navigate("/course");
+                          setTimeout(window.location.reload(),1000)
                         }}
                       >
                         My Learning
@@ -151,8 +155,9 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                           removeCookies("email");
                           localStorage.clear();
 
-                          // window.location.reload();
+                          
                           navigate("/");
+                     setTimeout(window.location.reload(),1000)
                         }}
                       >
                         LOG OUT
@@ -212,6 +217,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                           localStorage.clear();
                        
                           navigate("/");
+                          setTimeout(window.location.reload(),1000)
                         }}
                       >
                         LOG OUT

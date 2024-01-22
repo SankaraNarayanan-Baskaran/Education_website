@@ -44,13 +44,28 @@ const logininst = async (req, res) => {
       where: { name: username, password: password },
     });
     if (user) {
-      const token = jwtUtils.generateToken(user.mail, username,['instructor']);
-      console.log("Generated Token:", token);
-
-      return res.status(201).json({
-        success: true,
-        data: token, // Assuming res.data contains the data you want to return
-      });
+      const stud=await Accounts.findOne({
+        where:{
+          username:user.name
+        }
+      })
+      if(stud){
+        const token = jwtUtils.generateToken(user.mail, username,['instructor','student']);
+        return res.status(201).json({
+          success: true,
+          data: token, // Assuming res.data contains the data you want to return
+        });
+      }
+      else{
+        const token = jwtUtils.generateToken(user.mail, username,['instructor']);
+        console.log("Generated Token:", token);
+  
+        return res.status(201).json({
+          success: true,
+          data: token, // Assuming res.data contains the data you want to return
+        });
+      }
+     
     } else
       return res.status(500).json({
         success: "false",

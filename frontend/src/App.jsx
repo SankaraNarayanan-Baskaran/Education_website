@@ -1,7 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { ReactDOM ,useState} from "react";
-import { Routes, Route,Router } from "react-router-dom";
+import { ReactDOM, useState } from "react";
+import { Routes, Route, Router } from "react-router-dom";
 import Sample from "./components/Sample";
 import Home from "./components/Home";
 import Login from "./pages/Login";
@@ -21,82 +21,105 @@ import { MyContext } from "./components/FormContext";
 import withAuthentication from "./components/HOC";
 import { useNavigate } from "react-router-dom";
 import { FormDataProvider } from "./components/FormContext";
-import {UsernameDataProvider} from "./components/UserContext";
+import { UsernameDataProvider } from "./components/UserContext";
 import PrivateWrapper from "./components/PrivateRoute";
-import 'resize-observer-polyfill';
+import "resize-observer-polyfill";
 import { CourseProvider } from "./components/CourseContext";
 import AdminWrapper from "./components/AdminWrapper";
 import InstructorWrapper from "./components/AdminWrapper";
 import Unauthorized from "./components/Unauthorized";
-import { BrowserRouter as  Navigate } from 'react-router-dom';
+import { BrowserRouter as Navigate } from "react-router-dom";
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };
 function App() {
-  
-  const courseName=localStorage.getItem("courseName");
-  const course=localStorage.getItem("COURSE")
+  const courseName = localStorage.getItem("courseName");
+  const course = localStorage.getItem("COURSE");
 
   return (
+    <div className="font-color font">
+      <SnackbarProvider>
+        <UsernameDataProvider>
+          <FormDataProvider>
+            <CourseProvider>
+              <Routes>
+                <Route exact path="/" element={<Home />} />
+                <Route
+                  exact
+                  path="/student"
+                  element={
+                    <PrivateWrapper roles="student">
+                      <Home prop={true} />
+                    </PrivateWrapper>
+                  }
+                />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/coursedetails"
+                  element={
+                    <PrivateWrapper roles="student">
+                      <Home prop={true} />
+                    </PrivateWrapper>
+                  }
+                />
+                {/* <Route path="/coursedetails" element={<CourseDetails/>}/> */}
+                <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="/uploadcourse" element={<UploadCourse />} />
+                <Route
+                  path="/course"
+                  element={
+                    <PrivateWrapper roles="student">
+                      <Course />
+                    </PrivateWrapper>
+                  }
+                />
 
-    <div className="font-color font" >
-   
-    
-    <SnackbarProvider>
-    <UsernameDataProvider>
-    <FormDataProvider>
-    <CourseProvider>
-
-      <Routes>
-        <Route exact path="/" element={<Home/>} />
-        {/* <Route
-          exact path="/"
-          element={
-            <PrivateWrapper roles="student">
-              <Home/>
-            </PrivateWrapper>
-          }
-        /> */}
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/student" element={<Home />} />
-        <Route path="/coursedetails" element={<CourseDetails/>}/>
-       <Route path="/unauthorized" element={<Unauthorized/>}/>
-        <Route path="/uploadcourse" element={<UploadCourse/>}/>
-        <Route path="/course" element={<Course/>}/>
-        <Route path="/section" element={<Section/>}/>
-        <Route path="/instructor/:courseName/students" element={<StudentsList/>}/>
-        <Route path="/course/:course/quiz" element={<Quiz/>}/>
-        <Route
-          path="/instructor"
-          element={
-            <PrivateWrapper roles="instructor">
-              <Instructor />
-            </PrivateWrapper>
-          }
-        />
-         <Route
-          path="/admin"
-          element={
-            <PrivateWrapper roles="admin">
-              <Admin />
-            </PrivateWrapper>
-          }
-        />
-        <Route path="/feedback" element={<Feedback/>}/>
-        <Route path="/bar" element={<BarGraph/>}/>
-        <Route path="/sample" element={<Sample/>}/>
-        
-      </Routes>
-      </CourseProvider>
-      </FormDataProvider>
-      </UsernameDataProvider>
+                <Route
+                  path="/section"
+                  element={
+                    <PrivateWrapper roles="instructor">
+                      <Section />
+                    </PrivateWrapper>
+                  }
+                />
+                {/* <Route path="/section" element={<Section/>}/> */}
+                <Route
+                  path="/instructor/:courseName/students"
+                  element={
+                    <PrivateWrapper roles="instructor">
+                      <StudentsList />
+                    </PrivateWrapper>
+                  }
+                />
+                {/* <Route path="/instructor/:courseName/students" element={<StudentsList/>}/> */}
+                <Route path="/course/:course/quiz" element={<Quiz />} />
+                <Route
+                  path="/instructor"
+                  element={
+                    <PrivateWrapper roles="instructor">
+                      <Instructor />
+                    </PrivateWrapper>
+                  }
+                />
+                <Route
+                  path="/admin"
+                  element={
+                    <PrivateWrapper roles="admin">
+                      <Admin />
+                    </PrivateWrapper>
+                  }
+                />
+                <Route path="/feedback" element={<Feedback />} />
+                <Route path="/bar" element={<BarGraph />} />
+                <Route path="/sample" element={<Sample />} />
+              </Routes>
+            </CourseProvider>
+          </FormDataProvider>
+        </UsernameDataProvider>
       </SnackbarProvider>
     </div>
   );
 }
 
 export default App;
-
-
-

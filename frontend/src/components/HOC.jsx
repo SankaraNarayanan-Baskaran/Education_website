@@ -51,6 +51,8 @@ const withAuthentication = (WrappedComponent) => {
           };
 
           navigate(redirectPath[types], { state: { isLogged: "true" } });
+          localStorage.setItem("logged","true");
+          setTimeout(window.location.reload(),1000)
         }
       } catch (error) {
         enqueueSnackbar("Invalid Credentials", { variant: "error" });
