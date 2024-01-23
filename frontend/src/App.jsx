@@ -25,7 +25,7 @@ import { UsernameDataProvider } from "./components/UserContext";
 import PrivateWrapper from "./components/PrivateRoute";
 import "resize-observer-polyfill";
 import { CourseProvider } from "./components/CourseContext";
-import AdminWrapper from "./components/AdminWrapper";
+
 import InstructorWrapper from "./components/AdminWrapper";
 import Unauthorized from "./components/Unauthorized";
 import { BrowserRouter as Navigate } from "react-router-dom";
@@ -59,7 +59,7 @@ function App() {
                   path="/coursedetails"
                   element={
                     <PrivateWrapper roles="student">
-                      <Home prop={true} />
+                      <CourseDetails />
                     </PrivateWrapper>
                   }
                 />

@@ -477,9 +477,7 @@ const Home = ({prop}) => {
                     >
                       Want to be an Instructor?
                     </button>
-                    <button onClick={() => navigate("/feedback")}>
-                      Give Feedback
-                    </button>
+                    
                   </>
                 )}
               </div>
