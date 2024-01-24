@@ -14,7 +14,7 @@ import Course from "./components/Course";
 import Section from "./components/Section";
 import { SnackbarProvider } from "notistack";
 import StudentsList from "./components/StudentsList";
-import Feedback from "./components/Feedback";
+
 import Quiz from "./components/Quiz";
 import BarGraph from "./components/Bar";
 import { MyContext } from "./components/FormContext";
@@ -26,7 +26,6 @@ import PrivateWrapper from "./components/PrivateRoute";
 import "resize-observer-polyfill";
 import { CourseProvider } from "./components/CourseContext";
 
-import InstructorWrapper from "./components/AdminWrapper";
 import Unauthorized from "./components/Unauthorized";
 import { BrowserRouter as Navigate } from "react-router-dom";
 export const config = {
@@ -110,7 +109,7 @@ function App() {
                     </PrivateWrapper>
                   }
                 />
-                <Route path="/feedback" element={<Feedback />} />
+              
                 <Route path="/bar" element={<BarGraph />} />
                 <Route path="/sample" element={<Sample />} />
               </Routes>
