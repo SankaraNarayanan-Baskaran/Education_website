@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from "react";
-
+import CategoryFilter from "./CategoryFilter";
+import SearchInput from "./SearchInput";
 import { useNavigate, useLocation } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
-import { Box, CssBaseline, TextField, InputAdornment } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import CourseCard from "./CourseCard";
 import Header from "./Header";
 import Footer from "./Footer";
 import { config } from "../App";
-import { GoogleLoginButton } from "react-social-login-buttons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useUserData } from "./UserContext";
 import parseJwt from "./Decode";
 import { Cookies } from "react-cookie";
-const Home = ({prop}) => {
+const Home = ({ prop }) => {
   const cookies = new Cookies();
-  const location = useLocation();
   const { token, setToken } = useUserData();
-  const inst = location.state;
- 
   const navigate = useNavigate();
   const username = localStorage.getItem("username");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -27,21 +21,15 @@ const Home = ({prop}) => {
   const [instructor, setInstructor] = useState(false);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [showFilteredCourses, setShowFilteredCourses] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [courses, setCourses] = useState([]);
   const [details, setDetails] = useState(false);
-  const logging=localStorage.getItem("logged");
- 
+  const logging = localStorage.getItem("logged");
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [purchasedCourses, setPurchasedCourses] = useState([]);
-  const [sections, setSections] = useState([]);
-  const [completedSections, setCompletedSections] = useState({});
   const [purchasedLoaded, setPurchasedLoaded] = useState(false);
-  const [completedCourseId, setCompletedCourseId] = useState(null);
-  const [load, setLoad] = useState(false);
   const [selectedCourseDescription, setSelectedCourseDescription] =
     useState("");
-  const [description, setDescription] = useState(false);
+ 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const decodedToken = parseJwt(token);
@@ -89,7 +77,7 @@ const Home = ({prop}) => {
 
   const handleCategorySelect = async (event) => {
     setSelectedCategory(event.target.value);
-   
+
     const res = await axios.get(`${config.endpoint}/course/filter`, {
       params: {
         category: event.target.value,
@@ -98,9 +86,7 @@ const Home = ({prop}) => {
     });
     if (res) {
       setFilteredCourses(res.data);
-      
     } else {
-      
     }
 
     setShowFilteredCourses(true);
@@ -154,7 +140,6 @@ const Home = ({prop}) => {
 
   useEffect(() => {
     fetchCourses(username);
-    
   }, []);
 
   useEffect(() => {
@@ -182,313 +167,259 @@ const Home = ({prop}) => {
   useEffect(() => {
     const username = localStorage.getItem("username");
     checkInstructor(username);
-   
   }, []);
 
   return (
     <div>
-     
+      <>
         <>
-       
-       
-         <><Header prop={prop} >
-            <select value={selectedCategory} onChange={handleCategorySelect}>
-              <option value="All">All</option>
-              <option value="sports">Sports</option>
-              <option value="social">Social</option>
-              <option value="technology">Technology</option>
-            </select>
-            <Box width={300}>
-              <TextField
-                className="search"
-                size="small"
-                fullWidth
-                placeholder="Search for courses"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon
-                        onClick={handleSearch}
-                        style={{ cursor: "pointer" }}
-                      />
-                    </InputAdornment>
-                  ),
-                }}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  handleSearch();
-                }}
-              />
-            </Box>
-          </Header></>
-        
-          
+          <Header prop={prop}>
+            <CategoryFilter
+              selectedCategory={selectedCategory}
+              handleCategorySelect={handleCategorySelect}
+            />
+            <SearchInput
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              handleSearch={handleSearch}
+            />
+          </Header>
+        </>
 
-          <div className="row mx-2 my-2">
-            {showFilteredCourses ? (
-              <div className="product-card">
-                {filteredCourses.map((course) => (
-                  <div key={course.id}>
-                    <div className="card mb-3 card">
-                      <img
-                        className="imgBx"
-                        src={course.video_url}
-                        alt="Image"
-                      />
-                      <div>
-                        <h5
-                          className="card-title"
-                          style={{ marginLeft: "5px" }}
+        <div className="row mx-2 my-2">
+          {showFilteredCourses ? (
+            <div className="product-card">
+              {filteredCourses.map((course) => (
+                <div key={course.id}>
+                  <div className="card mb-3 card">
+                  <CourseCard 
+                    classname={"imgBx"} src={course.video_url} alt={"Image"} h5class={"card-title"} h5style={{marginLeft: "5px"}}
+                    name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price}
+                  />
+                    
+                      {selectedCourseDescription === course.name ? (
+                        <div style={{ height: "60px" }}>
+                          <p
+                            className="card-text"
+                            style={{ marginLeft: "5px" }}
+                          >
+                            {course.description}
+                          </p>
+                        </div>
+                      ) : (
+                        <button
+                          style={{
+                            width: "100px",
+                            height: "60px",
+                            fontSize: "13px",
+                            marginRight: "8px",
+                            marginLeft: "5px",
+                          }}
+                          className="det mb-4"
+                          onClick={() =>
+                            setSelectedCourseDescription(course.name)
+                          }
                         >
-                          {course.name}
-                        </h5>
-                        <p style={{ marginLeft: "5px" }}>${course.price}</p>
-                        {selectedCourseDescription === course.name ? (
-                          <div style={{ height: "60px" }}>
-                            <p
-                              className="card-text"
-                              style={{ marginLeft: "5px" }}
-                            >
-                              {course.description}
-                            </p>
-                          </div>
-                        ) : (
-                          <button
-                            style={{
-                              width: "100px",
-                              height: "60px",
-                              fontSize: "13px",
-                              marginRight: "8px",
-                              marginLeft: "5px",
-                            }}
-                            className="det mb-4"
-                            onClick={() =>
-                              setSelectedCourseDescription(course.name)
-                            }
-                          >
-                            More Details
-                          </button>
-                        )}
-                        {username &&
-                        !purchased.some(
-                          (item) => item.course_name === course.name
-                        ) ? (
-                          <button
-                            style={{
-                              width: "298.5px",
-                              fontSize: "13px",
-                            }}
-                            onClick={() => handlePurchase(course)}
-                          >
-                            Purchase course
-                          </button>
-                        ) : (
-                          <button
-                            style={{
-                              width: "298.5px",
-                              fontSize: "13px",
-                              backgroundColor: "#CCCCCC",
-                            }}
-                            disabled
-                          >
-                            Already purchased
-                          </button>
-                        )}
+                          More Details
+                        </button>
+                      )}
+                      {username &&
+                      !purchased.some(
+                        (item) => item.course_name === course.name
+                      ) ? (
+                        <button
+                          style={{
+                            width: "298.5px",
+                            fontSize: "13px",
+                          }}
+                          onClick={() => handlePurchase(course)}
+                        >
+                          Purchase course
+                        </button>
+                      ) : (
+                        <button
+                          style={{
+                            width: "298.5px",
+                            fontSize: "13px",
+                            backgroundColor: "#CCCCCC",
+                          }}
+                          disabled
+                        >
+                          Already purchased
+                        </button>
+                      )}
+                    
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              {searchResults.length > 0 ? (
+                <div className="product-card">
+                  {searchResults.map((course) => (
+                    <div key={course.id}>
+                      <div className="card mb-3 card">
+                      <CourseCard 
+                    classname={"imgBx"} src={course.video_url} alt={"Image"} h5class={"card-title"} h5style={{marginLeft: "5px"}}
+                    name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price}
+                  />
+                          {username ? (
+                            <>
+                              {purchased.some(
+                                (item) => item.course_name === course.name
+                              ) ? (
+                                <button
+                                  style={{
+                                    width: "298.5px",
+                                    fontSize: "13px",
+                                    backgroundColor: "#CCCCCC",
+                                  }}
+                                  disabled
+                                >
+                                  Already purchased
+                                </button>
+                              ) : (
+                                <button
+                                  style={{
+                                    width: "298.5px",
+                                    fontSize: "13px",
+                                  }}
+                                  onClick={() => handlePurchase(course)}
+                                >
+                                  Purchase course
+                                </button>
+                              )}
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <>
-                {searchResults.length > 0 ? (
-                  <div className="product-card">
-                    {searchResults.map((course) => (
-                      <div key={course.id}>
-                        <div className="card mb-3 card">
-                          <img
-                            className="imgBx"
-                            src={course.video_url}
-                            alt="Image"
-                          />
-                          <div>
-                            <h5
-                              className="card-title"
-                              style={{ marginLeft: "5px" }}
-                            >
-                              {course.name}
-                            </h5>
-                            <p style={{ marginLeft: "5px" }}>${course.price}</p>
-                            {username ? (
-                              <>
-                                {purchased.some(
-                                  (item) => item.course_name === course.name
-                                ) ? (
-                                  <button
-                                    style={{
-                                      width: "298.5px",
-                                      fontSize: "13px",
-                                      backgroundColor: "#CCCCCC",
-                                    }}
-                                    disabled
+                  ))}
+                </div>
+              ) : searchQuery.trim() !== "" ? (
+                <center>
+                  <p>No courses found</p>
+                </center>
+              ) : (
+                <>
+                  {!details ? (
+                    <h3 style={{ textAlign: "center !important" }}>
+                      Welcome {username}
+                    </h3>
+                  ) : (
+                    <></>
+                  )}
+                  {!details ? (
+                    <div className="product-card">
+                      {courses.map((course) => (
+                        <div key={course.id}>
+                          <div className="card mb-3 card">
+                             <CourseCard 
+                    classname={"imgBx"} src={course.video_url} alt={"Image"} h5class={"card-title"} h5style={{marginLeft: "5px"}}
+                    name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price}
+                  />
+                              {selectedCourseDescription === course.name ? (
+                                <div style={{ height: "60px" }}>
+                                  <p
+                                    className="card-text"
+                                    style={{ marginLeft: "5px" }}
                                   >
-                                    Already purchased
-                                  </button>
-                                ) : (
-                                  <button
-                                    style={{
-                                      width: "298.5px",
-                                      fontSize: "13px",
-                                    }}
-                                    onClick={() => handlePurchase(course)}
-                                  >
-                                    Purchase course
-                                  </button>
-                                )}
-                              </>
-                            ) : (
-                              <></>
-                            )}
+                                    {course.description}
+                                  </p>
+                                </div>
+                              ) : (
+                                <button
+                                  style={{
+                                    width: "100px",
+                                    height: "60px",
+                                    fontSize: "13px",
+                                    marginRight: "8px",
+                                    marginLeft: "5px",
+                                  }}
+                                  className="det mb-4"
+                                  onClick={() =>
+                                    setSelectedCourseDescription(course.name)
+                                  }
+                                >
+                                  More Details
+                                </button>
+                              )}
+                              {username ? (
+                                <>
+                                  {purchased.some(
+                                    (item) => item.course_name === course.name
+                                  ) ? (
+                                    <button
+                                      style={{
+                                        width: "298.5px",
+                                        fontSize: "13px",
+                                        backgroundColor: "#CCCCCC",
+                                      }}
+                                      disabled
+                                    >
+                                      Already purchased
+                                    </button>
+                                  ) : (
+                                    <button
+                                      style={{
+                                        width: "298.5px",
+                                        fontSize: "13px",
+                                      }}
+                                      onClick={() => handlePurchase(course)}
+                                    >
+                                      Purchase course
+                                    </button>
+                                  )}
+                                </>
+                              ) : (
+                                <></>
+                              )}
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : searchQuery.trim() !== "" ? (
-                  <center>
-                    <p>No courses found</p>
-                  </center>
-                ) : (
-                  <>
-                    {!details ? (
-                      <h3 style={{ textAlign: "center !important" }}>
-                        Welcome {username}
-                      </h3>
-                    ) : (
-                      <></>
-                    )}
-                    {!details ? (
-                      <div className="product-card">
-                        {courses.map((course) => (
-                          <div key={course.id}>
-                            <div className="card mb-3 card">
-                              <img
-                                className="imgBx"
-                                src={course.video_url}
-                                alt="Image"
-                              />
-                              <div>
-                                <h5
-                                  className="card-title"
-                                  style={{ marginLeft: "5px" }}
-                                >
-                                  {course.name}
-                                </h5>
-                                <p style={{ marginLeft: "5px" }}>
-                                  ${course.price}
-                                </p>
-                                {selectedCourseDescription === course.name ? (
-                                  <div style={{ height: "60px" }}>
-                                    <p
-                                      className="card-text"
-                                      style={{ marginLeft: "5px" }}
-                                    >
-                                      {course.description}
-                                    </p>
-                                  </div>
-                                ) : (
-                                  <button
-                                    style={{
-                                      width: "100px",
-                                      height: "60px",
-                                      fontSize: "13px",
-                                      marginRight: "8px",
-                                      marginLeft: "5px",
-                                    }}
-                                    className="det mb-4"
-                                    onClick={() =>
-                                      setSelectedCourseDescription(course.name)
-                                    }
-                                  >
-                                    More Details
-                                  </button>
-                                )}
-                                {username ? (
-                                  <>
-                                    {purchased.some(
-                                      (item) => item.course_name === course.name
-                                    ) ? (
-                                      <button
-                                        style={{
-                                          width: "298.5px",
-                                          fontSize: "13px",
-                                          backgroundColor: "#CCCCCC",
-                                        }}
-                                        disabled
-                                      >
-                                        Already purchased
-                                      </button>
-                                    ) : (
-                                      <button
-                                        style={{
-                                          width: "298.5px",
-                                          fontSize: "13px",
-                                        }}
-                                        onClick={() => handlePurchase(course)}
-                                      >
-                                        Purchase course
-                                      </button>
-                                    )}
-                                  </>
-                                ) : (
-                                  <></>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <></>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </div>
-          <center>
-            {username ? (
-              <div style={{ marginBottom: "3%" }}>
-                {instructor ? (
+                      ))}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </div>
+        <center>
+          {username ? (
+            <div style={{ marginBottom: "3%" }}>
+              {instructor ? (
+                <button
+                  className="btn mx-2 my-sm-0 title"
+                  onClick={() => navigate("/instructor")}
+                >
+                  Switch to Instructor view
+                </button>
+              ) : (
+                <>
                   <button
                     className="btn mx-2 my-sm-0 title"
-                    onClick={() => navigate("/instructor")}
+                    onClick={() => {
+                      addtoInstructor();
+                      navigate("/instructor");
+                    }}
                   >
-                    Switch to Instructor view
+                    Want to be an Instructor?
                   </button>
-                ) : (
-                  <>
-                    <button
-                      className="btn mx-2 my-sm-0 title"
-                      onClick={() => {
-                        addtoInstructor();
-                        navigate("/instructor");
-                      }}
-                    >
-                      Want to be an Instructor?
-                    </button>
-                    
-                  </>
-                )}
-              </div>
-            ) : (
-              <></>
-            )}
-          </center>
+                </>
+              )}
+            </div>
+          ) : (
+            <></>
+          )}
+        </center>
 
-          <Footer />
-        </>
-     
+        <Footer />
+      </>
     </div>
   );
 };
