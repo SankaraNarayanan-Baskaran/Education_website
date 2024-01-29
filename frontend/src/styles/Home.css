@@ -1,20 +1,30 @@
-.design{
-    border: 1px dotted black;
+.design {
+  border: 1px dotted black;
 }
 
-.card-body{
-    padding: 10px 0 10px 10px !important;
+.card-body {
+  padding: 10px 0 10px 10px !important;
 }
-.card-img{
-    border-radius: 20px 20px 0 0 !important;
+.card-img {
+  border-radius: 20px 20px 0 0 !important;
 }
-.btn{
-    background-color: none;
-    
+.btn {
+  background-color: none;
 }
-.det{
-    background-color: none !important;
+.det {
+  background-color: none !important;
 }
-.search{
-  
+.slct {
+  width: 100px;
+  height: 60px;
+  font-size: 13px;
+  margin-right: 8px;
+  margin-left: 5px;
+}
+.prch {
+  width: 298.5px;
+  font-size: 13px;
+}
+.ptext {
+  margin-left: 5px;
 }

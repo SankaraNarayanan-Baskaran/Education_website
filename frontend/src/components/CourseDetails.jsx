@@ -103,12 +103,7 @@ const CourseDetails = (courseid) => {
               {completedCourseId === section.id && (
                 <>
                   <img
-                    className="img-Bx"
-                    style={{
-                      position: "fixed",
-                      left: "10px",
-                      top: "100px",
-                    }}
+                    className="img-Bx sec-image"
                     src={section.img_url}
                     alt="Image"
                     width="50%px"

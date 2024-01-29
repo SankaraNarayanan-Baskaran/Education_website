@@ -1,4 +1,3 @@
-// InstructorWrapper.js
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useUserData } from './UserContext';
@@ -12,7 +11,6 @@ const InstructorWrapper = ({ children }) => {
     return <Navigate to="/login" />;
   }
 
-  // Assuming you have a user role field in the token payload
   const userRole = parseJwt(token).type;
 console.log(userRole)
   // Redirect to unauthorized page if the user's role is not an instructor

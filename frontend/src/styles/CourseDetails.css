@@ -33,4 +33,11 @@
   border: 1px solid #ccc; /* Add a border to create a container effect */
 }
 
+.sec-image{
+ 
+    position: fixed;
+    left: "10px";
+    top: "100px",
+ 
+}
   

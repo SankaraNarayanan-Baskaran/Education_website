@@ -7,12 +7,11 @@ import parseJwt from './Decode';
 const StudentWrapper = ({ children }) => {
   const { token } = useUserData();
 
-  // Redirect to login if the user is not authenticated
+  // Redirect to login if the user is not authenticateds
   if (!token) {
     return <Navigate to="/login" />;
   }
 
-  // Assuming you have a user role field in the token payload
   const userRole = parseJwt(token).type;
 console.log(userRole)
   // Redirect to unauthorized page if the user's role is not a student

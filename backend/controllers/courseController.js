@@ -76,8 +76,25 @@ const fetchcourses = async (req, res) => {
 const learning = async (req, res) => {
   try {
     // console.log("Request:", req.body);
+    const verifyTokenMiddleware = (req, res, next) => {
+      const token = req.cookies.jwtToken;
+    
+      if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+    
+      try {
+        // Verify and decode the token
+        const decoded = jwt.verify(token, 'your_secret_key');
+        req.user = decoded; // Attach the decoded user information to the request object
+        next(); // Move on to the next middleware or route handler
+      } catch (error) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+    };
     const param = req.query.username;
     // console.log("Param:", param);
+    verifyTokenMiddleware();
     const some = await Accounts.findOne({ where: { username: param } }).then(
       async (users) => {
         // console.log("Userd:",users);
@@ -99,6 +116,15 @@ const learning = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+// Middleware to verify JWT token from the cookie
+
+
+// Use the middleware for routes that require authentication
+// app.use('/authenticated-route', verifyTokenMiddleware);
+
+// Your other routes and middleware...
 
 const search = async (req, res) => {
   try {

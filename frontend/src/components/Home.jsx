@@ -9,11 +9,7 @@ import Footer from "./Footer";
 import { config } from "../App";
 import axios from "axios";
 import { useUserData } from "./UserContext";
-import parseJwt from "./Decode";
-import { Cookies } from "react-cookie";
 const Home = ({ prop }) => {
-  const cookies = new Cookies();
-  const { token, setToken } = useUserData();
   const navigate = useNavigate();
   const username = localStorage.getItem("username");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -23,25 +19,16 @@ const Home = ({ prop }) => {
   const [showFilteredCourses, setShowFilteredCourses] = useState(false);
   const [courses, setCourses] = useState([]);
   const [details, setDetails] = useState(false);
-  const logging = localStorage.getItem("logged");
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [purchasedLoaded, setPurchasedLoaded] = useState(false);
-  const [selectedCourseDescription, setSelectedCourseDescription] =
-    useState("");
- 
+  const [selectedCourseDescription, setSelectedCourseDescription] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const decodedToken = parseJwt(token);
   const fetchCourses = async (username) => {
     try {
-      const response = await axios.get(
-        `${config.endpoint}/student/studentview`,
-        {
-          params: {
-            username: username,
-          },
-        }
+      const response = await axios.get( `${config.endpoint}/student/studentview`,{
+          params: { username: username,},}           
       );
       setCourses(response.data);
     } catch (error) {
@@ -63,9 +50,7 @@ const Home = ({ prop }) => {
       );
 
       if (res) {
-        enqueueSnackbar("Purchased Course successfully", {
-          variant: "success",
-        });
+        enqueueSnackbar("Purchased Course successfully", { variant: "success",  });
         navigate("/course");
       }
       setSelectedCourse(null);
@@ -77,18 +62,13 @@ const Home = ({ prop }) => {
 
   const handleCategorySelect = async (event) => {
     setSelectedCategory(event.target.value);
-
     const res = await axios.get(`${config.endpoint}/course/filter`, {
       params: {
-        category: event.target.value,
-        username: username,
-      },
+        category: event.target.value,username: username,},
     });
     if (res) {
       setFilteredCourses(res.data);
-    } else {
-    }
-
+    } 
     setShowFilteredCourses(true);
   };
 
@@ -112,10 +92,7 @@ const Home = ({ prop }) => {
 
   const checkInstructor = async (username) => {
     try {
-      const resp = await axios.get(`${config.endpoint}/inst/isInstructor`, {
-        params: {
-          name: username,
-        },
+      const resp = await axios.get(`${config.endpoint}/inst/isInstructor`, { params: { name: username,}
       });
       if (resp.status === 201) {
         setInstructor(true);
@@ -126,30 +103,43 @@ const Home = ({ prop }) => {
       console.log(error);
     }
   };
+const purchase=(course)=>{
+   return (
+    <>
+      {username ? (
+      <>
+        {purchased.some(
+          (item) => item.course_name === course.name
+        ) ? (<button  className="prch" disabled>
+            Already purchased
+          </button>
+        ) : (
+          <button
+            className="prch"
+            onClick={() => handlePurchase(course)}
+          >
+            Purchase course
+          </button>
+        )}
+      </>
+    ) : (<></> )}
+  </>
+  )
+}
 
   const handleSearch = async () => {
     if (searchQuery.trim() !== "") {
-      const response = await axios.get(`${config.endpoint}/course/search`, {
-        params: {
-          query: searchQuery,
-        },
+      const response = await axios.get(`${config.endpoint}/course/search`, { params: { query: searchQuery,},
       });
       setSearchResults(response.data);
     }
   };
 
   useEffect(() => {
-    fetchCourses(username);
-  }, []);
-
-  useEffect(() => {
     if (username) {
       const fetchPurchased = async () => {
         try {
-          const res = await axios.get(`${config.endpoint}/course/learning`, {
-            params: {
-              username: username,
-            },
+          const res = await axios.get(`${config.endpoint}/course/learning`, {params: {username: username, },
           });
           if (res.status === 200) {
             setPurchased(res.data);
@@ -159,13 +149,9 @@ const Home = ({ prop }) => {
           console.log("error", error);
         }
       };
-
       fetchPurchased();
     }
-  }, []);
-
-  useEffect(() => {
-    const username = localStorage.getItem("username");
+    fetchCourses(username);
     checkInstructor(username);
   }, []);
 
@@ -174,18 +160,10 @@ const Home = ({ prop }) => {
       <>
         <>
           <Header prop={prop}>
-            <CategoryFilter
-              selectedCategory={selectedCategory}
-              handleCategorySelect={handleCategorySelect}
-            />
-            <SearchInput
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              handleSearch={handleSearch}
-            />
+            <CategoryFilter selectedCategory={selectedCategory} handleCategorySelect={handleCategorySelect}/>
+            <SearchInput searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearch={handleSearch}/>
           </Header>
         </>
-
         <div className="row mx-2 my-2">
           {showFilteredCourses ? (
             <div className="product-card">
@@ -194,28 +172,15 @@ const Home = ({ prop }) => {
                   <div className="card mb-3 card">
                   <CourseCard 
                     classname={"imgBx"} src={course.video_url} alt={"Image"} h5class={"card-title"} h5style={{marginLeft: "5px"}}
-                    name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price}
-                  />
-                    
+                    name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price} />
+ 
                       {selectedCourseDescription === course.name ? (
                         <div style={{ height: "60px" }}>
-                          <p
-                            className="card-text"
-                            style={{ marginLeft: "5px" }}
-                          >
-                            {course.description}
-                          </p>
+                          <p className="card-text ptext" >{course.description} </p>
                         </div>
                       ) : (
                         <button
-                          style={{
-                            width: "100px",
-                            height: "60px",
-                            fontSize: "13px",
-                            marginRight: "8px",
-                            marginLeft: "5px",
-                          }}
-                          className="det mb-4"
+                          className="slct det mb-4"
                           onClick={() =>
                             setSelectedCourseDescription(course.name)
                           }
@@ -228,27 +193,12 @@ const Home = ({ prop }) => {
                         (item) => item.course_name === course.name
                       ) ? (
                         <button
-                          style={{
-                            width: "298.5px",
-                            fontSize: "13px",
-                          }}
+                          className="prch"
                           onClick={() => handlePurchase(course)}
                         >
                           Purchase course
                         </button>
-                      ) : (
-                        <button
-                          style={{
-                            width: "298.5px",
-                            fontSize: "13px",
-                            backgroundColor: "#CCCCCC",
-                          }}
-                          disabled
-                        >
-                          Already purchased
-                        </button>
-                      )}
-                    
+                      ) : (<button className="prch" disabled>Already Purchased</button>)}
                   </div>
                 </div>
               ))}
@@ -264,82 +214,35 @@ const Home = ({ prop }) => {
                     classname={"imgBx"} src={course.video_url} alt={"Image"} h5class={"card-title"} h5style={{marginLeft: "5px"}}
                     name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price}
                   />
-                          {username ? (
-                            <>
-                              {purchased.some(
-                                (item) => item.course_name === course.name
-                              ) ? (
-                                <button
-                                  style={{
-                                    width: "298.5px",
-                                    fontSize: "13px",
-                                    backgroundColor: "#CCCCCC",
-                                  }}
-                                  disabled
-                                >
-                                  Already purchased
-                                </button>
-                              ) : (
-                                <button
-                                  style={{
-                                    width: "298.5px",
-                                    fontSize: "13px",
-                                  }}
-                                  onClick={() => handlePurchase(course)}
-                                >
-                                  Purchase course
-                                </button>
-                              )}
-                            </>
-                          ) : (
-                            <></>
-                          )}
-                        
+                    {purchase(course)} 
                       </div>
                     </div>
                   ))}
                 </div>
               ) : searchQuery.trim() !== "" ? (
-                <center>
                   <p>No courses found</p>
-                </center>
               ) : (
                 <>
-                  {!details ? (
+                  {!details && 
                     <h3 style={{ textAlign: "center !important" }}>
                       Welcome {username}
                     </h3>
-                  ) : (
-                    <></>
-                  )}
-                  {!details ? (
+                  }
+                  {!details &&
                     <div className="product-card">
                       {courses.map((course) => (
                         <div key={course.id}>
                           <div className="card mb-3 card">
-                             <CourseCard 
-                    classname={"imgBx"} src={course.video_url} alt={"Image"} h5class={"card-title"} h5style={{marginLeft: "5px"}}
-                    name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price}
-                  />
+                             <CourseCard classname={"imgBx"} src={course.video_url} alt={"Image"} h5class={"card-title"} h5style={{marginLeft: "5px"}}
+                             name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price}/>
+                  
                               {selectedCourseDescription === course.name ? (
                                 <div style={{ height: "60px" }}>
-                                  <p
-                                    className="card-text"
-                                    style={{ marginLeft: "5px" }}
-                                  >
-                                    {course.description}
-                                  </p>
+                                <p className="card-text ptext" >{course.description} </p>
                                 </div>
                               ) : (
                                 <button
-                                  style={{
-                                    width: "100px",
-                                    height: "60px",
-                                    fontSize: "13px",
-                                    marginRight: "8px",
-                                    marginLeft: "5px",
-                                  }}
-                                  className="det mb-4"
+                                  className="det mb-4 slct"
                                   onClick={() =>
                                     setSelectedCourseDescription(course.name)
                                   }
@@ -347,50 +250,19 @@ const Home = ({ prop }) => {
                                   More Details
                                 </button>
                               )}
-                              {username ? (
-                                <>
-                                  {purchased.some(
-                                    (item) => item.course_name === course.name
-                                  ) ? (
-                                    <button
-                                      style={{
-                                        width: "298.5px",
-                                        fontSize: "13px",
-                                        backgroundColor: "#CCCCCC",
-                                      }}
-                                      disabled
-                                    >
-                                      Already purchased
-                                    </button>
-                                  ) : (
-                                    <button
-                                      style={{
-                                        width: "298.5px",
-                                        fontSize: "13px",
-                                      }}
-                                      onClick={() => handlePurchase(course)}
-                                    >
-                                      Purchase course
-                                    </button>
-                                  )}
-                                </>
-                              ) : (
-                                <></>
-                              )}
+                             {purchase(course)}
                           </div>
                         </div>
                       ))}
                     </div>
-                  ) : (
-                    <></>
-                  )}
+                  }
                 </>
               )}
             </>
           )}
         </div>
         <center>
-          {username ? (
+          {username && (
             <div style={{ marginBottom: "3%" }}>
               {instructor ? (
                 <button
@@ -413,15 +285,11 @@ const Home = ({ prop }) => {
                 </>
               )}
             </div>
-          ) : (
-            <></>
           )}
         </center>
-
         <Footer />
       </>
     </div>
   );
 };
-
 export default Home;

@@ -53,6 +53,10 @@ const loginuser = async (req, res) => {
       })
       if(inst){
         const token=jwtUtils.generateToken(user.email,username,['student','instructor'])
+        res.cookie('jwtToken', token, {
+          httpOnly: true, // Ensures the cookie is only accessible by the server
+          secure: true,   // Ensures the cookie is sent only over HTTPS in a production environment
+        });
         return res.status(201).json({
           success: true,
           data: token, // Assuming res.data contains the data you want to return
