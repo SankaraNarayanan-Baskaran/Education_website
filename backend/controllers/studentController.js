@@ -1,3 +1,4 @@
+
 const {
   Accounts,
   sendWelcomeEmail,
@@ -6,6 +7,9 @@ const {
   Instructor,
 } = require("../models/usermodels");
 const jwtUtils = require("../utils/jwtUtils");
+// const Cookies=require("universal-cookie");
+// const cookies=new Cookies();
+const cookieParser = require('cookie-parser');
 const adduser = async (req, res, next) => {
   try {
     const { username, password, email, address } = req.body;
@@ -53,10 +57,15 @@ const loginuser = async (req, res) => {
       })
       if(inst){
         const token=jwtUtils.generateToken(user.email,username,['student','instructor'])
+        // cookies.set('jwtToken', token, {
+        //   httpOnly: true, // Ensures the cookie is only accessible by the server
+        //   secure: true,   // Ensures the cookie is sent only over HTTPS in a production environment
+        // });
         res.cookie('jwtToken', token, {
-          httpOnly: true, // Ensures the cookie is only accessible by the server
-          secure: true,   // Ensures the cookie is sent only over HTTPS in a production environment
-        });
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+        })
+        console.log("cki:",res)
         return res.status(201).json({
           success: true,
           data: token, // Assuming res.data contains the data you want to return
@@ -68,11 +77,7 @@ const loginuser = async (req, res) => {
           success: true,
           data: token, // Assuming res.data contains the data you want to return
         });
-      }
-     
-  
-     
-      
+      }    
     } else
       return res.status(500).json({
         success: "false",

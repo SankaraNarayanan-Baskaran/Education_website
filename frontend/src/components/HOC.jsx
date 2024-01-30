@@ -9,11 +9,11 @@ import { useFormData } from "./FormContext";
 import { Cookies } from "react-cookie";
 import { useUserData } from "./UserContext";
 import parseJwt from "./Decode";
-
+import { useCookies } from 'react-cookie';
 const withAuthentication = (WrappedComponent) => {
 
   const WithAuthenticationComponent = (props) => {
-    const cookies = new Cookies();
+    const [cookies, setCookie] = useCookies(['jwtToken']);
   
     const { enqueueSnackbar } = useSnackbar();
     const { token, setToken } = useUserData();
@@ -31,17 +31,19 @@ const withAuthentication = (WrappedComponent) => {
           console.log(res);
           const { data } = res.data; // Assuming the token is in the 'data' field of the response
           setToken(data);
-          cookies.set("token", data);
-          //  console.log('Token:', token);
+          // cookies.set("token", data);
+          // //  console.log('Token:', token);
          
-          
+          setCookie('jwtToken',data, { path: '/' });
 
-          const decodedToken = parseJwt(data);
-          console.log(decodedToken);
-          cookies.set("username", formData.username);
+          // const decodedToken = parseJwt(data);
+          // console.log(decodedToken);
+          // cookies.set("username", formData.username);
           localStorage.setItem("username", formData.username);
-          cookies.set("email", decodedToken.email);
-          localStorage.setItem("email", decodedToken.email);
+          // cookies.set("email", decodedToken.email);
+       
+          // setCookie('jwtToken', data);
+          // localStorage.setItem("email", formData.email);
           enqueueSnackbar("Logged in Successfully", { variant: "success" });
 
           const redirectPath = {
@@ -52,7 +54,7 @@ const withAuthentication = (WrappedComponent) => {
 
           navigate(redirectPath[types], { state: { isLogged: "true" } });
           localStorage.setItem("logged","true");
-          setTimeout(window.location.reload(),1000)
+          // setTimeout(window.location.reload(),1000)
         }
       } catch (error) {
         enqueueSnackbar("Invalid Credentials", { variant: "error" });

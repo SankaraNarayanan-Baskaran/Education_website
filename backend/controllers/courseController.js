@@ -75,26 +75,57 @@ const fetchcourses = async (req, res) => {
 
 const learning = async (req, res) => {
   try {
-    // console.log("Request:", req.body);
-    const verifyTokenMiddleware = (req, res, next) => {
-      const token = req.cookies.jwtToken;
+    console.log("Cookie:", req.cookies);
+    const myCookieValue = req.cookies.jwtToken;
+    console.log('Value of jwtToken:', myCookieValue);
+    // const parseJwt = (token) => {
+    //   if (typeof token !== "string") {
+    //     if (typeof token.toString === "function") {
+    //       token = token.toString();
+    //     } else {
+    //       console.error("Invalid token format:", token);
+    //       return null;
+    //     }
+    //   }
     
-      if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
+    //   try {
+    //     const base64Url = token.split(".")[1];
+    //     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    //     const jsonPayload = decodeURIComponent(
+    //       atob(base64)
+    //         .split("")
+    //         .map((c) => {
+    //           return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+    //         })
+    //         .join("")
+    //     );
     
-      try {
-        // Verify and decode the token
-        const decoded = jwt.verify(token, 'your_secret_key');
-        req.user = decoded; // Attach the decoded user information to the request object
-        next(); // Move on to the next middleware or route handler
-      } catch (error) {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
-    };
-    const param = req.query.username;
-    // console.log("Param:", param);
-    verifyTokenMiddleware();
+    //     return JSON.parse(jsonPayload);
+    //   } catch (error) {
+    //     console.error("Error parsing JWT:", error);
+    //     return null;
+    //   }
+    // };
+    // const verifyTokenMiddleware = (req, res, next) => {
+    //   const token = req.cookies.jwtToken;
+    
+    //   if (!token) {
+    //     return res.status(401).json({ message: 'Unauthorized' });
+    //   }
+    
+    //   try {
+    //     // Verify and decode the token
+    //     const payload=parseJwt(req.cookies.token);
+    //     req.username = payload; 
+    //     next();
+    //   } catch (error) {
+    //     return res.status(401).json({ message: 'Unauthorized' });
+    //   }
+    // };
+    // const param = req.query.username;
+   
+    // verifyTokenMiddleware();
+    const param=req.query.username
     const some = await Accounts.findOne({ where: { username: param } }).then(
       async (users) => {
         // console.log("Userd:",users);

@@ -144,6 +144,7 @@ const purchase=(course)=>{
           if (res.status === 200) {
             setPurchased(res.data);
             setPurchasedLoaded(true);
+            console.log(res.data)
           }
         } catch (error) {
           console.log("error", error);

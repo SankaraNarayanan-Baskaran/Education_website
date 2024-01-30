@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const cors = require("cors");
 const multer = require("multer");
 const csv = require("csv-parser");
+const cookieParser = require('cookie-parser');
 const pool = require("./config/database");
 const PORT = 3001;
 const fs = require("fs");
@@ -14,17 +15,23 @@ const coursedetails = require("./models/coursedetails");
 const storage = multer.memoryStorage();
 const authenticateToken = require('./utils/jwtUtils');
 const upload = multer({ storage: storage });
-
+// import Cookies from "universal-cookie";
 app.use(bodyParser.json());
 // app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const sequelize = new Sequelize({
   dialect: "postgres",
   ...require("./config/config.json")["development"],
 });
+const corsOptions = {
+  origin: 'http://localhost:3000', // replace with your frontend's origin
+  credentials: true,
+};
 
+app.use(cors(corsOptions));
 sequelize.sync();
 
 const studentRoutes = require("./routes/studentRoutes");

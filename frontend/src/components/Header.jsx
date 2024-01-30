@@ -84,9 +84,9 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                   onClick={() => {
                     // window.location.reload()
                   
-                    removeCookies("token");
-                    removeCookies("username");
-                    removeCookies("email");
+                    removeCookies("jwtTtoken");
+                    // removeCookies("username");
+                    // removeCookies("email");
                     localStorage.clear();
                     // window.location.reload();
                     navigate("/");
@@ -129,7 +129,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         onClick={() => {
                           
                           navigate("/course");
-                          setTimeout(window.location.reload(),1000)
+                          // setTimeout(window.location.reload(),1000)
                         }}
                       >
                         My Learning
@@ -150,9 +150,9 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         onClick={() => {
                           // window.location.reload()
                         
-                          removeCookies("token");
-                          removeCookies("username");
-                          removeCookies("email");
+                          removeCookies("jwtToken");
+                          // removeCookies("username");
+                          // removeCookies("email");
                           localStorage.clear();
 
                           
@@ -211,9 +211,9 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                           // window.location.reload()
                       
                           
-                          removeCookies("token");
-                          removeCookies("username");
-                          removeCookies("email");
+                          removeCookies("jwtToken");
+                          // removeCookies("username");
+                          // removeCookies("email");
                           localStorage.clear();
                        
                           navigate("/");

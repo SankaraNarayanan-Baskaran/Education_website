@@ -6,6 +6,7 @@ import { config } from "../App";
 import Footer from "./Footer";
 import { ProgressBar } from "react-bootstrap";
 import "../styles/Course.css";
+import { useCookies } from 'react-cookie';
 
 const Course = () => {
   const [progress, setProgress] = useState(() => {
@@ -14,7 +15,7 @@ const Course = () => {
   });
   const [courseProgressVisible, setCourseProgressVisible] = useState([]);
   const [courseProgress, setCourseProgress] = useState([{}]);
-
+  const [cookies] = useCookies(['jwtToken']);
   const [courses, setCourses] = useState([]);
   const username = localStorage.getItem("username");
   const [section, setSection] = useState(false);
@@ -64,9 +65,16 @@ const Course = () => {
 
   const fetchcourses = async () => {
     try {
+      console.log(`${cookies.jwtToken}`)
       const response = await axios.get(`${config.endpoint}/course/learning`, {
+        // headers: {
+        //   Authorization: `Bearer ${cookies.jwtToken}`,
+        // },
+        withCredentials:true,
+        
         params: queryParams,
-      });
+      },
+     );
       setCourses(response.data);
       setCourseProgressVisible(new Array(response.data.length).fill(false));
     } catch (error) {
@@ -129,7 +137,7 @@ const Course = () => {
                     localStorage.setItem("courseId", course.course_id);
                   
                     navigate("/courseDetails");
-                    setTimeout(window.location.reload(), 1000)
+                    // setTimeout(window.location.reload(), 1000)
                     setSection(true);
                   }}
                 >
