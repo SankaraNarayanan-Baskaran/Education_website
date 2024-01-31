@@ -6,10 +6,11 @@ const purchaseController = require("../controllers/purchaseController");
 const sectionController = require("../controllers/sectionController");
 const progressController = require("../controllers/progressController");
 const quizController=require("../controllers/quizController");
+const {parseJwt}  = require("../utils/Decode");
 
 router.post("/addcourse", courseController.addcourse);
 router.get("/fetchcourses", courseController.fetchcourses);
-router.get("/learning", courseController.learning);
+router.get("/learning",courseController.learning);
 router.get("/search",courseController.search);
 router.get("/:courseName/students",courseController.courseName)
 router.get("/filter", courseController.filter);

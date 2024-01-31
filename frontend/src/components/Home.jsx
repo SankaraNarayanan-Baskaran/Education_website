@@ -9,9 +9,11 @@ import Footer from "./Footer";
 import { config } from "../App";
 import axios from "axios";
 import { useUserData } from "./UserContext";
+import { useCookies } from "react-cookie";
 const Home = ({ prop }) => {
   const navigate = useNavigate();
-  const username = localStorage.getItem("username");
+  const [cookies] = useCookies(['username']);
+  const username = cookies.username
   const [selectedCategory, setSelectedCategory] = useState("");
   const [purchased, setPurchased] = useState([]);
   const [instructor, setInstructor] = useState(false);
@@ -176,7 +178,7 @@ const purchase=(course)=>{
                     name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price} />
  
                       {selectedCourseDescription === course.name ? (
-                        <div style={{ height: "60px" }}>
+                        <div classname="slct-description">
                           <p className="card-text ptext" >{course.description} </p>
                         </div>
                       ) : (
@@ -238,7 +240,7 @@ const purchase=(course)=>{
                              name={course.name} parastyle={{ marginLeft: "5px"}} price={course.price}/>
                   
                               {selectedCourseDescription === course.name ? (
-                                <div style={{ height: "60px" }}>
+                                <div classname="slct-description">
                                 <p className="card-text ptext" >{course.description} </p>
                                 </div>
                               ) : (

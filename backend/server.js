@@ -13,6 +13,7 @@ const app = express();
 const { Sequelize, DataTypes } = require("sequelize");
 const coursedetails = require("./models/coursedetails");
 const storage = multer.memoryStorage();
+
 const authenticateToken = require('./utils/jwtUtils');
 const upload = multer({ storage: storage });
 // import Cookies from "universal-cookie";

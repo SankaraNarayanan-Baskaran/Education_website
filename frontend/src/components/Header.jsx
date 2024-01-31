@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Header.css";
-import toast, { Toaster } from "react-hot-toast";
-import Course from "./Course";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { config } from "../App";
 import axios from "axios";
 import "../styles/Home.css";
@@ -13,12 +8,7 @@ import { useCookies } from "react-cookie";
 
 const Header = ({ isAuthorised, prop, student, children, instr }) => {
   const navigate = useNavigate();
-  const [cookies, setCookies, removeCookies] = useCookies([
-    "token",
-    "username",
-    "email",
-  ]);
-
+  const [cookies, setCookies, removeCookies] = useCookies(["jwtToken", "username", "email",  ]);
   const [data, setData] = useState(null);
   const user = localStorage.getItem("username");
   const fetchInstitution = async (username) => {
@@ -29,8 +19,6 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
         },
       });
       if (response) {
-        console.log("USERNAME", username);
-        console.log(response.data);
         setData(response.data);
       }
     } catch (error) {
@@ -38,30 +26,14 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
     }
   };
   useEffect(() => {
-    const username = localStorage.getItem("username");
+  const username=localStorage.getItem("username");
     fetchInstitution(username);
   }, []);
   return (
     <div className="header">
-      <nav
-        class="navbar navbar-expand-lg justify-content-between"
-        style={{
-          backgroundColor: "#0077b6",
-          borderRadius: "0 2px 2px rgba(0,0,0.2)",
-          color: "#fca311 !important",
-          boxShadow:
-            "0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)",
-        }}
-      >
+      <nav className="navbar navbar-expand-lg justify-content-between head-nav" >
         <div>
-          <h4
-            className=""
-            style={{
-              margin: "10px",
-            }}
-          >
-            EduWeb
-          </h4>
+          <h4 className="h4-style">EduWeb</h4>          
         </div>
 
         {children}
@@ -78,56 +50,42 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
               >
                 Home
               </button>
-              {user ? (
+              {user &&(
                 <button
                   class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                   onClick={() => {
-                    // window.location.reload()
-                  
-                    removeCookies("jwtTtoken");
-                    // removeCookies("username");
-                    // removeCookies("email");
-                    localStorage.clear();
-                    // window.location.reload();
+                    removeCookies("jwtToken");
+                    removeCookies("username");
                     navigate("/");
-                    setTimeout(window.location.reload(),1000)
+                    setTimeout(window.location.reload(), 1000);
                   }}
                 >
                   LOG OUT
                 </button>
-              ) : (
-                <></>
               )}
             </>
           ) : (
             <>
               {prop ? (
                 <>
-                {console.log("Prop",prop)}
+                  {console.log("Prop", prop)}
                   {!student ? (
                     <>
-                      {data ? (
+                      {data &&(
                         <>
                           <>
                             <img
                               src={data.icon}
                               alt="Img"
-                              style={{
-                                borderRadius: "50%",
-                                width: "40px",
-                                height: "40px",
-                              }}
+                              className="img-style"
                             />
                           </>
                         </>
-                      ) : (
-                        <></>
                       )}
 
                       <button
                         class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
-                          
                           navigate("/course");
                           // setTimeout(window.location.reload(),1000)
                         }}
@@ -135,13 +93,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         My Learning
                       </button>
                       <button
-                        className="btn mx-lg-2 mx-sm-1 my-sm-0"
-                        style={{
-                          borderRadius: "50%",
-                          backgroundColor: "aliceblue",
-                          fontWeight: "600",
-                        }}
-                      >
+                        className="btn mx-lg-2 mx-sm-1 my-sm-0 btn-style">
                         {`${user[0].toUpperCase()}`}
                       </button>
 
@@ -149,15 +101,13 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
                           // window.location.reload()
-                        
-                          removeCookies("jwtToken");
-                          // removeCookies("username");
-                          // removeCookies("email");
-                          localStorage.clear();
 
-                          
+                          removeCookies("jwtToken");
+                          removeCookies("username");
+                          // removeCookies("email");
+
                           navigate("/");
-                     setTimeout(window.location.reload(),1000)
+                          setTimeout(window.location.reload(), 1000);
                         }}
                       >
                         LOG OUT
@@ -167,22 +117,16 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                     <>
                       {instr ? (
                         <>
-                          {data ? (
+                          {data &&(
                             <>
                               <>
                                 <img
                                   src={data.icon}
                                   alt="Img"
-                                  style={{
-                                    borderRadius: "50%",
-                                    width: "40px",
-                                    height: "40px",
-                                  }}
+                                  className="img-style"
                                 />
                               </>
                             </>
-                          ) : (
-                            <></>
                           )}
                           <button className="btn  mx-6 mr-2 my-2 my-sm-0 title">
                             🧑‍🏫{user}
@@ -209,15 +153,10 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
                           // window.location.reload()
-                      
-                          
                           removeCookies("jwtToken");
-                          // removeCookies("username");
-                          // removeCookies("email");
-                          localStorage.clear();
-                       
+                          removeCookies("username");
                           navigate("/");
-                          setTimeout(window.location.reload(),1000)
+                          setTimeout(window.location.reload(), 1000);
                         }}
                       >
                         LOG OUT
@@ -253,8 +192,6 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
           )}
         </div>
       </nav>
-
-      <Toaster position="top-center" />
     </div>
   );
 };

@@ -72,7 +72,6 @@ const Course = () => {
         // },
         withCredentials:true,
         
-        params: queryParams,
       },
      );
       setCourses(response.data);

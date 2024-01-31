@@ -6,14 +6,14 @@ import axios from "axios";
 import { config } from "../App";
 import { useSnackbar } from "notistack";
 import { useFormData } from "./FormContext";
-import { Cookies } from "react-cookie";
 import { useUserData } from "./UserContext";
 import parseJwt from "./Decode";
+import Cookies from "js-cookie";
 import { useCookies } from 'react-cookie';
 const withAuthentication = (WrappedComponent) => {
 
   const WithAuthenticationComponent = (props) => {
-    const [cookies, setCookie] = useCookies(['jwtToken']);
+    const [cookies, setCookies] = useCookies(['jwtToken','username']);
   
     const { enqueueSnackbar } = useSnackbar();
     const { token, setToken } = useUserData();
@@ -34,11 +34,11 @@ const withAuthentication = (WrappedComponent) => {
           // cookies.set("token", data);
           // //  console.log('Token:', token);
          
-          setCookie('jwtToken',data, { path: '/' });
-
+          setCookies('jwtToken',data, { path: '/' });
+          // Cookies.set("username",formData.username)
           // const decodedToken = parseJwt(data);
           // console.log(decodedToken);
-          // cookies.set("username", formData.username);
+        setCookies('username',formData.username)
           localStorage.setItem("username", formData.username);
           // cookies.set("email", decodedToken.email);
        
