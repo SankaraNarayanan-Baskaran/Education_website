@@ -17,11 +17,7 @@ const CourseDetails = (courseid) => {
   const username = localStorage.getItem("username");
   const {token,setToken}=useUserData();
   const decodedToken=parseJwt(token);
-  const queryParams = {
-    course_id: courseid,
-  };
-  const navigate = useNavigate();
-
+ 
   const isSectionCompleted = (sectionId) => {
     const exists = Object.values(completedSections).some((value) => {
       if (Array.isArray(value)) {
@@ -109,13 +105,7 @@ const CourseDetails = (courseid) => {
                     width="50%px"
                     height="350px"
                   />
-                  <div
-                    style={{
-                      position: "fixed",
-                      left: "10px",
-                      bottom: "10px",
-                    }}
-                  >
+                  <div className="compl-course">
                     {" "}
                     <textarea rows={5} cols={80} readOnly>
                       {section.transcript}
@@ -126,7 +116,6 @@ const CourseDetails = (courseid) => {
             </div>
            
             <div className="col-lg-4">
-           
                 <div className="card course-card">
                   <div className="card-body">
                     <h5 className="card-title">{section.section_name}</h5>
@@ -139,15 +128,10 @@ const CourseDetails = (courseid) => {
                       >
                         View Section
                       </button>
-
-                      {/* {  {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}} */}
-
-                      {isSectionCompleted(section.id) ? (
+                      {isSectionCompleted(section.id) && (
                         <>
                           <p>✓ Section Completed</p>
                         </>
-                      ) : (
-                        <>{console.log("false")}</>
                       )}
                     </div>
                   </div>

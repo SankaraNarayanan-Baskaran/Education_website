@@ -8,7 +8,7 @@ import { useCookies } from "react-cookie";
 
 const Header = ({ isAuthorised, prop, student, children, instr }) => {
   const navigate = useNavigate();
-  const [cookies, setCookies, removeCookies] = useCookies(["jwtToken", "username", "email",  ]);
+  const [cookie,removeCookies] = useCookies(["jwtToken", "username", "email",  ]);
   const [data, setData] = useState(null);
   const user = localStorage.getItem("username");
   const fetchInstitution = async (username) => {
@@ -68,7 +68,6 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
             <>
               {prop ? (
                 <>
-                  {console.log("Prop", prop)}
                   {!student ? (
                     <>
                       {data &&(
@@ -87,7 +86,6 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
                           navigate("/course");
-                          // setTimeout(window.location.reload(),1000)
                         }}
                       >
                         My Learning
@@ -100,12 +98,8 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
-                          // window.location.reload()
-
                           removeCookies("jwtToken");
                           removeCookies("username");
-                          // removeCookies("email");
-
                           navigate("/");
                           setTimeout(window.location.reload(), 1000);
                         }}
@@ -134,7 +128,6 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                           <button
                             className="btn  mx-6 mr-2 my-2 my-sm-0 title"
                             onClick={() => {
-                              // window.location.reload();
                               navigate("/instructor");
                             }}
                           >
@@ -152,7 +145,6 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
-                          // window.location.reload()
                           removeCookies("jwtToken");
                           removeCookies("username");
                           navigate("/");

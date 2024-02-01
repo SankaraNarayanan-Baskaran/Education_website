@@ -67,11 +67,7 @@ const Course = () => {
     try {
       console.log(`${cookies.jwtToken}`)
       const response = await axios.get(`${config.endpoint}/course/learning`, {
-        // headers: {
-        //   Authorization: `Bearer ${cookies.jwtToken}`,
-        // },
         withCredentials:true,
-        
       },
      );
       setCourses(response.data);
@@ -92,22 +88,15 @@ const Course = () => {
           Back to Home
         </button>
       </Header>
-      {/* {
-  token && decodedtoken.username===cookies.get("username") &&
-} */}
       <h4>Purchased Courses</h4>
       <div className="product-card">
         {courses.map((course, index) => (
           <div key={course.id}>
             <div className="card mb-3 card">
               <img className="imgBx" src={course.video_url} alt="Image" />
-              <div
-                style={{
-                  marginLeft: "5px",
-                }}
-              >
+              <div className="divs">
                 <h5 className="card-title">{course.course_name}</h5>
-                <div style={{ height: "60px" }}>
+                <div className="hgt">
                   <p className="card-text">{course.course_description}</p>
                 </div>
 
@@ -118,20 +107,12 @@ const Course = () => {
                       label={`Progress:${
                         courseProgress?.[course.course_id] || 0
                       }% `}
-                      style={{
-                        margin: "0 8px 8px 0",
-                      }}
+                      className="prog"
                     />
                   )}
                 </>
-                {/* )} */}
                 <button
-                  style={{
-                    width: "100px",
-                    height: "30px",
-                    fontSize: "13px",
-                    margin: "0 0 8px",
-                  }}
+                  className="btn"
                   onClick={() => {
                     localStorage.setItem("courseId", course.course_id);
                   
@@ -142,17 +123,11 @@ const Course = () => {
                 >
                   View Course
                 </button>
-                {courseProgress[course.course_id] === 100 ? (
+                {courseProgress[course.course_id] === 100 &&(
                   <>
                     {" "}
                     <div>
-                      <button
-                        style={{
-                          width: "100px",
-                          height: "30px",
-                          fontSize: "13px",
-                          margin: "0 0 8px",
-                        }}
+                      <button className="btn"
                         onClick={() => {
                           localStorage.setItem("COURSE", course.course_name);
                           navigate(`/course/${course.course_name}/quiz`);
@@ -162,8 +137,6 @@ const Course = () => {
                       </button>
                     </div>
                   </>
-                ) : (
-                  <></>
                 )}
               </div>
             </div>
