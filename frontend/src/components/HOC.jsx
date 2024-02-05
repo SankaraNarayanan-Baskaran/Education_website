@@ -13,7 +13,7 @@ import { useCookies } from 'react-cookie';
 const withAuthentication = (WrappedComponent) => {
 
   const WithAuthenticationComponent = (props) => {
-    const [cookies, setCookies] = useCookies(['jwtToken','username']);
+    const [cookies, setCookies,getCookies] = useCookies(['jwtToken','username','type','logged']);
   
     const { enqueueSnackbar } = useSnackbar();
     const { token, setToken } = useUserData();
@@ -22,11 +22,12 @@ const withAuthentication = (WrappedComponent) => {
 
     const handleLogin = async () => {
       try {
-        const types = localStorage.getItem("type");
+        const types = cookies['type']
         const res = await axios.post(
           config.endpoint + `/${types}/login${types}`,
           formData
         );
+        console.log("Types",types)
         if (res.status === 201) {
           console.log(res);
           const { data } = res.data; // Assuming the token is in the 'data' field of the response
@@ -39,11 +40,7 @@ const withAuthentication = (WrappedComponent) => {
           // const decodedToken = parseJwt(data);
           // console.log(decodedToken);
         setCookies('username',formData.username)
-          localStorage.setItem("username", formData.username);
-          // cookies.set("email", decodedToken.email);
-       
-          // setCookie('jwtToken', data);
-          // localStorage.setItem("email", formData.email);
+      
           enqueueSnackbar("Logged in Successfully", { variant: "success" });
 
           const redirectPath = {
@@ -51,9 +48,9 @@ const withAuthentication = (WrappedComponent) => {
             inst: "/instructor",
             admin: "/admin",
           };
-
+          setCookies("logged","true")
           navigate(redirectPath[types], { state: { isLogged: "true" } });
-          localStorage.setItem("logged","true");
+         
           // setTimeout(window.location.reload(),1000)
         }
       } catch (error) {
@@ -74,7 +71,7 @@ const withAuthentication = (WrappedComponent) => {
 
     const handleRegister = async (formData) => {
       try {
-        const type = localStorage.getItem("type");
+        const type = getCookies("type");
         const response = await axios.post(
           `${config.endpoint}/${type}/add${type}`,
           {

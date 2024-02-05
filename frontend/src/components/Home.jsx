@@ -9,6 +9,7 @@ import Footer from "./Footer";
 import { config } from "../App";
 import axios from "axios";
 import { useUserData } from "./UserContext";
+import "../styles/Header.css";
 import { useCookies } from "react-cookie";
 const Home = ({ prop }) => {
   const navigate = useNavigate();

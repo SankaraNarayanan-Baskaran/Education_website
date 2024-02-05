@@ -6,6 +6,7 @@ import axios from "axios";
 import { config } from "../App";
 import { useSnackbar } from 'notistack';
 import "../styles/Login.css";
+import "../styles/Header.css"
 import withAuthentication from "../components/HOC";
 import { MyContext, useFormData } from "../components/FormContext";
 import Cookies from "universal-cookie";

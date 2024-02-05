@@ -62,7 +62,7 @@
 }
 
 .btn-style{
-    border-radius: "50%";
-    background-color: "aliceblue";
-    font-weight: "600"
+    border-radius: 50%;
+    background-color: aliceblue;
+    font-weight: 600;
 }

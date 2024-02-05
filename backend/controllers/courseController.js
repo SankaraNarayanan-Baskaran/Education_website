@@ -102,24 +102,12 @@ const learning = async (req, res) => {
   }
 };
 
-
-// Middleware to verify JWT token from the cookie
-
-
-// Use the middleware for routes that require authentication
-// app.use('/authenticated-route', verifyTokenMiddleware);
-
-// Your other routes and middleware...
-
 const search = async (req, res) => {
   try {
-    const query = req.query.query || ''; // If the query parameter is undefined, set it to an empty string
+    const query = req.query.query || ''; 
 
     // Check if the query is empty
     if (query.trim() === '') {
-      // Handle the case when the query is empty
-      // For example, return all records or provide a default view
-      // You can modify this part based on your application's requirements
       const allResults = await CourseDetails.findAll();
       console.log("All Results:", allResults);
       res.json(allResults);
