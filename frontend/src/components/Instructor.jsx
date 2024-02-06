@@ -135,9 +135,8 @@ const Instructor = () => {
 
   return (
     <div>
-    {
-      token && decodedToken.username === cookies.get("username") &&
-      decodedToken.email === cookies.get("email")?(<>
+    
+      <>
         <Header isAuthorised={false} prop student instr />
       <center>
         <div className="mx-2 my-2 container">
@@ -268,8 +267,8 @@ const Instructor = () => {
      
 
       <Footer />
-      </>):null
-    }
+      </>
+    
      
     </div>
   );

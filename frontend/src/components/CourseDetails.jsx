@@ -2,21 +2,23 @@ import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import VideoPlayer from "./Video";
 import "../styles/CourseDetails.css"; // Make sure this CSS file is properly linked
+import "../styles/Home.css";
+import "../styles/Header.css"
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { config } from "../App";
 import { useUserData } from "./UserContext";
 import parseJwt from "./Decode";
-import {Cookies} from "react-cookie"
+import {useCookies } from "react-cookie";
 const CourseDetails = (courseid) => {
   const [courses, setCourses] = useState([]);
-  const cookies=new Cookies();
+  const [cookies]=useCookies(['courseid','username']);
   const [completedSections, setCompletedSections] = useState([{}]);
   const [completedCourseId, setCompletedCourseId] = useState([{}]);
-  const username = localStorage.getItem("username");
-  const {token,setToken}=useUserData();
-  const decodedToken=parseJwt(token);
+  const username = cookies['username']
+  const { token, setToken } = useUserData();
+  const decodedToken = parseJwt(token);
   const queryParams = {
     course_id: courseid,
   };
@@ -46,7 +48,7 @@ const CourseDetails = (courseid) => {
     }
   };
   useEffect(() => {
-    const courseId = localStorage.getItem("courseId");
+    const courseId = cookies['courseid']
     fetchsections(courseId);
   }, []);
 
@@ -68,12 +70,15 @@ const CourseDetails = (courseid) => {
   };
   const fetchProgress = async (courseId) => {
     try {
-      const response = await axios.get(`${config.endpoint}/course/getProgress`, {
-        params: {
-          username: username,
-          course_id: courseId,
-        },
-      });
+      const response = await axios.get(
+        `${config.endpoint}/course/getProgress`,
+        {
+          params: {
+            username: username,
+            course_id: courseId,
+          },
+        }
+      );
       if (response) {
         setCompletedSections((prevCompletedSections) => ({
           ...prevCompletedSections,
@@ -86,15 +91,13 @@ const CourseDetails = (courseid) => {
     }
   };
   useEffect(() => {
-    const courseId = localStorage.getItem("courseId");
+    const courseId = cookies['courseid']
     fetchProgress(courseId);
   }, []);
 
   return (
     <div>
-    {
-      token&& decodedToken.username===cookies.get("username") && decodedToken.email===cookies.get("email")?(<>
-        <Header isAuthorised={false} prop inst />
+      <Header isAuthorised={false} prop inst />
       <>
         <h4>Course Sections:</h4>
         {courses.map((section) => (
@@ -124,42 +127,37 @@ const CourseDetails = (courseid) => {
                 </>
               )}
             </div>
-           
+
             <div className="col-lg-4">
-           
-                <div className="card course-card">
-                  <div className="card-body">
-                    <h5 className="card-title">{section.section_name}</h5>
-                    <p className="card-text">{section.section_description}</p>
-                    <div>
-                      <button
-                        onClick={() => {
-                          markCourseAsDone(section.id, section.Course_id);
-                        }}
-                      >
-                        View Section
-                      </button>
+              <div className="card course-card">
+                <div className="card-body">
+                  <h5 className="card-title">{section.section_name}</h5>
+                  <p className="card-text">{section.section_description}</p>
+                  <div>
+                    <button
+                      onClick={() => {
+                        markCourseAsDone(section.id, section.Course_id);
+                      }}
+                    >
+                      View Section
+                    </button>
 
-                      {/* {  {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}} */}
+                    {/* {  {isSectionCompleted(section.id) && <p>✓ Section Completed</p>}} */}
 
-                      {isSectionCompleted(section.id) ? (
-                        <>
-                          <p>✓ Section Completed</p>
-                        </>
-                      ) : (
-                        <>{console.log("false")}</>
-                      )}
-                    </div>
+                    {isSectionCompleted(section.id) ? (
+                      <>
+                        <p>✓ Section Completed</p>
+                      </>
+                    ) : (
+                      <>{console.log("false")}</>
+                    )}
                   </div>
                 </div>
-              
+              </div>
             </div>
           </div>
         ))}
       </>
-      </>):null
-    }
-      
     </div>
   );
 };

@@ -28,6 +28,7 @@ import { CourseProvider } from "./components/CourseContext";
 
 import Unauthorized from "./components/Unauthorized";
 import { BrowserRouter as Navigate } from "react-router-dom";
+import Header from "./components/Header";
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };

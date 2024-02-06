@@ -15,9 +15,9 @@ const Course = () => {
   });
   const [courseProgressVisible, setCourseProgressVisible] = useState([]);
   const [courseProgress, setCourseProgress] = useState([{}]);
-  const [cookies] = useCookies(['jwtToken']);
+  const [cookies,setCookies] = useCookies(['jwtToken','username','courseid']);
   const [courses, setCourses] = useState([]);
-  const username = localStorage.getItem("username");
+  const username = cookies['username']
   const [section, setSection] = useState(false);
   const [completedSections, setCompletedSections] = useState([{}]);
 
@@ -67,10 +67,7 @@ const Course = () => {
     try {
       console.log(`${cookies.jwtToken}`)
       const response = await axios.get(`${config.endpoint}/course/learning`, {
-        // headers: {
-        //   Authorization: `Bearer ${cookies.jwtToken}`,
-        // },
-        withCredentials:true,
+       withCredentials:true
         
       },
      );
@@ -92,9 +89,6 @@ const Course = () => {
           Back to Home
         </button>
       </Header>
-      {/* {
-  token && decodedtoken.username===cookies.get("username") &&
-} */}
       <h4>Purchased Courses</h4>
       <div className="product-card">
         {courses.map((course, index) => (
@@ -133,7 +127,7 @@ const Course = () => {
                     margin: "0 0 8px",
                   }}
                   onClick={() => {
-                    localStorage.setItem("courseId", course.course_id);
+                    setCookies('courseid',course.course_id)
                   
                     navigate("/courseDetails");
                     // setTimeout(window.location.reload(), 1000)

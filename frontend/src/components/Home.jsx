@@ -14,7 +14,7 @@ import { useCookies } from "react-cookie";
 const Home = ({ prop }) => {
   const navigate = useNavigate();
   const [cookies] = useCookies(['username']);
-  const username = cookies.username
+  const username = cookies['username']
   const [selectedCategory, setSelectedCategory] = useState("");
   const [purchased, setPurchased] = useState([]);
   const [instructor, setInstructor] = useState(false);
@@ -142,7 +142,7 @@ const purchase=(course)=>{
     if (username) {
       const fetchPurchased = async () => {
         try {
-          const res = await axios.get(`${config.endpoint}/course/learning`, {params: {username: username, },
+          const res = await axios.get(`${config.endpoint}/course/learning`, {withCredentials:true,
           });
           if (res.status === 200) {
             setPurchased(res.data);

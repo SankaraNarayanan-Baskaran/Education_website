@@ -71,7 +71,7 @@ const withAuthentication = (WrappedComponent) => {
 
     const handleRegister = async (formData) => {
       try {
-        const type = getCookies("type");
+        const type = cookies['type']
         const response = await axios.post(
           `${config.endpoint}/${type}/add${type}`,
           {

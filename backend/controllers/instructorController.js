@@ -79,7 +79,7 @@ const logininst = async (req, res) => {
 const instructorview = async (req, res) => {
   try {
     if (req.query.username) {
-      const name = req.query.username;
+      const name = req.username;
 
       const user = await Instructor.findOne({
         where: {
