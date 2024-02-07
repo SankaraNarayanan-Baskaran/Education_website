@@ -126,8 +126,8 @@ const google = async (req, res) => {
 
 const studentview = async (req, res) => {
   try {
-    if (req.query.username) {
-      const name = req.query.username;
+    if (req.username) {
+      const name = req.username;
 
       const user = await Accounts.findOne({
         where: {

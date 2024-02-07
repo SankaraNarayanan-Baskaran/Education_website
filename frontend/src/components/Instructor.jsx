@@ -12,12 +12,12 @@ import { enqueueSnackbar } from "notistack";
 import Section from "./Section";
 import { useUserData } from "./UserContext";
 import parseJwt from "./Decode";
-import {Cookies} from "react-cookie"
+import { useCookies } from "react-cookie";
 const Instructor = () => {
-  const cookies=new Cookies();
-  const username = localStorage.getItem("username");
-  const {token,setToken}=useUserData();
-  const decodedToken=parseJwt(token);
+  const [cookies] = useCookies(["username"]);
+  const username = cookies["username"];
+  const { token, setToken } = useUserData();
+  const decodedToken = parseJwt(token);
   const [student, setStudent] = useState(false);
   const [newCourse, setNewCourse] = useState({
     name: "",
@@ -26,15 +26,19 @@ const Instructor = () => {
     video_url: "",
     username: username,
     category: "",
-   approved: false,
+    approved: false,
   });
   const handleAddCourse = async () => {
     try {
-      console.log("INST:", newCourse);
       const courseData = { ...newCourse };
-    
       await axios.post(`${config.endpoint}/course/addcourse`, courseData);
-      setNewCourse({ name: "", description: "", price: "", video_url: "" ,approved:false});
+      setNewCourse({
+        name: "",
+        description: "",
+        price: "",
+        video_url: "",
+        approved: false,
+      });
       fetchcourses();
     } catch (error) {
       console.error("Error adding a Course:", error);
@@ -42,9 +46,12 @@ const Instructor = () => {
   };
   const addToStudent = async () => {
     try {
-      const res = await axios.post(`${config.endpoint}/student/convertToStudent`, {
-        name: username,
-      });
+      const res = await axios.post(
+        `${config.endpoint}/student/convertToStudent`,
+        {
+          name: username,
+        }
+      );
       console.log(res);
       if (res.status === 201) {
         enqueueSnackbar("You are now a Student", { variant: "info" });
@@ -57,13 +64,12 @@ const Instructor = () => {
   };
   const checkStudent = async (username) => {
     try {
-      console.log(username);
       const resp = await axios.get(`${config.endpoint}/student/isStudent`, {
         params: {
           name: username,
         },
       });
-      console.log(resp);
+
       if (resp.status === 201) {
         setStudent(true);
       } else if (resp.status === 202) {
@@ -74,7 +80,7 @@ const Instructor = () => {
     }
   };
   useEffect(() => {
-    const username = localStorage.getItem("username");
+    const username = cookies["username"];
     checkStudent(username);
   }, []);
 
@@ -96,6 +102,15 @@ const Instructor = () => {
     username: username,
   };
 
+  const renderInputField = (type, placeholder, value, onChange) => (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+    />
+  );
+
   const handleSelect = async (courseid) => {
     try {
       console.log(courseid);
@@ -112,164 +127,143 @@ const Instructor = () => {
 
   const fetchcourses = async (username) => {
     try {
-      const response = await axios.get(`${config.endpoint}/inst/instructorview`, {
-        params:{
-          username:username
-        },
-      });
-      console.log("Response:", response.data);
+      const response = await axios.get(
+        `${config.endpoint}/inst/instructorview`,
+        {
+          params: {
+            username: username,
+          },
+        }
+      );
       setCourses(response.data);
-      console.log("Courses:", courses);
     } catch (error) {
+      console.log(username)
       console.error("Error fetching courses:", error);
     }
   };
 
   useEffect(() => {
     // Fetch all courses when the component mounts
-    const username=localStorage.getItem("username");
-    console.log(decodedToken)
+    const username = cookies["username"];
     fetchcourses(username);
   }, []);
- 
 
   return (
     <div>
-    
       <>
         <Header isAuthorised={false} prop student instr />
-      <center>
-        <div className="mx-2 my-2 container">
-          <h3>Jump into Course creation</h3>
-          <button
-            className="btn btn-outline-dark mx-6 mr-2 my-2 my-sm-0"
-            onClick={() => {
-              setIsSelected(true);
-            }}
-          >
-            Create Your Course
-          </button>
+        <center>
+          <div className="mx-2 my-2 container">
+            <h3>Jump into Course creation</h3>
+            <button
+              className="btn btn-outline-dark mx-6 mr-2 my-2 my-sm-0"
+              onClick={() => {
+                setIsSelected(true);
+              }}
+            >
+              Create Your Course
+            </button>
+          </div>
 
-          {/* {fetchcourses()} */}
-        </div>
-
-        {isSelected ? (
-          <>
-            <div className="mx-2">
-              <center>
-                <form className="form-container">
-                  <h5>Course Structure Details:</h5>
-                  <div className="input-container">
-                    <input
-                      type="text"
-                      placeholder="Name"
-                      value={newCourse.name}
-                      onChange={(e) =>
-                        setNewCourse({ ...newCourse, name: e.target.value })
-                      }
-                    />
-
-                    <input
-                      type="text"
-                      placeholder="Description"
-                      value={newCourse.description}
-                      onChange={(e) =>
-                        setNewCourse({
-                          ...newCourse,
-                          description: e.target.value,
-                        })
-                      }
-                    />
-                    <input
-                      type="text"
-                      placeholder="Price"
-                      value={newCourse.price}
-                      onChange={(e) =>
-                        setNewCourse({ ...newCourse, price: e.target.value })
-                      }
-                    />
-                    <input
-                      type="text"
-                      placeholder="Image URL"
-                      value={newCourse.video_url}
-                      onChange={(e) =>
-                        setNewCourse({
-                          ...newCourse,
-                          video_url: e.target.value,
-                        })
-                      }
-                    />
-                    <input
-                      type="text"
-                      placeholder="Category"
-                      value={newCourse.category}
-                      onChange={(e) =>
-                        setNewCourse({ ...newCourse, category: e.target.value })
-                      }
-                    />
-                    <center>
-                      <button
-                        className="form-button my-3"
-                        onClick={() => {
-                          enqueueSnackbar("Course Created", {
-                            variant: "success",
-                          });
-                          handleAddCourse();
-                        }}
-                      >
-                        Add course
-                      </button>
-                    </center>
-                  </div>
-                </form>
-              </center>
-            </div>
-          </>
-        ) : (
-          <>
-            <Section />
-          </>
-        )}
-      </center>
-      <center>
-        <div
-          style={{
-            marginBottom: "3%",
-          }}
-        >
-          {student ? (
+          {isSelected ? (
             <>
-              <button
-                class="btn mx-2 my-sm-0 title"
-                onClick={() => {
-                  navigate("/student", { state: { isLogged: "true" } });
-                }}
-              >
-                Switch to Student view
-              </button>
+              <div className="mx-2">
+                <center>
+                  <form className="form-container">
+                    <h5>Course Structure Details:</h5>
+                    <div className="input-container">
+                      {renderInputField("text", "Name", newCourse.name, (e) =>
+                        setNewCourse({ ...newCourse, name: e.target.value })
+                      )}
+                      {renderInputField(
+                        "text",
+                        "Description",
+                        newCourse.description,
+                        (e) =>
+                          setNewCourse({
+                            ...newCourse,
+                            description: e.target.value,
+                          })
+                      )}
+
+                      {renderInputField("text", "Price", newCourse.price, (e) =>
+                        setNewCourse({ ...newCourse, price: e.target.value })
+                      )}
+                      {renderInputField(
+                        "text",
+                        "Image URL",
+                        newCourse.video_url,
+                        (e) =>
+                          setNewCourse({
+                            ...newCourse,
+                            video_url: e.target.value,
+                          })
+                      )}
+                      {renderInputField(
+                        "text",
+                        "Category",
+                        newCourse.category,
+                        (e) =>
+                          setNewCourse({
+                            ...newCourse,
+                            category: e.target.value,
+                          })
+                      )}
+
+                      <center>
+                        <button
+                          className="form-button my-3"
+                          onClick={() => {
+                            enqueueSnackbar("Course Created", {
+                              variant: "success",
+                            });
+                            handleAddCourse();
+                          }}
+                        >
+                          Add course
+                        </button>
+                      </center>
+                    </div>
+                  </form>
+                </center>
+              </div>
             </>
           ) : (
             <>
-              <button
-                className="btn mx-2 my-sm-0 title"
-                onClick={() => {
-                  addToStudent();
-                  navigate("/", { state: { isLogged: "true" } });
-                }}
-              >
-                Want to be a Student?
-              </button>
+              <Section />
             </>
           )}
-        </div>
-      </center>
-
-     
-
-      <Footer />
+        </center>
+        <center>
+          <div className="mrg">
+            {student ? (
+              <>
+                <button
+                  class="btn mx-2 my-sm-0 title"
+                  onClick={() => {
+                    navigate("/student", { state: { isLogged: "true" } });
+                  }}
+                >
+                  Switch to Student view
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="btn mx-2 my-sm-0 title"
+                  onClick={() => {
+                    addToStudent();
+                    navigate("/", { state: { isLogged: "true" } });
+                  }}
+                >
+                  Want to be a Student?
+                </button>
+              </>
+            )}
+          </div>
+        </center>
+        <Footer />
       </>
-    
-     
     </div>
   );
 };

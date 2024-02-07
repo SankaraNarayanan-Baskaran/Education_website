@@ -13,9 +13,9 @@ router.get("/fetchcourses", courseController.fetchcourses);
 router.get("/learning",decode.parseJwt,courseController.learning);
 router.get("/search",courseController.search);
 router.get("/:courseName/students",courseController.courseName)
-router.get("/filter", courseController.filter);
+router.get("/filter",decode.parseJwt, courseController.filter);
 
-router.post("/learningpurchase", purchaseController.learningpurchase);
+router.post("/learningpurchase", decode.parseJwt,purchaseController.learningpurchase);
 router.get("/purchased", purchaseController.purchased);
 
 router.post("/section", sectionController.section);

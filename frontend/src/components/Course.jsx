@@ -50,7 +50,7 @@ const Course = () => {
           ...prevCompletedSections,
           [courseId]: response.data.Completed_Sections,
         }));
-        console.log(completedSections);
+       
       }
     } catch (error) {
       console.log("Error:", error);
@@ -65,10 +65,8 @@ const Course = () => {
 
   const fetchcourses = async () => {
     try {
-      console.log(`${cookies.jwtToken}`)
       const response = await axios.get(`${config.endpoint}/course/learning`, {
        withCredentials:true
-        
       },
      );
       setCourses(response.data);
@@ -84,6 +82,7 @@ const Course = () => {
         <button
           onClick={() => {
             navigate("/student", { state: { isLogged: "true" } });
+            setTimeout(window.location.reload(),1000)
           }}
         >
           Back to Home
@@ -120,17 +119,12 @@ const Course = () => {
                 </>
                 {/* )} */}
                 <button
-                  style={{
-                    width: "100px",
-                    height: "30px",
-                    fontSize: "13px",
-                    margin: "0 0 8px",
-                  }}
+                  className="course-button"
                   onClick={() => {
                     setCookies('courseid',course.course_id)
                   
                     navigate("/courseDetails");
-                    // setTimeout(window.location.reload(), 1000)
+                    setTimeout(window.location.reload(), 1000)
                     setSection(true);
                   }}
                 >

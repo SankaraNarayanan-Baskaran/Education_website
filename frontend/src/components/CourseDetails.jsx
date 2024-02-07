@@ -113,11 +113,7 @@ const CourseDetails = (courseid) => {
                     height="350px"
                   />
                   <div
-                    style={{
-                      position: "fixed",
-                      left: "10px",
-                      bottom: "10px",
-                    }}
+                   className="transcript"
                   >
                     {" "}
                     <textarea rows={5} cols={80} readOnly>

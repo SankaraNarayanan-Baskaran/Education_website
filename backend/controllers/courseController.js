@@ -132,9 +132,8 @@ const search = async (req, res) => {
 const filter = async (req, res) => {
   try {
     const category = req.query.category;
-    console.log("122",category)
-    if (req.query.username) {
-      const username = req.query.username;
+    if (req.username) {
+      const username = req.username;
       const user = await Accounts.findOne({
         where: {
           username: username,

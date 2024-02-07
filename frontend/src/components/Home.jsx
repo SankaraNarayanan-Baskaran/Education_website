@@ -31,7 +31,8 @@ const Home = ({ prop }) => {
   const fetchCourses = async (username) => {
     try {
       const response = await axios.get( `${config.endpoint}/student/studentview`,{
-          params: { username: username,},}           
+        withCredentials:true
+      }           
       );
       setCourses(response.data);
     } catch (error) {
@@ -48,7 +49,6 @@ const Home = ({ prop }) => {
           course_name: course.name,
           course_description: course.description,
           video_url: course.video_url,
-          student_name: username,
         }
       );
 
@@ -67,7 +67,8 @@ const Home = ({ prop }) => {
     setSelectedCategory(event.target.value);
     const res = await axios.get(`${config.endpoint}/course/filter`, {
       params: {
-        category: event.target.value,username: username,},
+        category: event.target.value},
+        withCredentials:true
     });
     if (res) {
       setFilteredCourses(res.data);
@@ -80,7 +81,7 @@ const Home = ({ prop }) => {
       const res = await axios.post(
         `${config.endpoint}/inst/convertToInstructor`,
         {
-          name: username,
+          withCredentials:true
         }
       );
       if (res.status === 201) {
@@ -95,7 +96,7 @@ const Home = ({ prop }) => {
 
   const checkInstructor = async (username) => {
     try {
-      const resp = await axios.get(`${config.endpoint}/inst/isInstructor`, { params: { name: username,}
+      const resp = await axios.get(`${config.endpoint}/inst/isInstructor`, { withCredentials:true
       });
       if (resp.status === 201) {
         setInstructor(true);
@@ -147,7 +148,6 @@ const purchase=(course)=>{
           if (res.status === 200) {
             setPurchased(res.data);
             setPurchasedLoaded(true);
-            console.log(res.data)
           }
         } catch (error) {
           console.log("error", error);
@@ -267,7 +267,7 @@ const purchase=(course)=>{
         </div>
         <center>
           {username && (
-            <div style={{ marginBottom: "3%" }}>
+            <div className="btm">
               {instructor ? (
                 <button
                   className="btn mx-2 my-sm-0 title"

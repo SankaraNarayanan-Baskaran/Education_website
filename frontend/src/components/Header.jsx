@@ -94,6 +94,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
                           navigate("/course");
+                          setTimeout(window.location.reload(),1000)
                         }}
                       >
                         My Learning

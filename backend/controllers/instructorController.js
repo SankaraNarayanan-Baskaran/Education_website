@@ -78,7 +78,7 @@ const logininst = async (req, res) => {
 
 const instructorview = async (req, res) => {
   try {
-    if (req.query.username) {
+    if (req.username) {
       const name = req.username;
 
       const user = await Instructor.findOne({
@@ -116,8 +116,8 @@ const instructorview = async (req, res) => {
 
 const isInstructor = async (req, res) => {
   try {
-    if (req.query.name) {
-      const name = req.query.name;
+    if (req.username) {
+      const name = req.username;
       const user = await Instructor.findOne({
         where: {
           name: name,
@@ -136,7 +136,7 @@ const isInstructor = async (req, res) => {
 };
 const convertToInstructor = async (req, res) => {
   try {
-    const { name } = req.body;
+    const name  = req.username;
     console.log(name);
     const user = await Instructor.findOne({ where: { name: name } });
     if (user) {

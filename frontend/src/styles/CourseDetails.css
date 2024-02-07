@@ -34,10 +34,13 @@
 }
 
 .sec-image{
- 
     position:fixed;
     left: 10px;
-    top: 100px,
- 
+    top: 100px;
 }
-  
+
+.transcript{
+    position: fixed;
+    left: 10px;
+    bottom:10px;
+}

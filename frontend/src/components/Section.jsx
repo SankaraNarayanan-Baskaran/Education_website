@@ -6,10 +6,12 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Section.css";
 import Instructor from "./Instructor";
 import { enqueueSnackbar } from "notistack";
+import { useCookies } from "react-cookie";
 const Section = ({ courseName }) => {
   const [addSection, setAddSection] = useState(false);
+  const [cookies]=useCookies(['username'])
   const [courses, setCourses] = useState([]);
-  const username = localStorage.getItem("username");
+  const username = cookies['username']
   // const queryParams = {
   //   username: username,
   // };
@@ -101,9 +103,9 @@ const Section = ({ courseName }) => {
           },
         }
       );
-      console.log("Response Data:", response.data);
+
       setCourses(response.data);
-      console.log("Courses:", courses);
+  
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -125,11 +127,9 @@ const Section = ({ courseName }) => {
           ...prevStudents,
           [course.course_id]: course.student_name,
         }));
-        console.log(students);
+
         const studentName = course.student_name;
-        console.log(
-          `Student Name for Course ${course.course_name}: ${studentName}`
-        );
+       
       });
     }
   };
