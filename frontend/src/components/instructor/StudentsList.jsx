@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { config } from "../App";
-import Header from "./Header";
-import "../styles/StudentList.css";
+import { config } from "../../App";
+import Header from "../Header";
+import "./styles/StudentList.css";
 const StudentsList = () => {
   const [list, setList] = useState([]); // Initialize list as an array
   const [newQuestion, setNewQuestion] = useState({});

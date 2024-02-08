@@ -4,15 +4,16 @@ import SearchInput from "./SearchInput";
 import { useNavigate, useLocation } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import CourseCard from "./CourseCard";
-import Header from "./Header";
-import Footer from "./Footer";
-import { config } from "../App";
+import Header from "../Header";
+import Footer from "../Footer";
+import { config } from "../../App";
 import axios from "axios";
-import { useUserData } from "./UserContext";
-import "../styles/Header.css";
+import { useUserData } from "../UserContext";
+import "../../styles/Header.css";
 import { useCookies } from "react-cookie";
 const Home = ({ prop }) => {
   const navigate = useNavigate();
+  const {role}=useUserData();
   const [cookies] = useCookies(['username']);
   const username = cookies['username']
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -28,13 +29,20 @@ const Home = ({ prop }) => {
   const [selectedCourseDescription, setSelectedCourseDescription] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const fetchCourses = async (username) => {
+  const fetchCourses = async () => {
     try {
-      const response = await axios.get( `${config.endpoint}/student/studentview`,{
-        withCredentials:true
-      }           
-      );
-      setCourses(response.data);
+      if(username){
+        const response = await axios.get( `${config.endpoint}/student/studentview`,{
+          withCredentials:true
+        }           
+        );
+        setCourses(response.data);
+      }
+      else{
+        const response=await axios.get(`${config.endpoint}/student/publicview`);
+        setCourses(response.data)
+      }
+      
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -94,7 +102,7 @@ const Home = ({ prop }) => {
     }
   };
 
-  const checkInstructor = async (username) => {
+  const checkInstructor = async () => {
     try {
       const resp = await axios.get(`${config.endpoint}/inst/isInstructor`, { withCredentials:true
       });
@@ -154,13 +162,17 @@ const purchase=(course)=>{
         }
       };
       fetchPurchased();
+      checkInstructor(username);
     }
     fetchCourses(username);
-    checkInstructor(username);
+    
   }, []);
 
   return (
-    <div>
+    <>
+    {
+      role.includes("student")?(<>
+        <div>
       <>
         <>
           <Header prop={prop}>
@@ -294,6 +306,12 @@ const purchase=(course)=>{
         <Footer />
       </>
     </div>
+      </>):(<>
+        {navigate("/unauthorized")};
+      </>)
+    }
+    
+    </>
   );
 };
 export default Home;

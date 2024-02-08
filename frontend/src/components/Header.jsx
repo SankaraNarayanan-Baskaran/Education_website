@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Header.css";
 import { config } from "../App";
 import axios from "axios";
-import "../styles/Home.css";
+import "./student/styles/Home.css";
 import { useCookies } from "react-cookie";
 
 const Header = ({ isAuthorised, prop, student, children, instr }) => {
@@ -17,12 +17,10 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
   ]);
   const [data, setData] = useState(null);
   const user = cookies["username"];
-  const fetchInstitution = async (username) => {
+  const fetchInstitution = async () => {
     try {
-      const response = await axios.get(`${config.endpoint}/admin/icon`, {
-        params: {
-          username: username,
-        },
+      const response = await axios.get(`${config.endpoint}/admin/icon`,{
+        withCredentials:true
       });
       if (response) {
         setData(response.data);
@@ -33,7 +31,10 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
   };
   useEffect(() => {
     const username = cookies["username"];
-    fetchInstitution(username);
+    if(username){
+      fetchInstitution(username);
+    }
+    
   }, []);
   return (
     <div className="header">

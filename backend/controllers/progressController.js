@@ -10,7 +10,8 @@ const {
 const progress=async(req,res)=>{
 
     try {
-      const { sectionId, username, count } = req.body;
+      const { sectionId,count } = req.body;
+      const usenrame=req.username;
       const user = await Accounts.findOne({ where: { username: username } });
   
       if (user) {
@@ -93,7 +94,7 @@ const progress=async(req,res)=>{
 }
 const getProgress=async(req,res)=>{
         try {
-          const username = req.query.username;
+          const username = req.username;
           const course = req.query.course_id;
           console.log(course);
           const user = await Accounts.findOne({

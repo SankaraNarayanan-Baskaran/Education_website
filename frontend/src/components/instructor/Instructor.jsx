@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header";
-
-import "../styles/Instructor.css";
-import Footer from "./Footer";
-import UploadCourse from "./UploadCourse";
+import Header from "../Header";
+import "./styles/Instructor.css";
+import Footer from "../Footer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { config } from "../App";
-import VideoPlayer from "./Video";
+import { config } from "../../App";
+import VideoPlayer from "../Video";
 import { enqueueSnackbar } from "notistack";
 import Section from "./Section";
-import { useUserData } from "./UserContext";
-import parseJwt from "./Decode";
+import { useUserData } from "../UserContext";
+import parseJwt from "../Decode";
 import { useCookies } from "react-cookie";
 const Instructor = () => {
   const [cookies] = useCookies(["username"]);
   const username = cookies["username"];
   const { token, setToken } = useUserData();
+  const {role}=useUserData();
   const decodedToken = parseJwt(token);
   const [student, setStudent] = useState(false);
   const [newCourse, setNewCourse] = useState({
@@ -49,7 +48,7 @@ const Instructor = () => {
       const res = await axios.post(
         `${config.endpoint}/student/convertToStudent`,
         {
-          name: username,
+          withCredentials:true
         }
       );
       console.log(res);
@@ -62,12 +61,10 @@ const Instructor = () => {
       console.log("error", error);
     }
   };
-  const checkStudent = async (username) => {
+  const checkStudent = async () => {
     try {
       const resp = await axios.get(`${config.endpoint}/student/isStudent`, {
-        params: {
-          name: username,
-        },
+       withCredentials:true
       });
 
       if (resp.status === 201) {
@@ -95,13 +92,9 @@ const Instructor = () => {
   };
 
   const navigate = useNavigate();
-
   const [courses, setCourses] = useState([]);
   const [isSelected, setIsSelected] = useState(false);
-  const queryParams = {
-    username: username,
-  };
-
+  
   const renderInputField = (type, placeholder, value, onChange) => (
     <input
       type={type}
@@ -111,28 +104,12 @@ const Instructor = () => {
     />
   );
 
-  const handleSelect = async (courseid) => {
-    try {
-      console.log(courseid);
-      const response = await axios.get(`${config.endpoint}/student/learners`, {
-        params: { username: username, course_id: courseid },
-      });
-      console.log(response.data);
-      setCourses(response.data);
-      console.log("Courses:", courses);
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-    }
-  };
-
   const fetchcourses = async (username) => {
     try {
       const response = await axios.get(
         `${config.endpoint}/inst/instructorview`,
         {
-          params: {
-            username: username,
-          },
+          withCredentials:true
         }
       );
       setCourses(response.data);
@@ -149,7 +126,9 @@ const Instructor = () => {
   }, []);
 
   return (
-    <div>
+    <>
+    {
+      role.includes("instructor")?(<><div>
       <>
         <Header isAuthorised={false} prop student instr />
         <center>
@@ -264,7 +243,12 @@ const Instructor = () => {
         </center>
         <Footer />
       </>
-    </div>
+    </div></>):(<>
+      {navigate("/unauthorized")}
+    </>)
+    }
+    
+    </>
   );
 };
 

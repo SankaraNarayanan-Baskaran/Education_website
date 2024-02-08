@@ -96,7 +96,6 @@ const instructorview = async (req, res) => {
         });
         if (courses) {
           console.log("247C", courses);
-
           return res.json(courses);
         }
       }

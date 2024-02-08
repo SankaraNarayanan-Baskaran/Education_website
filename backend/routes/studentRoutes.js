@@ -8,8 +8,9 @@ router.post("/google",studentController.google);
 router.post("/convertToStudent",studentController.convertToStudent);
 
 router.get("/studentview",decodedToken.parseJwt,studentController.studentview);
-router.get("/learners",decodedToken.parseJwt,studentController.learners);
-router.get("/isStudent",studentController.isStudent);
+router.get("/learners",studentController.learners);
+router.get("/isStudent",decodedToken.parseJwt,studentController.isStudent);
+router.get("/publicview",studentController.publicview)
 
 router.put("/updatePass",studentController.updatePassword);
 router.put("/forgotPass",studentController.forgotPassword);

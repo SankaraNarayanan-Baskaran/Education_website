@@ -22,8 +22,8 @@ router.post("/section", sectionController.section);
 router.get("/section", sectionController.getSection);
 router.post("/updateSection",sectionController.updateSection)
 
-router.post("/progress", progressController.progress);
-router.get("/getProgress", progressController.getProgress);
+router.post("/progress", decode.parseJwt,progressController.progress);
+router.get("/getProgress",decode.parseJwt, progressController.getProgress);
 
 router.post("/quiz",quizController.quiz);
 router.get("/quiz",quizController.getQuiz);

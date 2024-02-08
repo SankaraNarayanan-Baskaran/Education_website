@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
-import { config } from "../App";
+import { config } from "../../App";
 const ChartComponent = () => {
   const [chartData, setChartData] = useState({
     labels: ["June", "May", "April"],

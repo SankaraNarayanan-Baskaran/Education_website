@@ -148,22 +148,30 @@ const studentview = async (req, res) => {
         }
       }
     } else {
-      const details = await CourseDetails.findAll({
-        where: {
-          institution_code: null,
-        },
-      });
-      return res.json(details);
+      
     }
   } catch (error) {
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+const publicview=async(req,res)=>{
+  try {
+    const details = await CourseDetails.findAll({
+      where: {
+        institution_code: null,
+      },
+    });
+    return res.json(details);
+  } catch (error) {
+    console.log("Error",error)
+  }
+}
 const learners = async (req, res) => {
   try {
     const course_id = req.query.course_id;
-    const username = req.query.username;
+    const username = req.username;
     console.log("course_id:", course_id);
 
     // Find the account based on the username (replace with dynamic username retrieval)
@@ -187,8 +195,8 @@ const learners = async (req, res) => {
 
 const isStudent = async (req, res) => {
   try {
-    if (req.query.name) {
-      const name = req.query.name;
+    if (req.username) {
+      const name = req.username;
       const user = await Accounts.findOne({
         where: {
           username: name,
@@ -208,8 +216,7 @@ const isStudent = async (req, res) => {
 
 const convertToStudent = async (req, res) => {
   try {
-    const { name } = req.body;
-    console.log(name);
+    const name = req.username;
     const user = await Accounts.findOne({ where: { username: name } });
     if (user) {
       return res.status(299).json("Already a student");
@@ -273,6 +280,7 @@ module.exports = {
   loginuser,
   google,
   studentview,
+  publicview,
   learners,
   isStudent,
   convertToStudent,

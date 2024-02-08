@@ -31,16 +31,9 @@ const withAuthentication = (WrappedComponent) => {
         if (res.status === 201) {
           console.log(res);
           const { data } = res.data; // Assuming the token is in the 'data' field of the response
-          setToken(data);
-          // cookies.set("token", data);
-          // //  console.log('Token:', token);
-         
+          setToken(data);       
           setCookies('jwtToken',data, { path: '/' });
-          // Cookies.set("username",formData.username)
-          // const decodedToken = parseJwt(data);
-          // console.log(decodedToken);
-        setCookies('username',formData.username)
-      
+          setCookies('username',formData.username)
           enqueueSnackbar("Logged in Successfully", { variant: "success" });
 
           const redirectPath = {

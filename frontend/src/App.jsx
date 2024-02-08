@@ -2,23 +2,22 @@ import logo from "./logo.svg";
 import "./App.css";
 import { ReactDOM, useState } from "react";
 import { Routes, Route, Router } from "react-router-dom";
-import Sample from "./components/Sample";
-import Home from "./components/Home";
+
+import Home from "./components/student/Home"
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import Register from "./pages/Register";
-import CourseDetails from "./components/CourseDetails";
-import Instructor from "./components/Instructor";
+import CourseDetails from "./components/student/CourseDetails";
+import Instructor from "./components/instructor/Instructor";
 import UploadCourse from "./components/UploadCourse";
-import Course from "./components/Course";
-import Section from "./components/Section";
+import Course from "./components/student/Course";
+import Section from "./components/instructor/Section";
 import { SnackbarProvider } from "notistack";
-import StudentsList from "./components/StudentsList";
+import StudentsList from "./components/instructor/StudentsList";
 
 import Quiz from "./components/Quiz";
-import BarGraph from "./components/Bar";
-import { MyContext } from "./components/FormContext";
-import withAuthentication from "./components/HOC";
+import BarGraph from "./components/admin/Bar";
+
 import { useNavigate } from "react-router-dom";
 import { FormDataProvider } from "./components/FormContext";
 import { UsernameDataProvider } from "./components/UserContext";
@@ -58,61 +57,51 @@ function App() {
                 <Route
                   path="/coursedetails"
                   element={
-                    <PrivateWrapper roles="student">
+                    
                       <CourseDetails />
-                    </PrivateWrapper>
                   }
                 />
-                {/* <Route path="/coursedetails" element={<CourseDetails/>}/> */}
+              
                 <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route path="/uploadcourse" element={<UploadCourse />} />
-                <Route
-                  path="/course"
-                  element={
-                    <PrivateWrapper roles="student">
-                      <Course />
-                    </PrivateWrapper>
-                  }
-                />
+                <Route path="/course" element={<Course/>}/>
 
                 <Route
                   path="/section"
                   element={
-                    <PrivateWrapper roles="instructor">
+                  
                       <Section />
-                    </PrivateWrapper>
+            
                   }
                 />
-                {/* <Route path="/section" element={<Section/>}/> */}
+              
                 <Route
                   path="/instructor/:courseName/students"
                   element={
-                    <PrivateWrapper roles="instructor">
+                    
                       <StudentsList />
-                    </PrivateWrapper>
+                   
                   }
                 />
-                {/* <Route path="/instructor/:courseName/students" element={<StudentsList/>}/> */}
+            
                 <Route path="/course/:course/quiz" element={<Quiz />} />
                 <Route
                   path="/instructor"
                   element={
-                    <PrivateWrapper roles="instructor">
+                    
                       <Instructor />
-                    </PrivateWrapper>
+                   
                   }
                 />
                 <Route
                   path="/admin"
                   element={
-                    <PrivateWrapper roles="admin">
-                      <Admin />
-                    </PrivateWrapper>
+                   
+                      <Admin/>
                   }
                 />
               
                 <Route path="/bar" element={<BarGraph />} />
-                <Route path="/sample" element={<Sample />} />
               </Routes>
             </CourseProvider>
           </FormDataProvider>

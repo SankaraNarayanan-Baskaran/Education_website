@@ -117,7 +117,7 @@ const deleteInstructor = async (req, res) => {
 
 const studentInfo = async (req, res) => {
   try {
-    const user = req.query.username;
+    const user = req.username;
 
     if (user !== undefined) {
       const students = await Institution.findOne({
@@ -144,8 +144,8 @@ const studentInfo = async (req, res) => {
 
 const instructorInfo = async (req, res) => {
   try {
-    if (req.query.username) {
-      const user = req.query.username;
+    if (req.username) {
+      const user = req.username;
       const students = await Institution.findOne({
         where: {
           institution_name: user,
@@ -170,8 +170,8 @@ const instructorInfo = async (req, res) => {
 
 const icon = async (req, res) => {
   try {
-    if (req.query.username) {
-      const username = req.query.username;
+    if (req.username) {
+      const username = req.username;
       const user = await Accounts.findOne({
         where: {
           username: username,
@@ -261,7 +261,7 @@ const manageInstructorCourses = async (req, res) => {
 
 const pending = async (req, res) => {
   try {
-    const username = req.query.username;
+    const username = req.username;
     console.log(username);
     const inst = await Institution.findOne({
       where: {
@@ -314,7 +314,7 @@ const approve = async (req, res) => {
 };
 const getStudentCourses = async (req, res) => {
   try {
-    const username = req.query.username;
+    const username = req.username;
     const purchases = await Student_Purchases.findAll();
     if (purchases) {
       const courses = await CourseDetails.findAll();
@@ -344,7 +344,7 @@ const getStudentCourses = async (req, res) => {
 
 const getInstructorCourses = async (req, res) => {
   try {
-    const username = req.query.username;
+    const username = req.username;
     console.log(username);
     const user = await Institution.findOne({
       where: {
@@ -367,7 +367,7 @@ const getInstructorCourses = async (req, res) => {
 };
 const data = async (req, res) => {
   try {
-    const username = req.query.username;
+    const username = req.username;
     const user = await Institution.findOne({
       where: {
         institution_name: username,

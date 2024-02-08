@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header";
+import Header from "../Header";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { config } from "../App";
-import Footer from "./Footer";
+import { Navigate, useNavigate } from "react-router-dom";
+import { config } from "../../App";
+import Footer from "../Footer";
 import { ProgressBar } from "react-bootstrap";
-import "../styles/Course.css";
+import "./styles/Course.css";
 import { useCookies } from 'react-cookie';
+import { useUserData } from "../UserContext";
 
 const Course = () => {
   const [progress, setProgress] = useState(() => {
@@ -20,6 +21,7 @@ const Course = () => {
   const username = cookies['username']
   const [section, setSection] = useState(false);
   const [completedSections, setCompletedSections] = useState([{}]);
+const {role}=useUserData();
 
   const queryParams = {
     username: username,
@@ -36,9 +38,9 @@ const Course = () => {
         `${config.endpoint}/course/getProgress`,
         {
           params: {
-            username: username,
             course_id: courseId,
           },
+          withCredentials:true
         }
       );
       if (response) {
@@ -78,7 +80,9 @@ const Course = () => {
 
   return (
     <>
-      <Header isAuthorised={false} prop student>
+    {
+      role.includes("student")?(<>
+        <Header isAuthorised={false} prop student>
         <button
           onClick={() => {
             navigate("/student", { state: { isLogged: "true" } });
@@ -158,6 +162,9 @@ const Course = () => {
           </div>
         ))}
       </div>
+      </>):(<><Navigate to="/unauthorized" /></>)
+    }
+      
     </>
   );
 };

@@ -15,7 +15,6 @@ const PrivateWrapper = ({ roles, children }) => {
   // Assuming you have a user role field in the token payload
   const decodedToken = parseJwt(token);
   const userRole = decodedToken.type;
-  console.log(roles, userRole);
   if (roles && !userRole.includes(roles)) {
     // Redirect to unauthorized page if the user's role doesn't match any allowed roles
     return <Navigate to="/unauthorized" />;

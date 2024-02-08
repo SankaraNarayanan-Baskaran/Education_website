@@ -9,17 +9,16 @@ import "../styles/Login.css";
 import "../styles/Header.css"
 import withAuthentication from "../components/HOC";
 import { MyContext, useFormData } from "../components/FormContext";
-import Cookies from "universal-cookie";
+import { useCookies } from "react-cookie";
 const Login = ({handleLogin,validateInput}) => {
   const { enqueueSnackbar } = useSnackbar();
+  const [cookies,setCookies]=useCookies(['type','username'])
   const {formData,setFormData}=useFormData();
   const [changePassword, setChangePassword] = useState({
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-// const cookies=new Cookies();
-// cookies.set("username","Smudge")
   const [forgotPass, setForgotPass] = useState(false);
   const [forgotPassword, setForgotPassword] = useState({
     username: "",
@@ -188,7 +187,7 @@ const Login = ({handleLogin,validateInput}) => {
                   className="login-button"
                   onClick={() => {
                     setType("Instructor");
-                    localStorage.setItem("type", "inst");
+                    setCookies("type","inst")
                     setInstructor(true);
                   }}
                 >
