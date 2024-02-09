@@ -198,7 +198,7 @@ const Login = ({handleLogin,validateInput}) => {
                   onClick={() => {
                     setInstitution(true);
                     setType("Institution");
-                    localStorage.setItem("type", "admin");
+                   setCookies("type","admin")
                   }}
                 >
                   Institution Login?

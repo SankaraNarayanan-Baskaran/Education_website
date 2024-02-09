@@ -3,10 +3,12 @@ import axios from "axios";
 import { config } from "../../App";
 import Header from "../Header";
 import "./styles/StudentList.css";
+import { useCookies } from "react-cookie";
 const StudentsList = () => {
   const [list, setList] = useState([]); // Initialize list as an array
   const [newQuestion, setNewQuestion] = useState({});
-  const course=localStorage.getItem("courseName")
+  const [cookies]=useCookies(['username','courseName'])
+  const course=cookies["courseName"];
   const [quizData, setQuizData] = useState({
     question: "",
     option1: "",
@@ -58,7 +60,7 @@ const StudentsList = () => {
   };
 
   useEffect(() => {
-    const crs = localStorage.getItem("courseName");
+    const crs = cookies['courseName']
     studentList(crs);
   }, []);
 
@@ -126,13 +128,6 @@ const StudentsList = () => {
              <div style={{
               marginTop:"10px"
              }}> <button onClick={handleAddQuestion}>Add Question</button></div>
-              {/* <button
-                onClick={() => {
-                  handleSubmit();
-                }}
-              >
-                Create Quiz
-              </button> */}
             </div>
           </center>
         </div>

@@ -264,7 +264,6 @@ const Admin = () => {
 
   const handleApproveCourse = async (courseId) => {
     try {
-      // Send a request to the server to approve the course
       const response = await axios.put(
         `${config.endpoint}/admin/courses/${courseId}/approve`
       );

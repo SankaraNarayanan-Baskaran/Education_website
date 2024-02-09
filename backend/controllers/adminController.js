@@ -345,7 +345,6 @@ const getStudentCourses = async (req, res) => {
 const getInstructorCourses = async (req, res) => {
   try {
     const username = req.username;
-    console.log(username);
     const user = await Institution.findOne({
       where: {
         institution_name: username,

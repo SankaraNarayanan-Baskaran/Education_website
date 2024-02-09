@@ -14,6 +14,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
     "email",
     "type",
     "logged",
+    "role"
   ]);
   const [data, setData] = useState(null);
   const user = cookies["username"];
@@ -65,6 +66,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                     removeCookies("username");
                     removeCookies("type");
                     removeCookies("logged");
+                    removeCookies("role");
                     navigate("/");
                     setTimeout(window.location.reload(), 1000);
                   }}
@@ -111,6 +113,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                           removeCookies("username");
                           removeCookies("type");
                           removeCookies("logged");
+                          removeCookies("role");
                           navigate("/");
                           setTimeout(window.location.reload(), 1000);
                         }}
@@ -160,6 +163,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                           removeCookies("username");
                           removeCookies("type");
                           removeCookies("logged");
+                          removeCookies("role");
                           navigate("/");
                           setTimeout(window.location.reload(), 1000);
                         }}

@@ -7,7 +7,7 @@ const {
   Progress,
   Instructor,
 } = require("../models/usermodels");
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require("sequelize");
 const addcourse = async (req, res) => {
   try {
     const {
@@ -15,19 +15,17 @@ const addcourse = async (req, res) => {
       description,
       price,
       video_url,
-      username,
       course_id,
       category,
       approved,
     } = req.body;
-    console.log("Username:", username);
-
+    const username = req.username;
     const inst = await Instructor.findOne({ where: { name: username } });
     console.log(inst.institution_code);
 
     if (inst) {
       console.log("165", inst);
-      CourseDetails.create({
+    const course= await CourseDetails.create({
         name,
         description,
         price,
@@ -36,12 +34,12 @@ const addcourse = async (req, res) => {
         category,
         approved,
         institution_code: inst.institution_code,
-
-        // console.log(userId);
       });
+      if(course){
+        return res.status(201).json({ message: "Course created successfully" })
+      }
+      
     }
-
-    // res = newCourse;
   } catch (error) {
     console.error("Error creating a CourseDetails:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -78,8 +76,8 @@ const learning = async (req, res) => {
     // console.log("Cookie:", req.cookies);
     // const myCookieValue = req.cookies.jwtToken;
     // console.log('Value of jwtToken:', myCookieValue);
-    const param=req.username;
-    console.log("Learner name",param);
+    const param = req.username;
+    console.log("Learner name", param);
     const some = await Accounts.findOne({ where: { username: param } }).then(
       async (users) => {
         // console.log("Userd:",users);
@@ -104,10 +102,10 @@ const learning = async (req, res) => {
 
 const search = async (req, res) => {
   try {
-    const query = req.query.query || ''; 
+    const query = req.query.query || "";
 
     // Check if the query is empty
-    if (query.trim() === '') {
+    if (query.trim() === "") {
       const allResults = await CourseDetails.findAll();
       console.log("All Results:", allResults);
       res.json(allResults);
@@ -143,9 +141,9 @@ const filter = async (req, res) => {
       if (user) {
         if (category === "All") {
           const ans = await CourseDetails.findAll({
-            where:{
-              institution_code:user.institution_code
-            }
+            where: {
+              institution_code: user.institution_code,
+            },
           });
           console.log(ans);
           return res.json(ans);
@@ -153,26 +151,24 @@ const filter = async (req, res) => {
           const course = await CourseDetails.findAll({
             where: {
               category: category,
-              institution_code:user.institution_code
+              institution_code: user.institution_code,
             },
           });
           if (course) {
-           return res.json(course);
+            return res.json(course);
           }
         }
-      }
-      else
-      {
-        console.log(username,category)
+      } else {
+        console.log(username, category);
       }
     }
   } catch (error) {
     const category = req.query.category;
-    const username=req.query.username;
-    console.log(category,username);
+    const username = req.query.username;
+    console.log(category, username);
   }
 };
-const courseName=async(req,res)=>{
+const courseName = async (req, res) => {
   try {
     const { courseName } = req.params;
     const course = await Student_Purchases.findAll({
@@ -186,10 +182,13 @@ const courseName=async(req,res)=>{
   } catch (error) {
     console.log("error", error);
   }
-}
+};
 
-
- 
-
-
-module.exports = { addcourse, fetchcourses, learning, search, filter,courseName };
+module.exports = {
+  addcourse,
+  fetchcourses,
+  learning,
+  search,
+  filter,
+  courseName,
+};

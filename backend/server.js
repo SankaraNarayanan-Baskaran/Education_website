@@ -28,8 +28,9 @@ const sequelize = new Sequelize({
   ...require("./config/config.json")["development"],
 });
 const corsOptions = {
-  origin: 'http://localhost:3000', // replace with your frontend's origin
+  origin: 'http://localhost:3000',
   credentials: true,
+  optionSuccessStatus:200
 };
 
 app.use(cors(corsOptions));

@@ -8,8 +8,8 @@ const progressController = require("../controllers/progressController");
 const quizController=require("../controllers/quizController");
 const decode = require("../utils/Decode");
 
-router.post("/addcourse", courseController.addcourse);
-router.get("/fetchcourses", courseController.fetchcourses);
+router.post("/addcourse",decode.parseJwt, courseController.addcourse);
+router.get("/fetchcourses",courseController.fetchcourses);
 router.get("/learning",decode.parseJwt,courseController.learning);
 router.get("/search",courseController.search);
 router.get("/:courseName/students",courseController.courseName)

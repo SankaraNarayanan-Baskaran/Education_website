@@ -170,8 +170,7 @@ const purchase=(course)=>{
 
   return (
     <>
-    {
-      role.includes("student")?(<>
+   
         <div>
       <>
         <>
@@ -306,12 +305,10 @@ const purchase=(course)=>{
         <Footer />
       </>
     </div>
-      </>):(<>
-        {navigate("/unauthorized")};
-      </>)
-    }
+      </>
     
-    </>
+    
+    
   );
 };
 export default Home;

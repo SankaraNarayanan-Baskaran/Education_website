@@ -20,7 +20,7 @@ const {
             transcript,
           } = req.body;
           console.log(course_name);
-          Instructor.findOne({ where: { name: username } }).then(async (user) => {
+          await Instructor.findOne({ where: { name: username } }).then(async (user) => {
             await CourseDetails.findOne({ where: { name: course_name } }).then(
               async (course) => {
                 await Course_Section.create({
@@ -52,7 +52,7 @@ const {
           // console.log("Request:", req.body);
           const param = req.query.course_id;
           console.log("Param543:", param);
-          const some = CourseDetails.findOne({
+          const some =await  CourseDetails.findOne({
             where: { id: param },
           }).then(
             async (course) => {

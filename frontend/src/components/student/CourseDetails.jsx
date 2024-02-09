@@ -18,9 +18,6 @@ const CourseDetails = (courseid) => {
   const username = cookies["username"];
   const { token, setToken } = useUserData();
   const decodedToken = parseJwt(token);
-  const queryParams = {
-    course_id: courseid,
-  };
   const navigate = useNavigate();
   const { role } = useUserData();
   const isSectionCompleted = (sectionId) => {
@@ -53,7 +50,7 @@ const CourseDetails = (courseid) => {
 
   const markCourseAsDone = async (sectionId, courseId) => {
     setCompletedCourseId(sectionId);
-
+// setTimeout(window.location.reload(),1000);
     console.log("completedCourseId:", completedCourseId);
     setCompletedSections((prevCompletedSections) => ({
       ...prevCompletedSections,
@@ -62,10 +59,12 @@ const CourseDetails = (courseid) => {
 
     await axios.post(`${config.endpoint}/course/progress`, {
       sectionId: sectionId,
-      courseId: courseId,
-      username: username,
       count: courses.length,
-    });
+    },
+    {
+      withCredentials:true
+    },
+    );
   };
   const fetchProgress = async (courseId) => {
     try {
@@ -73,12 +72,13 @@ const CourseDetails = (courseid) => {
         `${config.endpoint}/course/getProgress`,
         {
           params: {
-            username: username,
             course_id: courseId,
           },
+          withCredentials:true
         }
       );
       if (response) {
+        console.log(response.data.Completed_Sections);
         setCompletedSections((prevCompletedSections) => ({
           ...prevCompletedSections,
           [courseId]: response.data.Completed_Sections,

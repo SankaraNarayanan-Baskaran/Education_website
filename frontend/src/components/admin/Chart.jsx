@@ -14,9 +14,7 @@ const ChartComponent = () => {
   const fetchData = async (username) => {
     try {
       const response = await axios.get(`${config.endpoint}/admin/data`, {
-        params: {
-          username: username,
-        },
+        withCredentials:true
       });
 
       if (response && response.data) {
