@@ -75,7 +75,7 @@ const StudentsList = () => {
         <div class="quiz-container">
           <center>
             <div className="body">
-              <h2>Create Quiz</h2>
+              {/* <h2>Create Quiz</h2>
              
               <input
                 type="text"
@@ -127,7 +127,7 @@ const StudentsList = () => {
               />
              <div style={{
               marginTop:"10px"
-             }}> <button onClick={handleAddQuestion}>Add Question</button></div>
+             }}> <button onClick={handleAddQuestion}>Add Question</button></div> */}
             </div>
           </center>
         </div>

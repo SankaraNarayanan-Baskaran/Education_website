@@ -6,7 +6,7 @@ import Header from "../components/Header";
 import BarGraph from "../components/admin/Bar";
 import { enqueueSnackbar } from "notistack";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-
+import {useCookies} from "react-cookie";
 import "react-pro-sidebar/dist/css/styles.css";
 
 import {
@@ -28,15 +28,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import "@fontawesome/fontawesome-free/css/all.min.css";
 import ".././components/admin/styles/Admin.css";
 import { useUserData } from "../components/UserContext";
-import { Cookies } from "react-cookie";
 import parseJwt from "../components/Decode";
 import { useNavigate } from "react-router-dom";
-const Admin = () => {
+const Admin = ({prop}) => {
   const studentListRef = useRef();
+  const [cookies,removeCookies,setCookies]=useCookies(['username','type','role','logged','jwtToken'])
   const navigate=useNavigate();
   const { token, setToken,role} = useUserData();
   const decodedToken = parseJwt(token);
-  const cookies = new Cookies();
   const instructorListRef = useRef();
   const pendingRef = useRef();
   const instructorCourseRef = useRef();
@@ -291,16 +290,12 @@ const Admin = () => {
       <div className="container-fluid">
         {role.includes("admin") ? (
           <>
+          <Header isAuthorised={false} prop student  admin/>
             {" "}
             <div className="row">
               <div className="col-lg-3">
                 <ProSidebar
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    width: "100%",
-                    height: "100%",
-                  }}
+                 className="side-bar"
                 >
                   <Menu iconShape="square">
                     <MenuItem icon={<FontAwesomeIcon icon={faUser} />}>

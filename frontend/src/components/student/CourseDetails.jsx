@@ -58,12 +58,11 @@ const CourseDetails = (courseid) => {
     }));
 
     await axios.post(`${config.endpoint}/course/progress`, {
+      username:username,
       sectionId: sectionId,
       count: courses.length,
     },
-    {
-      withCredentials:true
-    },
+    
     );
   };
   const fetchProgress = async (courseId) => {
@@ -73,8 +72,9 @@ const CourseDetails = (courseid) => {
         {
           params: {
             course_id: courseId,
+            username:username
           },
-          withCredentials:true
+          
         }
       );
       if (response) {

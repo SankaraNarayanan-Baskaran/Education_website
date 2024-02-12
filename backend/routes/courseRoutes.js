@@ -8,22 +8,22 @@ const progressController = require("../controllers/progressController");
 const quizController=require("../controllers/quizController");
 const decode = require("../utils/Decode");
 
-router.post("/addcourse",decode.parseJwt, courseController.addcourse);
+router.post("/addcourse", courseController.addcourse);
 router.get("/fetchcourses",courseController.fetchcourses);
 router.get("/learning",decode.parseJwt,courseController.learning);
 router.get("/search",courseController.search);
 router.get("/:courseName/students",courseController.courseName)
 router.get("/filter",decode.parseJwt, courseController.filter);
 
-router.post("/learningpurchase", decode.parseJwt,purchaseController.learningpurchase);
+router.post("/learningpurchase",purchaseController.learningpurchase);
 router.get("/purchased", purchaseController.purchased);
 
 router.post("/section", sectionController.section);
 router.get("/section", sectionController.getSection);
 router.post("/updateSection",sectionController.updateSection)
 
-router.post("/progress", decode.parseJwt,progressController.progress);
-router.get("/getProgress",decode.parseJwt, progressController.getProgress);
+router.post("/progress",progressController.progress);
+router.get("/getProgress", progressController.getProgress);
 
 router.post("/quiz",quizController.quiz);
 router.get("/quiz",quizController.getQuiz);

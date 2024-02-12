@@ -47,7 +47,7 @@ const Section = ({ courseName }) => {
   const updateSection = async () => {
     try {
       const response = await axios.post(
-        `${config.endpoint}/section/updateSection`,editSection);
+        `${config.endpoint}/course/updateSection`,editSection);
       setEditSection({ section_name: "", img_url: "", sectionId: "",});
     } catch (error) {
       console.log("error:", error);

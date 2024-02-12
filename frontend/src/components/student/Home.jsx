@@ -57,6 +57,7 @@ const Home = ({ prop }) => {
           course_name: course.name,
           course_description: course.description,
           video_url: course.video_url,
+          username:username
         }
       );
 

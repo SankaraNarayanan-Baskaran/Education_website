@@ -10,11 +10,11 @@ const {
 
 const learningpurchase = async (req, res) => {
   try {
-    const { course_name, course_description, video_url} =
+    const { course_name, course_description, video_url,username} =
       req.body;
-const student_name=req.username;
+
     // First, find the user based on their username
-    const user = await Accounts.findOne({ where: { username: student_name } });
+    const user = await Accounts.findOne({ where: { username: username } });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -48,7 +48,7 @@ const student_name=req.username;
       course_description,
       video_url,
       student_id: user.id,
-      student_name,
+      student_name:username,
       course_id: course.id,
     });
 

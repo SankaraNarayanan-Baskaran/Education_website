@@ -4,20 +4,19 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { config } from "../App";
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from "notistack";
 import "../styles/Login.css";
-import "../styles/Header.css"
+import "../styles/Header.css";
 import withAuthentication from "../components/HOC";
 import { MyContext, useFormData } from "../components/FormContext";
 import { useCookies } from "react-cookie";
-const Login = ({handleLogin,validateInput}) => {
+const Login = ({ handleLogin, validateInput }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [cookies,setCookies]=useCookies(['type','username'])
-  const {formData,setFormData}=useFormData();
+  const [cookies, setCookies] = useCookies(["type", "username"]);
+  const { formData, setFormData } = useFormData();
   const [changePassword, setChangePassword] = useState({
     oldPassword: "",
     newPassword: "",
-    confirmPassword: "",
   });
   const [forgotPass, setForgotPass] = useState(false);
   const [forgotPassword, setForgotPassword] = useState({
@@ -44,10 +43,7 @@ const Login = ({handleLogin,validateInput}) => {
 
   const handleAction = async (action, data) => {
     try {
-      const res = await axios.put(
-        config.endpoint + `/student/${action}`,
-        data
-      );
+      const res = await axios.put(config.endpoint + `/student/${action}`, data);
       if (res.status === 201) {
         enqueueSnackbar("Password Changed Successfully", {
           variant: "success",
@@ -68,7 +64,7 @@ const Login = ({handleLogin,validateInput}) => {
       <center>
         {forgotPass || changePass ? (
           <div className="login-container">
-            <h2>{forgotPass ? "Change Password" : "Forgot Password"}</h2>
+            <h2>{forgotPass ? "Forgot Password" : "Change Password"}</h2>
             <div className="input-container">
               {renderInputField(
                 "text",
@@ -80,27 +76,39 @@ const Login = ({handleLogin,validateInput}) => {
                     username: e.target.value,
                   })
               )}
-
-              {renderInputField(
-                "password",
-                "New Password",
-                forgotPassword.newPassword || changePassword.newPassword,
-                (e) =>
-                  forgotPass
-                    ? setForgotPassword({
+              {forgotPass ? (
+                <>
+                  {renderInputField(
+                    "password",
+                    "New Password",
+                    forgotPassword.newPassword,
+                    (e) =>
+                      setForgotPassword({
                         ...forgotPassword,
                         newPassword: e.target.value,
                       })
-                    : setChangePassword({
+                  )}
+                </>
+              ) : (
+                <>
+                  {renderInputField(
+                    "password",
+                    "Old Password",
+                    changePassword.oldPassword,
+                    (e) =>
+                      setChangePassword({
                         ...changePassword,
-                        newPassword: e.target.value,
+                        oldPassword: e.target.value,
                       })
+                  )}
+                </>
               )}
 
               {renderInputField(
                 "password",
                 "Confirm New Password",
-                forgotPassword.confirmPassword || changePassword.confirmPassword,
+                forgotPassword.confirmPassword ||
+                  changePassword.newPasswordPassword,
                 (e) =>
                   forgotPass
                     ? setForgotPassword({
@@ -109,17 +117,17 @@ const Login = ({handleLogin,validateInput}) => {
                       })
                     : setChangePassword({
                         ...changePassword,
-                        confirmPassword: e.target.value,
+                        newPassword: e.target.value,
                       })
               )}
 
               <button
                 className="login-button mb-3"
-                onClick={() =>{
-                enqueueSnackbar("Successfull",{variant:"success"})
+                onClick={() => {
+                  enqueueSnackbar("Successfull", { variant: "success" });
                   forgotPass
                     ? handleAction("forgotPass", forgotPassword)
-                    : handleAction("updatePass", changePassword)
+                    : handleAction("updatePass", changePassword);
                 }}
               >
                 Confirm
@@ -130,22 +138,17 @@ const Login = ({handleLogin,validateInput}) => {
           <div className="login-container">
             <h3>{type} Login</h3>
             <div className="input-container">
-              {institution ? (
-                renderInputField(
-                  "text",
-                  "Name of the Institution",
-                  formData.username,
-                  (e) =>
+              {institution
+                ? renderInputField(
+                    "text",
+                    "Name of the Institution",
+                    formData.username,
+                    (e) =>
+                      setFormData({ ...formData, username: e.target.value })
+                  )
+                : renderInputField("text", "Username", formData.username, (e) =>
                     setFormData({ ...formData, username: e.target.value })
-                )
-              ) : (
-                renderInputField(
-                  "text",
-                  "Username",
-                  formData.username,
-                  (e) => setFormData({ ...formData, username: e.target.value })
-                )
-              )}
+                  )}
 
               {renderInputField(
                 "password",
@@ -183,11 +186,26 @@ const Login = ({handleLogin,validateInput}) => {
               <></>
             ) : (
               <>
-                <button
+                {instructor ? (
+                  <>
+                    <button
+                      className="login-button"
+                      onClick={() => {
+                        setInstitution(true);
+                        setType("Institution");
+                        setCookies("type", "admin");
+                      }}
+                    >
+                      Institution Login?
+                    </button>
+                  </>
+                ) : (
+                  <>
+                  <button
                   className="login-button"
                   onClick={() => {
                     setType("Instructor");
-                    setCookies("type","inst")
+                    setCookies("type", "inst");
                     setInstructor(true);
                   }}
                 >
@@ -198,11 +216,14 @@ const Login = ({handleLogin,validateInput}) => {
                   onClick={() => {
                     setInstitution(true);
                     setType("Institution");
-                   setCookies("type","admin")
+                    setCookies("type", "admin");
                   }}
                 >
                   Institution Login?
                 </button>
+                  </>
+                )}
+                
               </>
             )}
           </div>
@@ -213,4 +234,4 @@ const Login = ({handleLogin,validateInput}) => {
   );
 };
 
-export default withAuthentication(Login)
+export default withAuthentication(Login);

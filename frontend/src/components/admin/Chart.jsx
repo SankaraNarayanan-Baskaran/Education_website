@@ -19,7 +19,7 @@ const ChartComponent = () => {
 
       if (response && response.data) {
         const data = response.data;
-
+console.log(data);
         const courseCounts = data.reduce((acc, entry) => {
           const courseName = entry.course_name;
           acc[courseName] = (acc[courseName] || 0) + 1;

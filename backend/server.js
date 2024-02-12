@@ -34,6 +34,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 sequelize.sync();
 
 const studentRoutes = require("./routes/studentRoutes");

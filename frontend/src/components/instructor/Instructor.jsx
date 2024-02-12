@@ -19,6 +19,7 @@ const Instructor = () => {
     description: "",
     price: "",
     video_url: "",
+    username:username,
     category: "",
     approved: false,
   });
@@ -30,11 +31,11 @@ const Instructor = () => {
     try {
       const courseData = { ...newCourse };
    
-     const response= await axios.post(`${config.endpoint}/course/addcourse`, courseData,{withCredentials:true});
+     const response= await axios.post(`${config.endpoint}/course/addcourse`, courseData);
       
       if(response.status === 201){
         setNewCourse({name: "",description: "",price: "",video_url: "",approved: false,});
-        // fetchcourses();
+        fetchcourses();
       }
      
     } catch (error) {
@@ -99,7 +100,7 @@ const Instructor = () => {
 
   useEffect(() => {
     const username = cookies["username"];
-    // fetchcourses(username);
+    fetchcourses(username);
     checkStudent(username);
   }, []);
 

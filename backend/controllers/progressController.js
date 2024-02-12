@@ -9,8 +9,7 @@ const {
 } = require("../models/usermodels");
 const progress = async (req, res) => {
   try {
-    const { sectionId, count } = req.body;
-    const username = req.username;
+    const { sectionId, count ,username} = req.body;
     console.log("14",username)
     const user = await Accounts.findOne({ where: { username: username } });
 
@@ -89,7 +88,7 @@ const progress = async (req, res) => {
 };
 const getProgress = async (req, res) => {
   try {
-    const username = req.username;
+    const username = req.query.username;
     const course = req.query.course_id;
     console.log(course);
     const user = await Accounts.findOne({

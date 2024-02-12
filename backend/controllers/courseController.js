@@ -14,32 +14,38 @@ const addcourse = async (req, res) => {
       name,
       description,
       price,
+      username,
       video_url,
       course_id,
       category,
       approved,
     } = req.body;
-    const username = req.username;
-    const inst = await Instructor.findOne({ where: { name: username } });
-    console.log(inst.institution_code);
-
-    if (inst) {
-      console.log("165", inst);
-    const course= await CourseDetails.create({
-        name,
-        description,
-        price,
-        video_url,
-        user_id: inst.id,
-        category,
-        approved,
-        institution_code: inst.institution_code,
-      });
-      if(course){
-        return res.status(201).json({ message: "Course created successfully" })
-      }
+   
+    console.log("Instructor name:",username);
+ 
+      
+      const inst = await Instructor.findOne({ where: { name: username } });
+      if (inst) {
+        console.log("165", inst);
+      const course= await CourseDetails.create({
+          name,
+          description,
+          price,
+          video_url,
+          user_id: inst.id,
+          category,
+          approved,
+          institution_code: inst.institution_code,
+        });
+        if(course){
+          return res.status(201).json({ message: "Course created successfully" })
+        }
+        
       
     }
+    
+
+    
   } catch (error) {
     console.error("Error creating a CourseDetails:", error);
     res.status(500).json({ error: "Internal server error" });

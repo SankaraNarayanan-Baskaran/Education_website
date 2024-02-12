@@ -43,8 +43,9 @@ const Course = () => {
         {
           params: {
             course_id: courseId,
+            username:username
           },
-          withCredentials: true,
+          
         }
       );
       if (response) {

@@ -6,7 +6,7 @@ import axios from "axios";
 import "./student/styles/Home.css";
 import { useCookies } from "react-cookie";
 
-const Header = ({ isAuthorised, prop, student, children, instr }) => {
+const Header = ({ isAuthorised, prop, student, children, instr, admin }) => {
   const navigate = useNavigate();
   const [cookies, setCookies, removeCookies] = useCookies([
     "jwtToken",
@@ -14,14 +14,14 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
     "email",
     "type",
     "logged",
-    "role"
+    "role",
   ]);
   const [data, setData] = useState(null);
   const user = cookies["username"];
   const fetchInstitution = async () => {
     try {
-      const response = await axios.get(`${config.endpoint}/admin/icon`,{
-        withCredentials:true
+      const response = await axios.get(`${config.endpoint}/admin/icon`, {
+        withCredentials: true,
       });
       if (response) {
         setData(response.data);
@@ -32,10 +32,9 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
   };
   useEffect(() => {
     const username = cookies["username"];
-    if(username){
+    if (username) {
       fetchInstitution(username);
     }
-    
   }, []);
   return (
     <div className="header">
@@ -97,7 +96,7 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                         class="btn  mx-2 my-sm-0 title"
                         onClick={() => {
                           navigate("/course");
-                          setTimeout(window.location.reload(),1000)
+                          setTimeout(window.location.reload(), 1000);
                         }}
                       >
                         My Learning
@@ -175,28 +174,51 @@ const Header = ({ isAuthorised, prop, student, children, instr }) => {
                 </>
               ) : (
                 <>
-                  <button
-                    class="btn mx-2 my-sm-0 title"
-                    type="submit"
-                    onClick={() => {
-                      setCookies("type", "student");
-                      navigate("/login");
-                    }}
-                  >
-                    LOGIN
-                  </button>
-                  <button
-                    class=" btn mx-2 my-2 my-sm-0 title"
-                    type="submit"
-                    onClick={() => {
-                      // localStorage.setItem("type", "student");
-                      setCookies("type", "student");
-                      // window.location.href = '/register';
-                      navigate("/register");
-                    }}
-                  >
-                    REGISTER
-                  </button>
+                  {admin ? (
+                    <>
+                      <img src={data.icon} alt="Img" className="img-style" />
+
+                      <button
+                        class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
+                        onClick={() => {
+                          removeCookies("jwtToken");
+                          removeCookies("username");
+                          removeCookies("type");
+                          removeCookies("logged");
+                          removeCookies("role");
+                          navigate("/");
+                          setTimeout(window.location.reload(), 1000);
+                        }}
+                      >
+                        LOG OUT
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        class="btn mx-2 my-sm-0 title"
+                        type="submit"
+                        onClick={() => {
+                          setCookies("type", "student");
+                          navigate("/login");
+                        }}
+                      >
+                        LOGIN
+                      </button>
+                      <button
+                        class=" btn mx-2 my-2 my-sm-0 title"
+                        type="submit"
+                        onClick={() => {
+                          // localStorage.setItem("type", "student");
+                          setCookies("type", "student");
+                          // window.location.href = '/register';
+                          navigate("/register");
+                        }}
+                      >
+                        REGISTER
+                      </button>
+                    </>
+                  )}
                 </>
               )}
             </>
