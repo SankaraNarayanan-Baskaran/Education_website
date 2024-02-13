@@ -175,11 +175,7 @@ console.log(data);
           colors: "black",
         },
       };
-      console.log("Current x-axis categories:", newOptions.xaxis.categories);
       newOptions.xaxis.categories = barChart.labels;
-      console.log("182",barChart.labels)
-      console.log("Updated x-axis categories:", newOptions.xaxis.categories);
-
       return newOptions;
     });
   };

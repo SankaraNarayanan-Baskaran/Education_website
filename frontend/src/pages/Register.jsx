@@ -13,7 +13,7 @@ import Footer from "../components/Footer";
 import "../styles/Register.css";
 import withAuthentication from "../components/HOC";
 import { MyContext, useFormData } from "../components/FormContext";
-
+import { useCookies } from "react-cookie";
 const Register = ({handleRegister }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -21,7 +21,7 @@ const Register = ({handleRegister }) => {
   const [instructor, setInstructor] = useState(false);
   const [institution, setInstitution] = useState(false);
   const [type, setType] = useState("Student");
-
+const [cookies,setCookies]=useCookies(['type']);
   const validateInput = (data) => {
     const alphanumericRegex = /^[a-zA-Z0-9]+$/;
 
@@ -177,7 +177,7 @@ const Register = ({handleRegister }) => {
                       className="login-button"
                       onClick={() => {
                         setType("Instructor");
-                        localStorage.setItem("type", "inst");
+                       setCookies("type", "inst");
                         setInstructor(true);
                       }}
                     >
@@ -194,7 +194,7 @@ const Register = ({handleRegister }) => {
                       onClick={() => {
                         setInstitution(true);
                         setType("Institution");
-                        localStorage.setItem("type", "admin");
+                       setCookies("type","admin")
                       }}
                     >
                       Register As an Institution
