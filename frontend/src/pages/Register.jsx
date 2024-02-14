@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import RegisterFormFields from "../components/RegisterFormFields";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -12,16 +12,41 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styles/Register.css";
 import withAuthentication from "../components/HOC";
-import { MyContext, useFormData } from "../components/FormContext";
+import { useFormData } from "../components/FormContext";
 import { useCookies } from "react-cookie";
-const Register = ({handleRegister }) => {
+
+const Register = ({ handleRegister }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const {formData,setFormData}=useFormData();
+  const { formData, setFormData } = useFormData();
   const [instructor, setInstructor] = useState(false);
   const [institution, setInstitution] = useState(false);
   const [type, setType] = useState("Student");
-const [cookies,setCookies]=useCookies(['type']);
+  const [cookies, setCookies] = useCookies(["type"]);
+
+  const handleTypeChange = (newType) => {
+    setType(newType);
+    setCookies("type", newType.toLowerCase());
+    if (newType === "Instructor") {
+      setInstructor(true);
+      setInstitution(false);
+    } else if (newType === "Institution") {
+      setInstitution(true);
+      setInstructor(false);
+    } else {
+      setInstructor(false);
+      setInstitution(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("Component is mounted");
+
+    return () => {
+      console.log("Component will unmount");
+    };
+  }, []);
+
   const validateInput = (data) => {
     const alphanumericRegex = /^[a-zA-Z0-9]+$/;
 
@@ -43,6 +68,7 @@ const [cookies,setCookies]=useCookies(['type']);
 
     return true;
   };
+
   function generateRandomPassword(length) {
     const charset =
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_";
@@ -56,7 +82,7 @@ const [cookies,setCookies]=useCookies(['type']);
     return password;
   }
 
-  const handleggl = async (userData) => {
+  const handleGoogleLogin = async (userData) => {
     try {
       const res = await axios.post(config.endpoint + "/student/google", {
         username: userData.username,
@@ -64,34 +90,9 @@ const [cookies,setCookies]=useCookies(['type']);
         email: userData.email,
       });
       if (res.status === 201) {
-        const parseJwt = (token) => {
-          if (typeof token !== 'string') {
-            if (typeof token.toString === 'function') {
-              token = token.toString();
-            } else {
-              console.error('Invalid token format:', token);
-              return null;
-            }
-            
-          }
-        
-          try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-        
-            return JSON.parse(jsonPayload);
-          } catch (error) {
-            console.error('Error parsing JWT:', error);
-            return null;
-          }
-        };
-        const {data}=res.data
-       
-         const decodedToken = parseJwt(data);
-         console.log(decodedToken)
+        const { data } = res.data;
+        const decodedToken = parseJwt(data);
+        console.log(decodedToken);
         localStorage.setItem("username", userData.username);
         navigate("/", { state: { isLogged: "true" } });
       }
@@ -99,17 +100,6 @@ const [cookies,setCookies]=useCookies(['type']);
       console.log(error);
     }
   };
-  useEffect(() => {
-    // Perform actions after the initial render (mounting)
-    // For example, fetch initial data, subscribe to events, etc.
-    console.log("Component is mounted");
-
-    return () => {
-      // Cleanup function for unmounting
-      // For example, unsubscribe from events or clear timers
-      console.log("Component will unmount");
-    };
-  }, []);
 
   return (
     <div>
@@ -141,7 +131,10 @@ const [cookies,setCookies]=useCookies(['type']);
             Register
           </button>
           <div className="py-3">
-            <button className="login-button" onClick={() => navigate("/login")}>
+            <button
+              className="login-button"
+              onClick={() => navigate("/login")}
+            >
               Already have an account?
             </button>
             <div>
@@ -159,7 +152,7 @@ const [cookies,setCookies]=useCookies(['type']);
                     password: password,
                     email: email,
                   };
-                  handleggl(userData);
+                  handleGoogleLogin(userData);
                 }}
                 onReject={(err) => {
                   console.log(err);
@@ -169,37 +162,21 @@ const [cookies,setCookies]=useCookies(['type']);
               </LoginSocialGoogle>
 
               <>
-                {instructor ? (
-                  <> </>
-                ) : (
-                  <>
-                    <button
-                      className="login-button"
-                      onClick={() => {
-                        setType("Instructor");
-                       setCookies("type", "inst");
-                        setInstructor(true);
-                      }}
-                    >
-                      Instructor?
-                    </button>
-                  </>
+                {type !== "Instructor" && (
+                  <button
+                    className="login-button"
+                    onClick={() => handleTypeChange("Instructor")}
+                  >
+                    Instructor?
+                  </button>
                 )}
-                {institution ? (
-                  <></>
-                ) : (
-                  <>
-                    <button
-                      className="login-button mx-3"
-                      onClick={() => {
-                        setInstitution(true);
-                        setType("Institution");
-                       setCookies("type","admin")
-                      }}
-                    >
-                      Register As an Institution
-                    </button>
-                  </>
+                {type !== "Institution" && (
+                  <button
+                    className="login-button mx-3"
+                    onClick={() => handleTypeChange("Institution")}
+                  >
+                    Register As an Institution
+                  </button>
                 )}
               </>
             </div>
@@ -212,3 +189,4 @@ const [cookies,setCookies]=useCookies(['type']);
 };
 
 export default withAuthentication(Register);
+

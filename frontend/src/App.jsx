@@ -1,8 +1,5 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { ReactDOM, useState } from "react";
 import { Routes, Route, Router } from "react-router-dom";
-
 import Home from "./components/student/Home"
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
@@ -14,20 +11,14 @@ import Course from "./components/student/Course";
 import Section from "./components/instructor/Section";
 import { SnackbarProvider } from "notistack";
 import StudentsList from "./components/instructor/StudentsList";
-
 import Quiz from "./components/Quiz";
 import BarGraph from "./components/admin/Bar";
-
-import { useNavigate } from "react-router-dom";
 import { FormDataProvider } from "./components/FormContext";
 import { UsernameDataProvider } from "./components/UserContext";
 import PrivateWrapper from "./components/PrivateRoute";
 import "resize-observer-polyfill";
 import { CourseProvider } from "./components/CourseContext";
-
 import Unauthorized from "./components/Unauthorized";
-import { BrowserRouter as Navigate } from "react-router-dom";
-import Header from "./components/Header";
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };
