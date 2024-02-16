@@ -15,7 +15,8 @@ const coursedetails = require("./models/coursedetails");
 const storage = multer.memoryStorage();
 
 const authenticateToken = require('./utils/jwtUtils');
-const upload = multer({ storage: storage });
+const upload = multer({ dest: 'uploads/' });
+
 // import Cookies from "universal-cookie";
 app.use(bodyParser.json());
 // app.use(express.json());

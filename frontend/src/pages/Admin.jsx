@@ -63,6 +63,7 @@ const Admin = ({prop}) => {
   const username = localStorage.getItem("username");
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
+    console.log(selectedFile)
     setFile(selectedFile);
   };
   useEffect(() => {
@@ -94,13 +95,23 @@ const Admin = ({prop}) => {
       const formData = new FormData();
       formData.append("csvFile", file);
       console.log(formData.get("csvFile"));
+      console.log(formData);
+      for (const entry of formData.entries()) {
+        console.log(entry);
+    }
       try {
         const response = await axios.post(
           `${config.endpoint}/admin/upload-csv`,
-          formData
-        );
-        if (response.ok) {
-          alert("CSV file uploaded and data inserted successfully.");
+          formData,{
+            headers: {
+              "Content-Type": "multipart/form-data", // Set content type to multipart/form-data
+          },
+          }
+          
+      );
+     
+        if (response.status===200) {
+          enqueueSnackbar("Data inserted successfully",{variant:"success"})
         }
       } catch (error) {
         console.error("Error uploading CSV file:", error);

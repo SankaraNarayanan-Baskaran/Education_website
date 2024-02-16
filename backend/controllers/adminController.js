@@ -7,9 +7,13 @@ const {
   Progress,
   Instructor,
   Institution,
+  Sequelize,
   sendInstitutionMail,
 } = require("../models/usermodels");
 const jwtUtils = require("../utils/jwtUtils");
+const fastcsv=require('fast-csv');
+const sequelize=require("../server")
+
 const institution = async (req, res) => {
   try {
     const { username, password, email, address } = req.body;
@@ -42,26 +46,31 @@ const institution = async (req, res) => {
 };
 
 const uploadCSV = async (req, res) => {
-  const fileBuffer = req.file.buffer.toString("utf8");
 
-  const results = [];
-  fastcsv
-    .parseString(fileBuffer, { headers: true })
-    .on("data", (row) => results.push(row))
-    .on("end", () => {
-      sequelize
-        .sync()
-        .then(() => {
-          return Accounts.bulkCreate(results);
-        })
-        .then(() => {
-          res.status(200).send("Data inserted successfully.");
-        })
-        .catch((err) => {
-          console.error("Error inserting data:", err);
-          res.status(500).send("Error inserting data.");
+    if (req.file) {
+      const fileBuffer = req.file.buffer.toString("utf8");
+  
+      const results = [];
+      fastcsv
+        .parseString(fileBuffer, { headers: true })
+        .on("data", (row) => results.push(row))
+        .on("end", async () => {
+          try {
+            // Bulk create records in the database
+            await Accounts.bulkCreate(results);
+            res.status(200).send("Data inserted successfully.");
+          } catch (error) {
+            console.error("Error inserting data:", error);
+            res.status(500).send("Error inserting data.");
+          }
         });
-    });
+    } else {
+      console.log("No file uploaded.");
+      res.status(400).send("No file uploaded.");
+    }
+  
+  
+  
 };
 
 const loginInstitution = async (req, res) => {

@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
-
+const multer = require('multer');
 const adminController = require("../controllers/adminController");
-const decodedToken=require("../utils/Decode")
+const decodedToken=require("../utils/Decode");
+const upload = multer({ storage: multer.memoryStorage() });
+
 router.post("/addadmin", adminController.institution);
 router.post("/loginadmin", adminController.loginInstitution);
-router.post("/upload-csv", adminController.uploadCSV);
+router.post("/upload-csv",upload.single('csvFile'),adminController.uploadCSV);
 
 router.delete("/user/:id", adminController.deleteUser);
 router.delete("/instructor/:id", adminController.deleteInstructor);

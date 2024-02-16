@@ -22,7 +22,7 @@ const Register = ({ handleRegister }) => {
   const [instructor, setInstructor] = useState(false);
   const [institution, setInstitution] = useState(false);
   const [type, setType] = useState("Student");
-  const [cookies, setCookies] = useCookies(["type"]);
+  const [cookies, setCookies] = useCookies(["type","username"]);
 
   const handleTypeChange = (newType) => {
     setType(newType);
@@ -91,9 +91,9 @@ const Register = ({ handleRegister }) => {
       });
       if (res.status === 201) {
         const { data } = res.data;
-        const decodedToken = parseJwt(data);
-        console.log(decodedToken);
-        localStorage.setItem("username", userData.username);
+        // const decodedToken = parseJwt(data);
+        // console.log(decodedToken);
+        setCookies("username",userData.username)
         navigate("/", { state: { isLogged: "true" } });
       }
     } catch (error) {
