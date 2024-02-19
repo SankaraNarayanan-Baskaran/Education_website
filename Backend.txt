@@ -53,4 +53,83 @@ Implementation:
     •middlewares/: Code applied before or after controller functions for tasks like authentication or logging.
     •server.js:Starts the Node.js server and configures dependencies.(contains the cors options also)
 
-6)
+6)PostgreSQL Database:
+	PostgreSQL is a powerful, open-source object-relational database management system (ORDBMS) known for its reliability, feature robustness, and performance. It's widely used in various applications, from small-scale web apps to large-scale enterprise systems.
+
+Benefits:
+    •Reliability
+    •Performance
+    •Scalability
+    •Security
+    •Flexibility
+Implementation:
+	•In my application,I have created a number of tables to store large amount of data.For instance there is a table named Accounts which stores the information of students who register in the website.
+        •Similarly,Instructors table has information on instructors and Institutions table has information of Admin.
+	CourseDetails table has information about courses viz course name,description,price etc.
+	•Queries can be performed on these tables.
+
+7)Sequelize:
+	Sequelize is a well-liked and potent object-relational mapper (ORM) for Node.js that makes working with different relational databases (such as SQLite, PostgreSQL, and MySQL) easier. It provides a simple and effective means of defining models, querying data, and managing CRUD operations by bridging the gap between object-oriented code and relational databases.
+Key Features:
+   •Modeling: Represent database tables with JavaScript classes.
+   •Relationships: Connect your models based on real-world scenarios.
+   •Simplified Queries: Write database queries in familiar JavaScript.
+Implementation:
+	•We can define models using the sequelize.define.First we create a sequelize instance and give a dialect of database(in my application it is postgres) and configuration is also defined.
+	•Then init is used to initalise models.
+
+8)findOne:	
+	In Sequelize, the findOne option allows you to retrieve a single record from a database table based on a specific criteria.
+  In my application I have used this with the 'where' attribute which also specifies a condition.For instance,I have used this to find something like if a user with a particular username exists and if they belong to an institution,then perform an operation.
+
+9)findAll:
+        In Sequelize, the findAll function is used to retrieve multiple records from a database table based on a specified criteria.
+  In my application,I have used this for something like finding all courses from the CourseDetails and filter based on whether it pertains to the particular institution.
+
+10)create:
+	In Sequelize, the create function allows us to insert a new record into a database table based on the data provided.
+   In my application,I have used create to create a new user profile data which has some parameters like username,email address,password and store the data into the tables of the database depending on type of user.
+
+11)update:
+	In Sequelize, the update function allows you to modify existing records in a database table based on specific criteria.
+   In my application,I have used this update to change password of an user incase they wish to do so.The request for change password is received from the frontend and then the old password is checked just to match user detalils and then new password is updated.
+
+12)findByPk:
+	The findByPk method in Sequelize is designed to efficiently retrieve a single record from a database table based on its primary key value.
+   In my application,I have used findByPk viz find by primary key to delete the user record from the table.The id is sent and then the user record is found in the table and deletion process is done using destroy command.
+
+13)Middleware:
+	Middleware in Node.js Express backend development refers to functions that intercept incoming requests before they reach their designated route handlers. These functions have access to the request and response objects, allowing them to manipulate data, control request flow, and execute specific tasks before the actual route handler takes over.
+
+Purpose:
+   •Authentication and authorization: Verify user credentials and enforce access control rules.
+   •Data parsing: Process request data formats like JSON or form data.
+   •Logging and error handling: Capture request/response details and manage errors gracefully.
+   •Security measures: Prevent common vulnerabilities like XSS and SQL injection.
+   •Cross-cutting concerns: Implement functionality shared across multiple routes without code duplication.
+Implementation:
+     The jwt token mentioned earlier is actually decoded with the help of a middleware function named Decode which decodes the jwt token and splits it into 3 parts namely Header,Payload and Signature.
+     This operation is done to authenticate the user for every request made to the backend thus ensuring more security.The payload part is the one which contains the encoded data.
+
+14)Migrations:
+	Migrations in Sequelize are a way to manage changes to the database schema in a version-controlled manner. They allow to evolve the database structure incrementally with clear steps documented in individual files. This ensures a safe and reliable approach to updating the database schema across development, testing, and production environments.
+Purpose:
+    •Track schema changes: Each migration represents a specific modification to the database schema, providing a history of all alterations.
+    •Safe deployments: Deploy database schema changes in a controlled and predictable manner, minimizing risks of data loss or corruption.
+   
+Implementation:
+	In CourseDetails table schema,at first no foreign key was used but the user id was needed so I made a migration and added an additional column  using the queryInterface command.Similarly we can remove columns,change column name or update a column value etc.
+
+15)Sequelize-CLI(Command Line Interface):
+	The Sequelize CLI (Command Line Interface) is a powerful tool included with Sequelize that simplifies tasks related to database schema management, migrations, and project setup. It offers a convenient way to interact with the database and Sequelize models directly from the command line.
+Purpose:
+    •Project setup: Initializes new Sequelize projects, including creating configuration files and generating initial models.
+    •Model generation: Automates the creation of Sequelize model files based on existing database tables or your defined specifications.
+    •Migration management: Generates, manages, and runs database migrations effectively, ensuring controlled schema evolution.
+    •Data seeding: Populates your database with initial data for testing or development purposes.
+Implementation:
+   All the models I creatd in the application viz Accounts,Instructors,Institutions,CourseDetails,Course_Sections were done using the sequelize CLI only.It helps to easily generate models without any form of hard coding.
+
+16)Exception Handling:
+ Using try-catch blocks to minimise crashing of application
+ I have implemented this everywhere in the application for every backend requests.
