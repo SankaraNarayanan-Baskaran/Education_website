@@ -1,0 +1,56 @@
+Backend
+
+TechStack:Node Express JS,Postgresql Database
+
+1)JWT Token:
+	A JSON object containing information and a signature used for securely transmitting data between parties.
+Purpose:
+    •Provide a self-contained, secure, and verifiable way to share information.
+    •Commonly used for user authentication, API access control, and data exchange.
+Implementation:
+  The implementation part is composed of three parts:
+    • Header: Metadata about the token (type, algorithm).
+    • Payload: Claims about the entity (user, application, etc.) and its permissions.
+    • Signature: Ensures the token's integrity and authenticity, generated using a secret key or public/private key pair.
+
+In the application,when login request is sent from handleLogin function is sent,a jwt token is generated with username,type of user(student,instructor,admin or combination of more than one type),email address of the user.
+Now for every request by the user,the jwt token authenticates the user and decodes the token using a Decode function and then returns the data to the frontend
+
+2)CORS:Cross-Origin Resource Sharing
+	CORS is a security feature of browsers that prevents websites from requesting files from a domain other than the one that hosted the website.It also seeks to shield user privacy and stop harmful cross-site scripting (XSS) attacks.
+Purpose:
+   •Enables controlled access to resources from one domain by another domain.
+   •Allows secure communication between different web applications on separate origins.
+
+Implementation:
+    I have specified specific origins(localhost:3000), wildcards (*),credentials(true) plus some optionalstatus for success to avoid any third party intervention.
+
+3)node-mailer:
+  Nodemailer is a popular and powerful Node.js module that simplifies sending emails from your applications. It offers a versatile and user-friendly approach to handle various email tasks.
+
+Implmentation:
+ For a new user who is an admin,welcome mails are sent a greeting message and initial user credentials are also provided to them especially for google signin users where password is auto generated initially.
+
+4)CSV files(Comma Separated Values):
+      Data is kept in this plain text file format in a tabular format, where each row denotes a record and each column a field.
+Records are distinguished by newlines and commas, which separate values within each record.
+ 
+Uses:
+ •Exchanging data between different applications.
+ •Storing lists and tables of data.
+ •Downloading data from websites or databases.
+ •Importing and exporting data for analysis.
+
+Implementation:
+ I have used CSV file to push in loads of student data at one stretch into the postgres database.This saves a lot of time.csv-parser is used in the backend to parse csv type data.
+
+5)Backend folder structure:(MVC structure)
+    •config/: Stores configuration files for environment variables, database connections, etc.
+    •models/: Contains files defining the structure of your data using database schemas or object-oriented models.(coursedetails,accounts,progress etc)
+    •routes/: Defines API endpoints and maps them to controller functions.(adminRoutes,instRoutes,studentRoutes,courseRoutes)
+    •controllers/: Houses logic for handling API requests, interacting with models, and sending responses.(adminController,courseController etc.)
+    •utils/: Reusable utility functions used across different parts of the backend.(jwtUtils and Decode)
+    •middlewares/: Code applied before or after controller functions for tasks like authentication or logging.
+    •server.js:Starts the Node.js server and configures dependencies.(contains the cors options also)
+
+6)

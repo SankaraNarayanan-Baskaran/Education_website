@@ -1,0 +1,189 @@
+Concepts Learnt in Frontend
+
+TechStack:React
+1)useState:
+	A basic React Hook called useState lets us control the state of functional components. State is a term for information that can change over time and impact how a component renders.
+Purpose:
+	•Helps to track changeable data within functional components.
+	•Triggers re-renders when state changes. Re-renders save time compared to reloads.
+	•User input is made dynamic.
+	•Simplifies state management in functional components.
+Implementation:
+	Firstly, the initial state of the variable must be defined.
+	Then based on the requirement, the value of the variable can be dynamically updated.
+	One such instance of useState from my application is done in home page.
+	Here in this scenario, the variable courses is initially set to an empty array and after fetching the data for courses from backend, it is then set to that data .i.e. setCourses sets the courses variable value to data fetched from the backend.
+    Thus data can be dynamically updated as per requirements.
+
+2)useEffect:
+	•With the help of the React Hook useEffect, side effects can be executed in functional components. Side effects include things like data fetching, DOM manipulation, timers, and subscriptions that interact with systems outside of React.
+	•useEffect is executed every time the component loads i.e. during rendering and re-rendering.
+Purpose:
+	•Data fetching: Fetching data from APIs or other sources and updating the component's state with the fetched data.
+	•DOM manipulation: Performing any manipulations directly on the DOM that are not managed by React's virtual DOM.
+	•Cleanup: Performing cleanup actions when a component unmounts, such as removing event listeners or clearing timers.
+Implementation:
+The implementation generally consists of two parameters: Callback function and Dependencies.
+In my application, I have implemented useEffect to fetch courses from the backend based on user profile on loading the Home page.
+
+3)window.location.reload():
+JavaScript's window.location.reload() function may be used to reload the current page, much like hitting your browser's refresh button.
+Purpose:
+	•Refreshes the entire page, fetching new data and re-executing all scripts.
+	•Useful for the following scenarios:
+	    oTo update the entire page with information from server
+	    oForce the browser to clear its cache for the current page.
+Implementation:
+    I have implemented window.location.reload in Log out to give more time to reflect changes such as removing cookies, logging out and clearing user data etc. (Implemented in Header Component).
+Disadvantages:
+	•It discards the current content of the page, which can result in loss of user input or data.
+	•It may cause a flickering effect as the page reloads, which can impact user experience.
+
+4)React Router(Routes):
+	In React Router, the Routes component is in charge of rendering the corresponding UI component(s) and matching the current URL path to the relevant child route(s).
+Purpose:
+	•Maps URL paths to UI components, creating a single-page application (SPA) experience.
+	•Enables route nesting, representing hierarchical relationships between different parts of the application.
+	•Provides control over navigation and error handling through nested Routes and other components.
+Implementation:
+In the App.jsx file,the main file with which the application runs,I have defined all the navigation paths to navigate to the respective pages and the components which needs to be called.
+
+5)EnqueueSnackBar:
+        enqueueSnackbar is a function provided by the Notistack library in React. It allows to easily display customizable snackbar notifications within your application.
+Purpose:
+	•Display brief, informative messages to users without interrupting their main flow.
+	•Provide feedback on actions, warnings, or success messages.
+	•Customize the look and feel of notifications to match your application's design.
+Implementation:
+	Generally,the snackbar notifications come on the left-bottom corner of the screen thus not disrupting the flow of the application.
+Logged in successfully(success variant),Invalid credentials(warning variant) in login page is one such implementation in my application.
+
+
+6)Cookies(React Cookies):
+	Cookies are used to manage and store user-related data while the webpage is being processed.
+Purpose:
+	•User authentication-To check the authenticity of the user
+	•User preferences
+Implementation:
+	First, localStorage was used for implementing the same functionality as cookies i.e. User Authentication etc. but it had the following drawbacks.
+	    •Limited storage capacity.
+	    •Synchronous API, which can cause performance issues.
+	    •Data stored in localStorage is accessible to any script running on the same domain, potentially posing security risks.
+	    •Data stored in localStorage is not automatically synchronized across tabs or windows.
+So, cookies were used in the application for providing better security and overcoming the other shortcomings of localStorage.
+In the application, I used cookies to store the user Data which is in this case the role of the user.Since it is an education based application, the roles include student, instructor and admin.
+
+7)Context API:
+	React's Context API feature makes it possible to share data between components without requiring props to be passed by hand at each component tree level. It lets you make a global state that any component in the React tree can access and change.
+
+Purpose:
+	•Share data between non-parent/child components.
+	•Avoid prop drilling in complex component hierarchies.
+	•Manage global-like state without external libraries.
+	•Simplified data management.
+	•Improved code readability.
+Implementation:
+	The implementation consists of two important parameters viz Provider and Consumer.
+	Provider is the part where data to be passed on is defined(UserContext)
+	Consumers are those which make use of this data.
+	In this application, the user role data is set as provider and rest of the pages use this data viz consume for conditional based page rendering. In other words, pages become accessible only based on the roles say an user who is only a student cannot access instructor pages and vice versa.
+
+8)Higher Order Component(HOC):
+	A React pattern known as a Higher Order Component (HOC) entails wrapping a component with another component to increase its functionality. In essence, a function that accepts a component as an input and produces a new, improved component with extra features or behaviour is known as a higher order component.
+Purpose/Uses:
+	•Code reusability: Share common functionality across components without code duplication.
+	•Separation of concerns: Isolate cross-cutting concerns like authentication, logging, or error handling.
+	•Enhance components: Add features like data fetching, subscriptions, or styling without modifying the original component.
+Implementation:
+	I have implemented this for the validate input which has common elements like username and password in both login and register pages.
+
+9)Component Lifecycle:
+	LimitEach React component goes through a series of phases during its existence, known as its lifecycle. These phases involve mounting, updating, and unmounting, allowing components to react to changes in their state, props, or the environment.
+Mounting:
+	Initialize state in a functional component.
+	Executes after every render.
+Updating:
+	Perform side effects in functional components. If we want to run the effect only when certain props or state change, we can pass dependencies as the second argument.
+Unmounting:
+	The cleanup function in useEffect runs before the component is removed from the UI to perform any necessary cleanup.
+
+10)State Splitting:
+	State splitting is a method for breaking up large, complicated application states into smaller, independent components that are controlled by separate React application components. It also strives for greater scalability, maintainability, and performance.
+Purpose:
+	•Reduce initial bundle size by loading components and their associated state only when needed.
+	•Improve performance by preventing re-renders of unrelated parts of the UI due to state changes.
+	•Encourage modularity and independent development of different parts of the application.
+	•Simplify state management for large and complex applications.
+
+Implementation:
+	In Register page,handleTypeChange function updates the type and sets the corresponding flags for instructor and institutiond support in private browsing or incognito mode.
+
+11)React props:
+	Data can be passed from a parent component to a child component in React using props. The child component cannot alter them; they are read-only. Props are used to alter a component's appearance or behaviour and enable reusing it in other areas of the application.
+Purpose:
+	•Props are the primary way to pass data from parent components to their child components in React.
+	•They act like arguments you pass to a function, providing the child component with the in-formation it needs to render its UI.
+Implementation:
+	One important aspect of props is that it cannot be modified in the child component.
+In Home page, I have passed the prop from header page to alter the header view based on logged in status.
+
+12)Google sign-in:
+	The LoginSocialGoogle component from the reactjs-social-login library is used by the Goog-leSignInButton component to provide a Google Sign-In button. A user must complete a series of steps in order to authenticate with their Google account through the Google Sign-In process. An explanation of how the Google Sign-In component functions can be found below:
+Implementation:
+	LoginSocialGoogle component is the primary source with which google sign-in process starts.
+	The onResolve and onReject callback functions handle the response part.
+	The userData is then passed on to the handleGoogleLogin function which posts it in the backend and also sends a welcome mail to the user.
+
+13)React Testing:
+	To make sure React apps are dependable and of high quality, we must do React testing. 
+React Testing Types: 
+
+	Unit testing: It is the process of separating and examining individual components with an emphasis on their internal workings and logic. @testing-library/react and jest are two well-known libraries. 
+	Integration Testing: Testing the interactions between components and external APIs or data sources is known as integration testing. 
+	End-to-end testing: Replicates user interactions and examines the complete application flow. 
+
+The advantages of react testing are as follows:
+	Stops bugs: detects regressions at an early stage of the development cycle. 
+	Enhances the quality of the code: promotes maintainable, well-organized code. 
+
+14)State:
+	State is a JavaScript object that holds dynamic data specific to a React component. When the state changes, the component re-renders to reflect the updated information.
+Purpose:
+	•Represent data that changes over time within a component, like user input, fetched da-ta, or UI interactions.
+	•Trigger re-renders when necessary to keep the component's UI in sync with its state.
+Implementation:
+	State in Home page:
+	courses->fetches courses
+	purchasedCourses->fetch courses which are purchased
+	instructor->to check if user is also instructor
+
+15) Classname:
+	In React, a DOM element's CSS class is specified using the className attribute. It is compa-rable to HTML's class attribute. It is used to style React components.
+
+16)ProSideBar:
+ 	ProSidebar is a popular React component library for creating responsive and customizable sidebars in your React applications. It offers a wide range of features, including:
+	•Multiple layouts: Choose from fixed, overlay, collapsed, and mini sidebar layouts.
+	•Themes: Apply various pre-built themes or create your own custom themes.
+	•Content areas: Define multiple content areas within the sidebar.
+	•Menu items: Create nested menus with icons, badges, and more.
+	•Media queries: Ensure responsive behavior across different screen sizes.
+	•Accessibility: Built with accessibility in mind, conforming to WCAG guidelines.
+Implementation:
+	Implemented in Admin Dashboard page for admin view
+
+17)React Apex Chart: 
+	React ApexCharts is a popular library for creating interactive and customizable charts within your React applications. It integrates seamlessly with React and offers a wide range of chart types, including:
+Chart Types:
+	•Bar charts
+	•Line charts
+	•Area charts
+	•Pie and donut charts
+	•Radar charts
+Key Features:
+	•Responsive design for optimal display across different devices.
+	•Extensive customization options for colors, styles, animations, and interactions.
+	•Support for dynamic data updates and real-time data rendering.
+	•Integration with other libraries like Redux or React Router.
+
+Implementation:
+	I implemented Bar chart and Pie Donut charts to track user purchases in the Admin page;
