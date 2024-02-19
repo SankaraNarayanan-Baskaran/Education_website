@@ -279,6 +279,7 @@ const Admin = ({prop}) => {
       );
 
       if (response.status === 200) {
+        setTimeout(window.location.reload(),1000);
         enqueueSnackbar("Course approved", { variant: "success" });
       }
     } catch (error) {
@@ -286,14 +287,14 @@ const Admin = ({prop}) => {
     }
   };
   useEffect(() => {
-    const username = localStorage.getItem("username");
+    const username = cookies["username"]
     studentData(username);
     instructorData(username);
     fetchData(username);
   }, []);
 
   useEffect(() => {
-    const user = localStorage.getItem("username");
+    const user = cookies["username"]
     fetchPendingCourses(user);
   }, []);
   return (

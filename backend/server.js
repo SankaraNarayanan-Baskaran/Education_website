@@ -43,9 +43,6 @@ const instructorRoutes=require("./routes/instructorRoutes");
 const courseRoutes=require("./routes/courseRoutes");
 const adminRoutes=require("./routes/adminRoutes")
 
-
-
-
 app.use("/api/student", studentRoutes);
 app.use("/api/inst",instructorRoutes);
 app.use("/api/course",courseRoutes);

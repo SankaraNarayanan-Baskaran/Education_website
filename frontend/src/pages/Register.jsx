@@ -14,7 +14,7 @@ import "../styles/Register.css";
 import withAuthentication from "../components/HOC";
 import { useFormData } from "../components/FormContext";
 import { useCookies } from "react-cookie";
-
+import { useUserData } from "../components/UserContext";
 const Register = ({ handleRegister }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -23,7 +23,7 @@ const Register = ({ handleRegister }) => {
   const [institution, setInstitution] = useState(false);
   const [type, setType] = useState("Student");
   const [cookies, setCookies] = useCookies(["type","username"]);
-
+  const { token, setToken } = useUserData();
   const handleTypeChange = (newType) => {
     setType(newType);
     setCookies("type", newType.toLowerCase());
@@ -93,8 +93,11 @@ const Register = ({ handleRegister }) => {
         const { data } = res.data;
         // const decodedToken = parseJwt(data);
         // console.log(decodedToken);
-        setCookies("username",userData.username)
-        navigate("/", { state: { isLogged: "true" } });
+        setCookies("username",userData.username);
+         setToken(data);       
+         setCookies("logged","true")
+        setCookies('jwtToken',data, { path: '/' });
+        navigate("/student", { state: { isLogged: "true" } });
       }
     } catch (error) {
       console.log(error);

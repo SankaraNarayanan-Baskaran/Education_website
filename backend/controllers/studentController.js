@@ -7,8 +7,6 @@ const {
   Instructor,
 } = require("../models/usermodels");
 const jwtUtils = require("../utils/jwtUtils");
-// const Cookies=require("universal-cookie");
-// const cookies=new Cookies();
 const cookieParser = require('cookie-parser');
 const adduser = async (req, res, next) => {
   try {
@@ -100,7 +98,7 @@ const google = async (req, res) => {
     });
 
     if (userExists) {
-      const token = jwtUtils.generateToken(userExists.id,username);
+      const token = jwtUtils.generateToken(userExists.email,username,['student']);
       return res.status(201).json({
         success: true,
         data: token, // Assuming res.data contains the data you want to return
@@ -112,7 +110,7 @@ const google = async (req, res) => {
         email,
         address,
       });
-      const token = jwtUtils.generateToken(newUser.id,username);
+      const token = jwtUtils.generateToken(newUser.email,username,['student']);
       return res.status(201).json({
         success: true,
         data: token, // Assuming res.data contains the data you want to return
