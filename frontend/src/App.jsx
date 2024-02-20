@@ -19,6 +19,7 @@ import PrivateWrapper from "./components/PrivateRoute";
 import "resize-observer-polyfill";
 import { CourseProvider } from "./components/CourseContext";
 import Unauthorized from "./components/Unauthorized";
+
 export const config = {
   endpoint: `http://localhost:3001/api`,
 };
