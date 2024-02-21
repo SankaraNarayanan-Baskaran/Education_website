@@ -1,30 +1,20 @@
 // authReducer.js
 
-// Initial state
 const initialState = {
-    isAuthenticated: false,
-    user: null,
-  };
-  
-  // Reducer function
-  const authReducer = (state = initialState, action) => {
-    switch (action.type) {
-      case 'LOGIN':
-        return {
-          ...state,
-          isAuthenticated: true,
-          user: action.payload,
-        };
-      case 'LOGOUT':
-        return {
-          ...state,
-          isAuthenticated: false,
-          user: null,
-        };
-      default:
-        return state;
-    }
-  };
-  
-  export default authReducer;
-  
+  type: 'Student', // Initial type
+};
+
+const authReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'UPDATE_TYPE':
+      console.log(action.type)
+      return {
+        ...state,
+        type: action.payload
+      };
+    default:
+      return state;
+  }
+};
+
+export default authReducer;

@@ -8,9 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./components/store";
 import { createStore } from 'redux';
-
+import rootReducer from "./components/reducers";
 const root = ReactDOM.createRoot(document.getElementById("root"));
-
 root.render(
   <Provider store={store}>
   <Router>

@@ -3,11 +3,12 @@ import RegisterFormFields from "../components/RegisterFormFields";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { config } from "../App";
-
+import {compose} from "redux";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import { useSnackbar } from "notistack";
-
+import { connect } from "react-redux";
+import { updateType } from "../components/redux/actions/authActions";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styles/Register.css";
@@ -15,7 +16,7 @@ import withAuthentication from "../components/HOC";
 import { useFormData } from "../components/FormContext";
 import { useCookies } from "react-cookie";
 import { useUserData } from "../components/UserContext";
-const Register = ({ handleRegister }) => {
+const Register = ({ handleRegister, userType, updateType }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { formData, setFormData } = useFormData();
@@ -190,6 +191,10 @@ const Register = ({ handleRegister }) => {
     </div>
   );
 };
+const mapStateToProps = (state) => ({
+  userType: state.auth.type 
+});
 
-export default withAuthentication(Register);
+const mapDispatchToProps = { updateType };
+export default withAuthentication(connect(mapStateToProps, mapDispatchToProps)(Register));
 

@@ -5,7 +5,7 @@ import { config } from "../App";
 import axios from "axios";
 import "./student/styles/Home.css";
 import { useCookies } from "react-cookie";
-
+;
 const Header = ({ isAuthorised, prop, student, children, instr, admin }) => {
   const navigate = useNavigate();
   const [cookies, setCookies, removeCookies] = useCookies([
@@ -16,6 +16,15 @@ const Header = ({ isAuthorised, prop, student, children, instr, admin }) => {
     "logged",
     "role",
   ]);
+  const handleLogout = () => {
+    removeCookies("jwtToken");
+    removeCookies("username");
+    removeCookies("type");
+    removeCookies("logged");
+    removeCookies("role");
+    navigate("/");
+    setTimeout(window.location.reload(), 1000);
+  };
   const [data, setData] = useState(null);
   const user = cookies["username"];
   const fetchInstitution = async () => {
@@ -60,18 +69,8 @@ const Header = ({ isAuthorised, prop, student, children, instr, admin }) => {
               {user && (
                 <button
                   class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
-                  onClick={() => {
-                    removeCookies("jwtToken");
-                    removeCookies("username");
-                    removeCookies("type");
-                    removeCookies("logged");
-                    removeCookies("role");
-                    navigate("/");
-                    setTimeout(window.location.reload(), 1000);
-                  }}
-                >
-                  LOG OUT
-                </button>
+                  onClick={() => {handleLogout();}}
+                > LOG OUT</button>
               )}
             </>
           ) : (
@@ -108,13 +107,7 @@ const Header = ({ isAuthorised, prop, student, children, instr, admin }) => {
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
-                          removeCookies("jwtToken");
-                          removeCookies("username");
-                          removeCookies("type");
-                          removeCookies("logged");
-                          removeCookies("role");
-                          navigate("/");
-                          setTimeout(window.location.reload(), 1000);
+                         handleLogout();
                         }}
                       >
                         LOG OUT
@@ -158,13 +151,7 @@ const Header = ({ isAuthorised, prop, student, children, instr, admin }) => {
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
-                          removeCookies("jwtToken");
-                          removeCookies("username");
-                          removeCookies("type");
-                          removeCookies("logged");
-                          removeCookies("role");
-                          navigate("/");
-                          setTimeout(window.location.reload(), 1000);
+                          handleLogout()
                         }}
                       >
                         LOG OUT
@@ -181,13 +168,7 @@ const Header = ({ isAuthorised, prop, student, children, instr, admin }) => {
                       <button
                         class="btn  mx-lg-2 mx-sm-1 my-sm-0 title"
                         onClick={() => {
-                          removeCookies("jwtToken");
-                          removeCookies("username");
-                          removeCookies("type");
-                          removeCookies("logged");
-                          removeCookies("role");
-                          navigate("/");
-                          setTimeout(window.location.reload(), 1000);
+                          handleLogout()
                         }}
                       >
                         LOG OUT
