@@ -1,20 +1,40 @@
-// authReducer.js
+// Example reducers/courseReducer.js
+
+import {
+  FETCH_COURSES_REQUEST,
+  FETCH_COURSES_SUCCESS,
+  FETCH_COURSES_FAILURE,
+} from '../redux/actions/authActions';
 
 const initialState = {
-  type: 'Student', // Initial type
+  courses: [],
+  loading: false,
+  error: null,
 };
 
-const authReducer = (state = initialState, action) => {
+const courseReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'UPDATE_TYPE':
-      console.log(action.type)
+    case FETCH_COURSES_REQUEST:
       return {
         ...state,
-        type: action.payload
+        loading: true,
+        error: null,
+      };
+    case FETCH_COURSES_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        courses: action.payload,
+      };
+    case FETCH_COURSES_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
       };
     default:
       return state;
   }
 };
 
-export default authReducer;
+export default courseReducer;

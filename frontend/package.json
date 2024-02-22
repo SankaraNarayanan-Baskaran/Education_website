@@ -44,6 +44,7 @@
     "reactjs-social-login": "^2.5.6",
     "recharts": "^2.9.3",
     "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0",
     "universal-cookie": "^7.0.1",
     "util": "^0.12.5",
     "web-vitals": "^2.1.4"

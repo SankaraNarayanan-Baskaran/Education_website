@@ -11,24 +11,42 @@ import axios from "axios";
 import { useUserData } from "../UserContext";
 import "../../styles/Header.css";
 import { useCookies } from "react-cookie";
+import { UseSelector,useDispatch, useSelector } from "react-redux";
+import {fetchCourses} from "../redux/actions/authActions"
+import { fetchCoursesRequest,purchaseCourseRequest } from "../redux/actions/authActions";
 const Home = ({ prop }) => {
   const navigate = useNavigate();
   const {role}=useUserData();
   const [cookies] = useCookies(['username']);
+  const dispatch=useDispatch();
   const username = cookies['username']
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [purchased, setPurchased] = useState([]);
-  const [instructor, setInstructor] = useState(false);
-  const [filteredCourses, setFilteredCourses] = useState([]);
-  const [showFilteredCourses, setShowFilteredCourses] = useState(false);
-  const [courses, setCourses] = useState([]);
-  const [details, setDetails] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [purchasedCourses, setPurchasedCourses] = useState([]);
-  const [purchasedLoaded, setPurchasedLoaded] = useState(false);
-  const [selectedCourseDescription, setSelectedCourseDescription] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  // const [selectedCategory, setSelectedCategory] = useState("");
+  // const [purchased, setPurchased] = useState([]);
+  // const [instructor, setInstructor] = useState(false);
+  // const [filteredCourses, setFilteredCourses] = useState([]);
+  // const [showFilteredCourses, setShowFilteredCourses] = useState(false);
+  // const [courses, setCourses] = useState([]);
+  // const [details, setDetails] = useState(false);
+  // const [selectedCourse, setSelectedCourse] = useState(null);
+  // const [purchasedCourses, setPurchasedCourses] = useState([]);
+  // const [purchasedLoaded, setPurchasedLoaded] = useState(false);
+  // const [selectedCourseDescription, setSelectedCourseDescription] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [searchResults, setSearchResults] = useState([]);
+  const selector=useSelector();
+  const selectedCategory = selector(state => state.category.selectedCategory);
+  const purchased = selector(state => state.course.purchased);
+  const instructor = selector(state => state.instructor.isInstructor);
+  const filteredCourses = selector(state => state.course.filteredCourses);
+  const showFilteredCourses = selector(state => state.course.showFilteredCourses);
+  const courses = selector(state => state.course.courses);
+  const details = selector(state => state.course.details);
+  const selectedCourse = selector(state => state.course.selectedCourse);
+  const purchasedCourses = selector(state => state.course.purchasedCourses);
+  const purchasedLoaded = selector(state => state.course.purchasedLoaded);
+  const selectedCourseDescription = selector(state => state.course.selectedCourseDescription);
+  const searchQuery = selector(state => state.course.searchQuery);
+  const searchResults = selector(state => state.course.searchResults);
   const fetchCourses = async () => {
     try {
       if(username){

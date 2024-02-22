@@ -8,7 +8,6 @@ import { GoogleLoginButton } from "react-social-login-buttons";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import { useSnackbar } from "notistack";
 import { connect } from "react-redux";
-import { updateType } from "../components/redux/actions/authActions";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styles/Register.css";
@@ -16,7 +15,7 @@ import withAuthentication from "../components/HOC";
 import { useFormData } from "../components/FormContext";
 import { useCookies } from "react-cookie";
 import { useUserData } from "../components/UserContext";
-const Register = ({ handleRegister, userType, updateType }) => {
+const Register = ({ handleRegister }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { formData, setFormData } = useFormData();
@@ -191,10 +190,6 @@ const Register = ({ handleRegister, userType, updateType }) => {
     </div>
   );
 };
-const mapStateToProps = (state) => ({
-  userType: state.auth.type 
-});
 
-const mapDispatchToProps = { updateType };
-export default withAuthentication(connect(mapStateToProps, mapDispatchToProps)(Register));
+export default withAuthentication(Register);
 
