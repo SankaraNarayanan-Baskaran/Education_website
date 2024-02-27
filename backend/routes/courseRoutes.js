@@ -11,9 +11,9 @@ const decode = require("../utils/Decode");
 router.post("/addcourse", courseController.addcourse);
 router.get("/fetchcourses",courseController.fetchcourses);
 router.get("/learning",decode.parseJwt,courseController.learning);
-router.get("/search",courseController.search);
+router.get("/search",decode.parseJwt,courseController.search);
 router.get("/:courseName/students",courseController.courseName)
-router.get("/filter",decode.parseJwt, courseController.filter);
+router.get("/filter", decode.parseJwt, courseController.filter);
 
 router.post("/learningpurchase",purchaseController.learningpurchase);
 router.get("/purchased", purchaseController.purchased);

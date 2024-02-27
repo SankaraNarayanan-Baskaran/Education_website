@@ -109,7 +109,7 @@ const learning = async (req, res) => {
 const search = async (req, res) => {
   try {
     const query = req.query.query || "";
-
+    const username=req.username;
     // Check if the query is empty
     if (query.trim() === "") {
       const allResults = await CourseDetails.findAll();
@@ -117,15 +117,35 @@ const search = async (req, res) => {
       res.json(allResults);
     } else {
       // Perform the search if the query is not empty
-      const results = await CourseDetails.findAll({
-        where: {
-          name: {
-            [Sequelize.Op.iLike]: `%${query}%`,
+      if(username){
+        const user=await Accounts.findOne({where:{
+          username:username
+        }})
+        const results = await CourseDetails.findAll({
+          where: {
+            name: {
+              [Sequelize.Op.iLike]: `%${query}%`,
+            },
+            institution_code:user.institution_code
+            
           },
-        },
-      });
-      console.log("Query Results:", results);
-      res.json(results);
+        });
+      
+        res.json(results);
+      }
+      else{
+        const results = await CourseDetails.findAll({
+          where: {
+            name: {
+              [Sequelize.Op.iLike]: `%${query}%`,
+            },
+            institution_code:null
+            
+          },
+        });
+        res.json(results);
+      }
+     
     }
   } catch (error) {
     console.error("Error:", error);
@@ -168,10 +188,31 @@ const filter = async (req, res) => {
         console.log(username, category);
       }
     }
+    else{
+      if (category === "All") {
+        const ans = await CourseDetails.findAll({
+          where: {
+            institution_code: null
+          },
+        });
+        console.log(ans);
+        return res.json(ans);
+      } else {
+        const course = await CourseDetails.findAll({
+          where: {
+            category: category,
+            institution_code: null
+          },
+        });
+        if (course) {
+          return res.json(course);
+        }
+      }
+    }
   } catch (error) {
     const category = req.query.category;
-    const username = req.query.username;
-    console.log(category, username);
+   
+    console.log(category);
   }
 };
 const courseName = async (req, res) => {

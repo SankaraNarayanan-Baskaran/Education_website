@@ -1,7 +1,7 @@
 const CourseCard = ({key,classname,src,alt,h5class,h5style,paraclass,parastyle,name,price}) => (
 
  
-  <div className="card mb-3 card">
+  <div>
 
     <img className={classname} src={src} alt={alt} />
     <div>

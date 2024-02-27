@@ -19,17 +19,18 @@
 }
 .slct {
   width: 100px;
-  height: 60px;
+  /* height: 60px; */
   font-size: 13px;
   margin-right: 8px;
   margin-left: 5px;
 }
 .prch {
-  width: 298.5px;
+  width: 299px;
   font-size: 13px;
 }
 .ptext {
   margin-left: 5px;
+  margin-bottom: 25px;
 }
 
 .slct-description{
