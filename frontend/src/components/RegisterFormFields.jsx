@@ -3,7 +3,7 @@ const RegisterFormFields = ({
   formData,
   setFormData,
   handleRegister,
-  institution,
+  admin,
   instructor,
   setType,
   type
@@ -78,7 +78,7 @@ const RegisterFormFields = ({
           formData.email.length !== 0 && !validateEmail(formData.email),
           "*Invalid Email Address"
         )}
-        {institution && (
+        {admin && (
           <>
             {renderInputField(
               "text",

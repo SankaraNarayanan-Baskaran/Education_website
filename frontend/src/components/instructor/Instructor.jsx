@@ -90,7 +90,7 @@ const Instructor = () => {
   const fetchcourses = async () => {
     try {
       const response = await axios.get(
-        `${config.endpoint}/inst/instructorview`,{ withCredentials: true});
+        `${config.endpoint}/instructor/instructorview`,{ withCredentials: true});
       setCourses(response.data);
     } catch (error) {
       console.log(username);

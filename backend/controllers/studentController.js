@@ -5,6 +5,7 @@ const {
   CourseDetails,
   Student_Purchases,
   Instructor,
+  Institution,
 } = require("../models/usermodels");
 const jwtUtils = require("../utils/jwtUtils");
 const cookieParser = require('cookie-parser');
@@ -236,18 +237,22 @@ const convertToStudent = async (req, res) => {
 const updatePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    await Accounts.update(
-      {
-        password: newPassword,
-      },
-      {
-        where: {
-          password: oldPassword,
-        },
-      }
-    ).then(() => {
+    if(oldPassword){
+      await Accounts.update(
+        {password: newPassword,},
+        {where: {password: oldPassword,},}
+      ),
+      await Instructor.update(
+        {password: newPassword,},
+        {where: {password: oldPassword,},}
+      ),
+      await Institution.update(
+        {password: newPassword,},
+        {where: {password: oldPassword,},}
+      )
+    }
+    
       res.status(201).json({ message: "Success" });
-    });
   } catch (error) {
     console.log("Error", error);
   }
@@ -256,18 +261,27 @@ const updatePassword = async (req, res) => {
 const forgotPassword = async (req, res) => {
   try {
     const { username, newPassword } = req.body;
-    await Accounts.update(
-      {
-        password: newPassword,
-      },
-      {
-        where: {
-          username: username,
-        },
-      }
-    ).then(() => {
+    if(username){
+      await Accounts.update(
+        {password: newPassword,},
+        {
+          where: {username: username,},
+        },),
+      await Instructor.update(
+          {password: newPassword,},
+          {
+            where: {name: username,},
+          },),
+      await Institution.update(
+            {password: newPassword,},
+            {
+              where: {institution_name: username,},
+            },)
+    }
+    
+      
       res.status(201).json({ message: "Success" });
-    });
+    
   } catch (error) {
     console.log("Error", error);
   }

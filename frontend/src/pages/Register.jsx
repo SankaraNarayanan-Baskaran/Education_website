@@ -20,7 +20,7 @@ const Register = ({ handleRegister }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { formData, setFormData } = useFormData();
   const [instructor, setInstructor] = useState(false);
-  const [institution, setInstitution] = useState(false);
+  const [admin, setAdmin] = useState(false);
   const [type, setType] = useState("Student");
   const [cookies, setCookies] = useCookies(["type","username"]);
   const { token, setToken } = useUserData();
@@ -29,13 +29,13 @@ const Register = ({ handleRegister }) => {
     setCookies("type", newType.toLowerCase());
     if (newType === "Instructor") {
       setInstructor(true);
-      setInstitution(false);
-    } else if (newType === "Institution") {
-      setInstitution(true);
+      setAdmin(false);
+    } else if (newType === "Admin") {
+      setAdmin(true);
       setInstructor(false);
     } else {
       setInstructor(false);
-      setInstitution(false);
+      setAdmin(false);
     }
   };
 
@@ -114,7 +114,7 @@ const Register = ({ handleRegister }) => {
             formData={formData}
             setFormData={setFormData}
             handleRegister={handleRegister}
-            institution={institution}
+            admin={admin}
             instructor={instructor}
             setType={setType}
             type={type}
@@ -173,10 +173,10 @@ const Register = ({ handleRegister }) => {
                     Instructor?
                   </button>
                 )}
-                {type !== "Institution" && (
+                {type !== "Admin" && (
                   <button
                     className="login-button mx-3"
-                    onClick={() => handleTypeChange("Institution")}
+                    onClick={() => handleTypeChange("Admin")}
                   >
                     Register As an Institution
                   </button>

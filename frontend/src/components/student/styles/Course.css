@@ -103,6 +103,7 @@
   height: 230px;
   background: #333;
   overflow: hidden;
+  object-fit: cover;
 }
 
 .product-card .card .content {

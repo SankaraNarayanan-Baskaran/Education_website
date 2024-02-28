@@ -112,7 +112,7 @@ const Home = ({ prop }) => {
   const addtoInstructor = async () => {
     try {
       const res = await axios.post(
-        `${config.endpoint}/inst/convertToInstructor`,
+        `${config.endpoint}/instructor/convertToInstructor`,
         {
           withCredentials: true,
         }
@@ -129,7 +129,7 @@ const Home = ({ prop }) => {
 
   const checkInstructor = async () => {
     try {
-      const resp = await axios.get(`${config.endpoint}/inst/isInstructor`, {
+      const resp = await axios.get(`${config.endpoint}/instructor/isInstructor`, {
         withCredentials: true,
       });
       if (resp.status === 201) {

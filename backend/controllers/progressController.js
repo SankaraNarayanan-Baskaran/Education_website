@@ -10,7 +10,6 @@ const {
 const progress = async (req, res) => {
   try {
     const { sectionId, count ,username} = req.body;
-    console.log("14",username)
     const user = await Accounts.findOne({ where: { username: username } });
 
     if (user) {
@@ -57,17 +56,19 @@ const progress = async (req, res) => {
             const first = await Progress.create({
               student_id: purchase.student_id,
               course_id: purchase.course_id,
-
               Completed_Sections: [sectionId],
             });
             if (first) {
-              const completedCount = prog.Completed_Sections.length;
-              const progress = Math.trunc((completedCount * 100) / count);
+              const progress = Math.trunc((100) / count);
               await Progress.update({
-                student_id: purchase.student_id,
-                course_id: purchase.course_id,
                 progress: progress,
-              });
+              },{
+                where:{
+                  student_id: purchase.student_id,
+                  course_id: purchase.course_id,
+                }
+              }
+              );
             }
           }
 
@@ -82,7 +83,7 @@ const progress = async (req, res) => {
       res.status(404).send("User not found");
     }
   } catch (error) {
-    console.log("Error:", error);
+    console.log("Error83:", error);
     res.status(500).send("Internal server error");
   }
 };

@@ -38,7 +38,7 @@ const withAuthentication = (WrappedComponent) => {
 
           const redirectPath = {
             student: "/student",
-            inst: "/instructor",
+            instructor: "/instructor",
             admin: "/admin",
           };
           setCookies("logged","true")

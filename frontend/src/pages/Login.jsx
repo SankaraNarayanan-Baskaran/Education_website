@@ -128,6 +128,7 @@ const Login = ({ handleLogin, validateInput }) => {
                   forgotPass
                     ? handleAction("forgotPass", forgotPassword)
                     : handleAction("updatePass", changePassword);
+                    setTimeout(window.location.reload(),3000)
                 }}
               >
                 Confirm
@@ -205,7 +206,7 @@ const Login = ({ handleLogin, validateInput }) => {
                   className="login-button"
                   onClick={() => {
                     setType("Instructor");
-                    setCookies("type", "inst");
+                    setCookies("type", "instructor");
                     setInstructor(true);
                   }}
                 >
