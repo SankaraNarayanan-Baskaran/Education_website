@@ -220,7 +220,6 @@ const Admin = ({prop}) => {
         withCredentials: true,
       });
       if (response) {
-        console.log(response.data);
         setPending(response.data);
       }
     } catch (error) {

@@ -110,7 +110,23 @@ const Instructor = () => {
         <>
           <div>
             <>
-              <Header isAuthorised={false} prop student instr />
+            <>
+            <Header isAuthorised={false} prop student instr>
+           {
+            !isSelected&&
+            <button
+              onClick={() => {
+                navigate("/instructor");
+                setTimeout(window.location.reload(), 1000);
+              }}
+            >
+              Back to Home
+            </button>
+            
+           } 
+            </Header>
+            </>
+              
               <center>
                 <div className="mx-2 my-2 container">
                   <h3>Jump into Course creation</h3>

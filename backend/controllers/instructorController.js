@@ -135,8 +135,8 @@ const isInstructor = async (req, res) => {
 };
 const convertToInstructor = async (req, res) => {
   try {
-    const name  = req.username;
-    console.log(name);
+    const {username}=req.body;
+    const name = username;
     const user = await Instructor.findOne({ where: { name: name } });
     if (user) {
       return res.status(299).json("Already an Instructor");

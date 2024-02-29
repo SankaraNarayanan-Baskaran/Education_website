@@ -6,5 +6,5 @@ router.post("/addinstructor",instructorController.adduser);
 router.post("/logininstructor",instructorController.logininst);
 router.get("/instructorview",decodedToken.parseJwt,instructorController.instructorview);
 router.get("/isInstructor",decodedToken.parseJwt,instructorController.isInstructor);
-router.post("/convertToInstructor",decodedToken.parseJwt,instructorController.convertToInstructor)
+router.post("/convertToInstructor",instructorController.convertToInstructor)
 module.exports=router

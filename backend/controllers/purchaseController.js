@@ -50,6 +50,7 @@ const learningpurchase = async (req, res) => {
       student_id: user.id,
       student_name:username,
       course_id: course.id,
+      institution_code:user.institution_code,
     });
 
     // Return a success response

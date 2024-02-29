@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { config } from "../../App";
+import { useCookies } from "react-cookie";
 const ChartComponent = () => {
+  const [cookies]=useCookies(["username"]);
   const [chartData, setChartData] = useState({
-    labels: ["June", "May", "April"],
+    labels: ["January", "February", "March"],
     series: [71, 63, 77],
   });
   const [barChart, setBarChart] = useState({
@@ -19,7 +21,6 @@ const ChartComponent = () => {
 
       if (response && response.data) {
         const data = response.data;
-console.log(data);
         const courseCounts = data.reduce((acc, entry) => {
           const courseName = entry.course_name;
           acc[courseName] = (acc[courseName] || 0) + 1;
@@ -45,8 +46,6 @@ console.log(data);
             categories: newBarChart.labels, // Use dynamic data here
           },
         }));
-
-        console.log("167", newBarChart);
       }
     } catch (error) {
       console.log(error);
@@ -68,7 +67,7 @@ console.log(data);
     },
     yaxis: {
       title: {
-        text: "Number of Students",
+        // text: "Number of Students",
         style: {
           color: "black",
         },
@@ -169,19 +168,22 @@ console.log(data);
       
       newOptions.yaxis.labels = {
         formatter: function (value) {
-          return parseFloat(value).toFixed(0);
+          const parsedValue = parseFloat(value);
+          return isNaN(parsedValue) ? value : parsedValue.toFixed(0);
         },
         style: {
           colors: "black",
         },
       };
+      
       newOptions.xaxis.categories = barChart.labels;
+      console.log(barChart.labels,newOptions.xaxis.categories,barChart.series)
       return newOptions;
     });
   };
 
   useEffect(() => {
-    const username = localStorage.getItem("username");
+    const username = cookies["username"];
     fetchData(username);
   }, []);
   

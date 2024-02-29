@@ -120,12 +120,12 @@ const Course = () => {
                           }% `}
                           style={{
                             margin: "0 8px 8px 0",
-                            width: "200px"
+                            width: "200px",
+                            color:"black"
                           }}
                         />
                       )}
                     </>
-                    {/* )} */}
                     <button
                       className="course-button"
                       onClick={() => {

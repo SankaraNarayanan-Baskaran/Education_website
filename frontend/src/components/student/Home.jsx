@@ -20,8 +20,9 @@ import {
 const Home = ({ prop }) => {
   const navigate = useNavigate();
   const { role } = useUserData();
-  const [cookies] = useCookies(["username"]);
+  const [cookies,setCookies] = useCookies(["username","role","icon"]);
   const username = cookies["username"];
+  const icon=cookies["icon"]
   const [selectedCategory, setSelectedCategory] = useState("");
   const [purchased, setPurchased] = useState([]);
   const [instructor, setInstructor] = useState(false);
@@ -112,13 +113,14 @@ const Home = ({ prop }) => {
   const addtoInstructor = async () => {
     try {
       const res = await axios.post(
-        `${config.endpoint}/instructor/convertToInstructor`,
-        {
-          withCredentials: true,
-        }
-      );
+        `${config.endpoint}/instructor/convertToInstructor`,{
+          username:username
+        });
       if (res.status === 201) {
         enqueueSnackbar("You are now an Instructor", { variant: "info" });
+        setCookies("role",["student","instructor"])
+       navigate("/instructor")
+        
       } else if (res.status === 299) {
         enqueueSnackbar("You are already an instructor", { variant: "info" });
       }
@@ -153,7 +155,7 @@ const Home = ({ prop }) => {
                 </button>
               ) : (
                 <button className="prch" onClick={() => handlePurchase(course)}>
-                  Purchase course
+                {icon?(<>Learn Course</>):(<>Purchase course</>)}
                 </button>
               )}
             </div>
@@ -247,7 +249,7 @@ const Home = ({ prop }) => {
                       </div>
                     </div>
                     <div>
-                      {username ? (
+                      {username? (
                         !purchased.some(
                           (item) => item.course_name === course.name
                         ) ? (
@@ -255,7 +257,7 @@ const Home = ({ prop }) => {
                             className="prch"
                             onClick={() => handlePurchase(course)}
                           >
-                            Purchase course
+                            {icon?(<>Learn Course</>):(<>Purchase course</>)}
                           </button>
                         ) : (
                           <button className="prch" disabled>
@@ -357,7 +359,7 @@ const Home = ({ prop }) => {
                       className="btn mx-2 my-sm-0 title"
                       onClick={() => {
                         addtoInstructor();
-                        navigate("/instructor");
+                        
                       }}
                     >
                       Want to be an Instructor?

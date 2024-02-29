@@ -218,7 +218,7 @@ const Section = ({ courseName }) => {
                                           fetchsections(course.id);
                                         }}
                                       >
-                                        Edit Section
+                                        View/Edit Section
                                       </button>
                                     </div>
                                     <h6 onMouseOver={() => {}}>
