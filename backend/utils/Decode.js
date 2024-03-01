@@ -30,7 +30,6 @@ const parseJwt = (req, res, next) => {
         )
       );
       req.username = jsonPayload.username;
-      console.log("Decoded username:", jsonPayload.username);
       next();
     }
    

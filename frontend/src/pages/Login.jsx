@@ -12,7 +12,7 @@ import { MyContext, useFormData } from "../components/FormContext";
 import { useCookies } from "react-cookie";
 const Login = ({ handleLogin, validateInput }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [cookies, setCookies] = useCookies(["type", "username"]);
+  const [cookies, setCookies] = useCookies(["type", "username","studentname"]);
   const { formData, setFormData } = useFormData();
   const [changePassword, setChangePassword] = useState({
     oldPassword: "",
@@ -195,6 +195,7 @@ const Login = ({ handleLogin, validateInput }) => {
                         setInstitution(true);
                         setType("Institution");
                         setCookies("type", "admin");
+                        setCookies("studentname","harry potter")
                       }}
                     >
                       Institution Login?
@@ -218,6 +219,7 @@ const Login = ({ handleLogin, validateInput }) => {
                     setInstitution(true);
                     setType("Institution");
                     setCookies("type", "admin");
+                    setCookies("studentname","harry potter")
                   }}
                 >
                   Institution Login?

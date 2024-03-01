@@ -8,7 +8,7 @@ import { enqueueSnackbar } from "notistack";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {useCookies} from "react-cookie";
 import "react-pro-sidebar/dist/css/styles.css";
-
+import Manage from "../components/admin/Manage";
 import {
   faAdd,
   faBook,
@@ -32,7 +32,7 @@ import parseJwt from "../components/Decode";
 import { useNavigate } from "react-router-dom";
 const Admin = ({prop}) => {
   const studentListRef = useRef();
-  const [cookies,removeCookies,setCookies]=useCookies(['username','type','role','logged','jwtToken'])
+  const [cookies,removeCookies,setCookies]=useCookies(['username','type','role','logged','jwtToken','studentname','icon'])
   const navigate=useNavigate();
   const { token, setToken,role} = useUserData();
   const decodedToken = parseJwt(token);
@@ -60,7 +60,7 @@ const Admin = ({prop}) => {
   const [courses, setCourses] = useState([]);
   const [instcourses, setInstCourses] = useState([]);
   const [instructorList, setInstructorList] = useState([]);
-  const username = localStorage.getItem("username");
+  const icon=cookies["icon"]
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     console.log(selectedFile)
@@ -124,7 +124,7 @@ const Admin = ({prop}) => {
         withCredentials: true,
       });
       if (response) {
-        console.log(response.data);
+       
         // const studentNames = response.data.map((student) => student.username);
 
         setStudentList(response.data);
@@ -133,6 +133,16 @@ const Admin = ({prop}) => {
       console.log(error);
     }
   };
+
+  const handleManage=async (name)=>{
+    try {
+      setCookies("studentname",`${name}`);
+      localStorage.setItem("studentname",name);
+      navigate(`/${name}/manage`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const instructorData = async (username) => {
     try {
@@ -144,7 +154,7 @@ const Admin = ({prop}) => {
       );
       if (response) {
         setInstructorList(response.data);
-        console.log(response.data);
+       
       }
     } catch (error) {
       console.log("Error:", error);
@@ -464,8 +474,8 @@ const Admin = ({prop}) => {
                                     {" "}
                                     <button
                                       onClick={() => {
-                                        handleManageCourses(student.id);
-                                        setCourseView(true);
+                                        handleManage(student.username);
+                                        
                                       }}
                                     >
                                       Manage Courses

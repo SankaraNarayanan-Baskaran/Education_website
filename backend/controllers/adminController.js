@@ -83,8 +83,6 @@ const loginInstitution = async (req, res) => {
     });
     if (user) {
       const token = jwtUtils.generateToken(user.email, username,['admin']);
-      console.log("Generated Token:", token);
-
       return res.status(201).json({
         success: true,
         data: token, // Assuming res.data contains the data you want to return
@@ -192,7 +190,6 @@ const icon = async (req, res) => {
           name: username,
         },
       });
-      console.log("INS", inst);
       if (user) {
         console.log(user);
         const icon = await Institution.findOne({

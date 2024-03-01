@@ -13,7 +13,7 @@ import { useCookies } from 'react-cookie';
 const withAuthentication = (WrappedComponent) => {
 
   const WithAuthenticationComponent = (props) => {
-    const [cookies, setCookies,getCookies] = useCookies(['jwtToken','username','type','logged']);
+    const [cookies, setCookies,getCookies] = useCookies(['jwtToken','username','type','logged','studentname']);
   
     const { enqueueSnackbar } = useSnackbar();
     const { token, setToken } = useUserData();
@@ -41,7 +41,8 @@ const withAuthentication = (WrappedComponent) => {
             instructor: "/instructor",
             admin: "/admin",
           };
-          setCookies("logged","true")
+          setCookies("logged","true");
+          setCookies("studentname","harry potter");
           navigate(redirectPath[types], { state: { isLogged: "true" } });
          
           // setTimeout(window.location.reload(),1000)

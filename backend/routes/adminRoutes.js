@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const multer = require('multer');
 const adminController = require("../controllers/adminController");
+const progresscontroller=require("../controllers/progressController");
+const courseController=require("../controllers/courseController");
 const decodedToken=require("../utils/Decode");
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -23,5 +25,7 @@ router.get("/pending", decodedToken.parseJwt,adminController.pending);
 router.get("/studentcourses",decodedToken.parseJwt, adminController.getStudentCourses);
 router.get("/instcourses",decodedToken.parseJwt, adminController.getInstructorCourses);
 router.get("/data", decodedToken.parseJwt,adminController.data);
-
+router.get("/completed",progresscontroller.completed);
+router.get("/ongoing",progresscontroller.ongoing);
+router.get("/fetchinst",courseController.fetchinst);
 module.exports = router;

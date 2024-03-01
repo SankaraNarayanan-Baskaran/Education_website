@@ -7,6 +7,8 @@ const {
   Progress,
   Instructor,
 } = require("../models/usermodels");
+const { Sequelize } = require("sequelize");
+const { Op } = require('sequelize');
 const progress = async (req, res) => {
   try {
     const { sectionId, count ,username} = req.body;
@@ -112,4 +114,74 @@ const getProgress = async (req, res) => {
     console.log("errodr:", error);
   }
 };
-module.exports = { progress, getProgress };
+
+const completed=async(req,res)=>{
+  try {
+    const username=req.query.username;
+    const purchase=await Accounts.findOne({
+      where:{
+       username:username
+      }
+    });
+    if(purchase){
+      const comp=await Progress.findAll({
+        where:{
+          student_id:purchase.id,
+          progress:100,
+        }
+      })
+      if(comp){
+        const courseIds = comp.map((progress) => progress.course_id);
+        const studentIds=comp.map((ids) => ids.student_id)
+        const finished=await Student_Purchases.findAll({
+          where:{
+            student_id:studentIds,
+            course_id:courseIds
+          }
+        })
+        return res.json({
+          courseDetails: finished,
+          courseProgress: comp,
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const ongoing=async(req,res)=>{
+  try {
+    const username=req.query.username;
+    const purchase=await Accounts.findOne({
+      where:{
+       username:username
+      }
+    });
+    if(purchase){
+      const comp=await Progress.findAll({
+        where:{
+          student_id:purchase.id,
+          progress:{[Op.ne]: 100},
+        }
+      })
+      if(comp){
+        const courseIds = comp.map((progress) => progress.course_id);
+        const studentIds=comp.map((ids) => ids.student_id)
+        const finished=await Student_Purchases.findAll({
+          where:{
+            student_id:studentIds,
+            course_id:courseIds
+          }
+        })
+        return res.json({
+          courseDetails: finished,
+          currentProgress: comp,
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+module.exports = { progress, getProgress,completed ,ongoing};

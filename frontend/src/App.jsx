@@ -19,6 +19,7 @@ import PrivateWrapper from "./components/PrivateRoute";
 import "resize-observer-polyfill";
 import { CourseProvider } from "./components/CourseContext";
 import Unauthorized from "./components/Unauthorized";
+import Manage from "./components/admin/Manage";
 
 export const config = {
   endpoint: `http://localhost:3001/api`,
@@ -94,6 +95,8 @@ function App() {
                 />
               
                 <Route path="/bar" element={<BarGraph />} />
+                <Route path="/:studentname/manage" element={<Manage/>}/>
+                
               </Routes>
             </CourseProvider>
           </FormDataProvider>

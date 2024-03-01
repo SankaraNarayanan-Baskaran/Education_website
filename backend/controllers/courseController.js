@@ -231,6 +231,28 @@ const courseName = async (req, res) => {
   }
 };
 
+const fetchinst=async(req,res)=>{
+  try {
+    const username=req.query.username;
+    const inst=await Instructor.findOne({where:{
+      name:username
+    }});
+    if(inst){
+      const crs=await CourseDetails.findAll({where:{user_id:inst.id}})
+      if(crs){
+        const coursename = crs.map((course) => course.name);
+        const purch=await Student_Purchases.findAll({where:{course_name:coursename}})
+        return res.json({
+          courseDetails:crs,
+          purchased:purch
+        })
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   addcourse,
   fetchcourses,
@@ -238,4 +260,5 @@ module.exports = {
   search,
   filter,
   courseName,
+  fetchinst
 };

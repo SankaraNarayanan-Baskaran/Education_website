@@ -15,7 +15,8 @@ const Header = ({ isAuthorised, prop, student, children, instr, admin }) => {
     "type",
     "logged",
     "role",
-    "icon"
+    "icon",
+    "studentname"
   ]);
   const handleLogout = () => {
     removeCookies("jwtToken");
@@ -24,6 +25,8 @@ const Header = ({ isAuthorised, prop, student, children, instr, admin }) => {
     removeCookies("logged");
     removeCookies("role");
     removeCookies("data");
+    removeCookies("icon");
+    removeCookies("studentname")
     navigate("/");
     setTimeout(window.location.reload(), 1000);
   };
