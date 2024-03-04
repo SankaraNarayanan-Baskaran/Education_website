@@ -32,7 +32,7 @@ import parseJwt from "../components/Decode";
 import { useNavigate } from "react-router-dom";
 const Admin = ({prop}) => {
   const studentListRef = useRef();
-  const [cookies,removeCookies,setCookies]=useCookies(['username','type','role','logged','jwtToken','studentname','icon'])
+  const [cookies,removeCookies,setCookies]=useCookies(['username','type','role','logged','jwtToken','studentname','icon','mang'])
   const navigate=useNavigate();
   const { token, setToken,role} = useUserData();
   const decodedToken = parseJwt(token);
@@ -69,6 +69,7 @@ const Admin = ({prop}) => {
   useEffect(() => {
     if (isStudentListRendered && studentListRef.current) {
       studentListRef.current.scrollIntoView({ behavior: "smooth" });
+      setCookies("mang","student");
     }
   }, [isStudentListRendered]);
 
@@ -138,6 +139,20 @@ const Admin = ({prop}) => {
     try {
       setCookies("studentname",`${name}`);
       localStorage.setItem("studentname",name);
+      localStorage.setItem("kind","student");
+      setCookies("mang","student");
+      navigate(`/${name}/manage`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleManageInst=async (name)=>{
+    try {
+      setCookies("studentname",`${name}`);
+      localStorage.setItem("studentname",name);
+      localStorage.setItem("kind","instructor");
+      setCookies("mang","student");
       navigate(`/${name}/manage`);
     } catch (error) {
       console.log(error);
@@ -521,6 +536,7 @@ const Admin = ({prop}) => {
                                   <button
                                     onClick={() => {
                                       handleInstructor(instructor.id);
+                                      handleManageInst(instructor.name)
                                       setInstCourse(true);
                                     }}
                                   >

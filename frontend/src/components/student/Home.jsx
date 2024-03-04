@@ -20,9 +20,16 @@ import {
 const Home = ({ prop }) => {
   const navigate = useNavigate();
   const { role } = useUserData();
-  const [cookies,setCookies] = useCookies(["username","role","icon"]);
+  const [cookies, setCookies] = useCookies([
+    "username",
+    "role",
+    "icon",
+    "courseid",
+    "inst"
+  ]);
   const username = cookies["username"];
-  const icon=cookies["icon"]
+  const icon = cookies["icon"];
+  const inst=cookies["inst"];
   const [selectedCategory, setSelectedCategory] = useState("");
   const [purchased, setPurchased] = useState([]);
   const [instructor, setInstructor] = useState(false);
@@ -113,14 +120,16 @@ const Home = ({ prop }) => {
   const addtoInstructor = async () => {
     try {
       const res = await axios.post(
-        `${config.endpoint}/instructor/convertToInstructor`,{
-          username:username
-        });
+        `${config.endpoint}/instructor/convertToInstructor`,
+        {
+          username: username,
+        }
+      );
       if (res.status === 201) {
-        enqueueSnackbar("You are now an Instructor", { variant: "info" });
-        setCookies("role",["student","instructor"])
-       navigate("/instructor")
-        
+        enqueueSnackbar("You are now an Instructor,please logout and login to continue", { variant: "info" });
+        setCookies("inst","true");
+        localStorage.setItem("inst","instructor")
+        // navigate("/instructor");
       } else if (res.status === 299) {
         enqueueSnackbar("You are already an instructor", { variant: "info" });
       }
@@ -131,9 +140,12 @@ const Home = ({ prop }) => {
 
   const checkInstructor = async () => {
     try {
-      const resp = await axios.get(`${config.endpoint}/instructor/isInstructor`, {
-        withCredentials: true,
-      });
+      const resp = await axios.get(
+        `${config.endpoint}/instructor/isInstructor`,
+        {
+          withCredentials: true,
+        }
+      );
       if (resp.status === 201) {
         setInstructor(true);
       } else if (resp.status === 202) {
@@ -150,12 +162,19 @@ const Home = ({ prop }) => {
           <>
             <div>
               {purchased.some((item) => item.course_name === course.name) ? (
-                <button className="prch" disabled>
-                  Already purchased
+                <button
+                  className="prch"
+                  onClick={() => {
+                    setCookies("courseid", course.id);
+                    navigate("/courseDetails");
+                    setTimeout(window.location.reload(), 1000);
+                  }}
+                >
+                  Continue learning
                 </button>
               ) : (
                 <button className="prch" onClick={() => handlePurchase(course)}>
-                {icon?(<>Learn Course</>):(<>Purchase course</>)}
+                  {icon ? <>Start Learning </> : <>Purchase course</>}
                 </button>
               )}
             </div>
@@ -249,7 +268,7 @@ const Home = ({ prop }) => {
                       </div>
                     </div>
                     <div>
-                      {username? (
+                      {username ? (
                         !purchased.some(
                           (item) => item.course_name === course.name
                         ) ? (
@@ -257,11 +276,18 @@ const Home = ({ prop }) => {
                             className="prch"
                             onClick={() => handlePurchase(course)}
                           >
-                            {icon?(<>Learn Course</>):(<>Purchase course</>)}
+                            {icon ? <>Start Learning</> : <>Purchase course</>}
                           </button>
                         ) : (
-                          <button className="prch" disabled>
-                            Already Purchased
+                          <button
+                            className="prch"
+                            onClick={() => {
+                              setCookies("courseid", course.id);
+                              navigate("/courseDetails");
+                              setTimeout(window.location.reload(),1000);
+                            }}
+                          >
+                            Continue learning
                           </button>
                         )
                       ) : (
@@ -346,24 +372,44 @@ const Home = ({ prop }) => {
           <center>
             {username && (
               <div className="btm">
-                {instructor ? (
+                {instructor ? (<>
+                  {
+                    inst === true?(<>
+                      <button>
+                     Please login to continue
+                    </button>
+                    </>):(<>
+                                       
                   <button
                     className="btn mx-2 my-sm-0 title"
                     onClick={() => navigate("/instructor")}
                   >
                     Switch to Instructor view
                   </button>
+                    </>)
+                    
+                  }
+
+                  </>
                 ) : (
                   <>
-                    <button
+                  {
+                    inst === "true"?(<>
+                      <button>
+                     Please login to continue
+                    </button>
+                    </>):(<>
+                      <button
                       className="btn mx-2 my-sm-0 title"
                       onClick={() => {
                         addtoInstructor();
-                        
                       }}
                     >
                       Want to be an Instructor?
                     </button>
+                    </>)
+                  }
+                    
                   </>
                 )}
               </div>

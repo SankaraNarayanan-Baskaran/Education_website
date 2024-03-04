@@ -12,6 +12,7 @@ import { useCookies } from "react-cookie";
 const Instructor = () => {
   const [cookies] = useCookies(["username"]);
   const username = cookies["username"];
+  const inst=localStorage.getItem("inst")
   const { role } = useUserData();
   const [student, setStudent] = useState(false);
   const [newCourse, setNewCourse] = useState({
@@ -100,13 +101,14 @@ const Instructor = () => {
 
   useEffect(() => {
     const username = cookies["username"];
+   
     fetchcourses(username);
     checkStudent(username);
   }, []);
 
   return (
     <>
-      {role.includes("instructor") ? (
+      {role.includes("instructor")? (
         <>
           <div>
             <>

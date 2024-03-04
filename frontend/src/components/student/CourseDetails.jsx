@@ -99,7 +99,15 @@ const CourseDetails = (courseid) => {
       {role.includes("student") ? (
         <>
           <div>
-            <Header isAuthorised={false} prop inst />
+          <>
+          <>
+          <Header isAuthorised={false} prop inst> 
+            <button onClick={()=>{
+              navigate("/student",{state:{isLogged:"true"}});
+            }}>Back to Home</button>
+          </Header>
+          </>
+            
             <>
               <h4>Course Sections:</h4>
               {courses.map((section) => (
@@ -156,6 +164,7 @@ const CourseDetails = (courseid) => {
                 </div>
               ))}
             </>
+           </> 
           </div>
         </>
       ) : (

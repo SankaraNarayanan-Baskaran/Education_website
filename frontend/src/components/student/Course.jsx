@@ -95,7 +95,7 @@ const Course = () => {
               Back to Home
             </button>
           </Header>
-          <h4>Purchased Courses</h4>
+          <h4>My Courses</h4>
           <div className="product-card">
             {courses.map((course, index) => (
               <div key={course.id}>
