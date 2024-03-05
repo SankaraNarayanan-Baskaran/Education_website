@@ -47,17 +47,10 @@ const Home = ({ prop }) => {
   const fetchCourses = async () => {
     try {
       if (username) {
-        const response = await axios.get(
-          `${config.endpoint}/student/studentview`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${config.endpoint}/student/studentview`,{withCredentials: true,});
         setCourses(response.data);
       } else {
-        const response = await axios.get(
-          `${config.endpoint}/student/publicview`
-        );
+        const response = await axios.get(`${config.endpoint}/student/publicview`);
         setCourses(response.data);
       }
     } catch (error) {
@@ -79,9 +72,7 @@ const Home = ({ prop }) => {
       );
 
       if (res) {
-        enqueueSnackbar("Purchased Course successfully", {
-          variant: "success",
-        });
+        enqueueSnackbar("Purchased Course successfully", {variant: "success",});
         navigate("/course");
       }
       setSelectedCourse(null);
@@ -94,42 +85,25 @@ const Home = ({ prop }) => {
   const handleCategorySelect = async (event) => {
     setSelectedCategory(event.target.value);
     if (username) {
-      const res = await axios.get(`${config.endpoint}/course/filter`, {
-        params: {
-          category: event.target.value,
-        },
-        withCredentials: true,
-      });
-      if (res) {
-        setFilteredCourses(res.data);
-      }
+      const res = await axios.get(`${config.endpoint}/course/filter`, {params:{category:event.target.value,
+        }, withCredentials: true,});
+      if (res) {setFilteredCourses(res.data);}
     } else {
       const res = await axios.get(`${config.endpoint}/course/filter`, {
-        params: {
-          category: event.target.value,
-        },
-      });
-      if (res) {
-        setFilteredCourses(res.data);
-      }
+        params: {category: event.target.value,},});
+      if (res) {setFilteredCourses(res.data);}
     }
-
     setShowFilteredCourses(true);
   };
 
   const addtoInstructor = async () => {
     try {
-      const res = await axios.post(
-        `${config.endpoint}/instructor/convertToInstructor`,
-        {
-          username: username,
-        }
+      const res = await axios.post(`${config.endpoint}/instructor/convertToInstructor`,
+      {username: username,}
       );
       if (res.status === 201) {
         enqueueSnackbar("You are now an Instructor,please logout and login to continue", { variant: "info" });
         setCookies("inst","true");
-        localStorage.setItem("inst","instructor")
-        // navigate("/instructor");
       } else if (res.status === 299) {
         enqueueSnackbar("You are already an instructor", { variant: "info" });
       }
@@ -141,11 +115,7 @@ const Home = ({ prop }) => {
   const checkInstructor = async () => {
     try {
       const resp = await axios.get(
-        `${config.endpoint}/instructor/isInstructor`,
-        {
-          withCredentials: true,
-        }
-      );
+        `${config.endpoint}/instructor/isInstructor`,{withCredentials: true,});
       if (resp.status === 201) {
         setInstructor(true);
       } else if (resp.status === 202) {
@@ -372,44 +342,16 @@ const Home = ({ prop }) => {
           <center>
             {username && (
               <div className="btm">
-                {instructor ? (<>
-                  {
-                    inst === true?(<>
-                      <button>
-                     Please login to continue
-                    </button>
-                    </>):(<>
-                                       
-                  <button
-                    className="btn mx-2 my-sm-0 title"
-                    onClick={() => navigate("/instructor")}
-                  >
+                {instructor ? (<>                      
+                  <button className="btn mx-2 my-sm-0 title" onClick={() => navigate("/instructor")}>
                     Switch to Instructor view
                   </button>
-                    </>)
-                    
-                  }
-
                   </>
                 ) : (
                   <>
-                  {
-                    inst === "true"?(<>
-                      <button>
-                     Please login to continue
-                    </button>
-                    </>):(<>
-                      <button
-                      className="btn mx-2 my-sm-0 title"
-                      onClick={() => {
-                        addtoInstructor();
-                      }}
-                    >
+                      <button className="btn mx-2 my-sm-0 title" onClick={() => {addtoInstructor();}}>
                       Want to be an Instructor?
                     </button>
-                    </>)
-                  }
-                    
                   </>
                 )}
               </div>

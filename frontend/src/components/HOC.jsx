@@ -10,10 +10,11 @@ import { useUserData } from "./UserContext";
 import parseJwt from "./Decode";
 import Cookies from "js-cookie";
 import { useCookies } from 'react-cookie';
+
 const withAuthentication = (WrappedComponent) => {
 
   const WithAuthenticationComponent = (props) => {
-    const [cookies, setCookies,getCookies] = useCookies(['jwtToken','username','type','logged','studentname']);
+    const [cookies, setCookies] = useCookies(['jwtToken','username','type','logged','studentname']);
   
     const { enqueueSnackbar } = useSnackbar();
     const { token, setToken } = useUserData();

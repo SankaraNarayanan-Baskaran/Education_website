@@ -7,7 +7,7 @@ import BarGraph from "../components/admin/Bar";
 import { enqueueSnackbar } from "notistack";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {useCookies} from "react-cookie";
-import "react-pro-sidebar/dist/css/styles.css";
+// import "react-pro-sidebar/dist/css/styles.css";
 import Manage from "../components/admin/Manage";
 import {
   faAdd,
