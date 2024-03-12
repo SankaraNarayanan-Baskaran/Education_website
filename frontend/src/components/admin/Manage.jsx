@@ -187,7 +187,7 @@ const Manage = () => {
                   <th>Course Name</th>
                   <th>Course Description</th>
                   <th>Created on</th>
-                  <th>Number of Students</th>
+                 
                 </tr>
               </thead>
               <tbody>

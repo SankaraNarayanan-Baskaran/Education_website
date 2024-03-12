@@ -25,7 +25,7 @@ const addcourse = async (req, res) => {
  
       
       const inst = await Instructor.findOne({ where: { name: username } });
-      if (inst) {
+      if (inst.institution_code) {
         console.log("165", inst);
       const course= await CourseDetails.create({
           name,
@@ -42,6 +42,20 @@ const addcourse = async (req, res) => {
         }
         
       
+    }
+    else{
+      const course= await CourseDetails.create({
+        name,
+        description,
+        price,
+        video_url,
+        user_id: inst.id,
+        category,
+        approved:true,
+      });
+      if(course){
+        return res.status(201).json({ message: "Course created successfully" })
+      }
     }
     
 
