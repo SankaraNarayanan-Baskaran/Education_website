@@ -23,10 +23,10 @@ const withAuthentication = (WrappedComponent) => {
 
     const handleLogin = async () => {
       try {
-        const types = cookies['type']
+        const types = cookies['type'];
         const res = await axios.post(
           config.endpoint + `/${types}/login${types}`,
-          formData
+          { username: formData.username, password: formData.password }
         );
         console.log("Types",types)
         if (res.status === 201) {

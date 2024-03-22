@@ -13,6 +13,7 @@
     "@mui/material": "^5.14.17",
     "@mui/styled-engine": "^5.14.12",
     "@mui/system": "^5.14.17",
+    "@reduxjs/toolkit": "^2.2.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -89,8 +90,11 @@
       "node_modules/(?!axios)"
     ],
     "transform": {
-      "^.+\\.jsx?$": "babel-jest",
-      "\\.(css)$": "jest-transform-stub"
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(css|less)$": "identity-obj-proxy"
     }
   }
+  
 }

@@ -6,19 +6,21 @@ const UsernameContext = createContext();
 
 export const UsernameDataProvider = ({ children }) => {
   const [cookies, setCookies] = useCookies(["jwtToken", "role"]);
-  const [token,setToken] = useState(cookies['jwtToken'] || "");
+  const [token, setToken] = useState(cookies['jwtToken'] || "");
   const [role, setRole] = useState(cookies['role'] || '');
 
   useEffect(() => {
-    if (token !== '') {
+    if (token && token !== '') { // Check if token exists and is not empty
       const decodedToken = parseJwt(token);
-      setRole(decodedToken.type);
-      setCookies("role", decodedToken.type);
+      if (decodedToken && decodedToken.type) { // Check if decodedToken exists and has type property
+        setRole(decodedToken.type);
+        setCookies("role", decodedToken.type);
+      }
     }
   }, [token, setCookies]);
 
   return (
-    <UsernameContext.Provider value={{ role, setRole,token,setToken }}>
+    <UsernameContext.Provider value={{ role, setRole, token, setToken }}>
       {children}
     </UsernameContext.Provider>
   );

@@ -1,6 +1,9 @@
 import React from "react";
 
 const parseJwt = (token) => {
+  if(!token){
+    return null;
+  }
   if (typeof token !== "string") {
     if (typeof token.toString === "function") {
       token = token.toString();

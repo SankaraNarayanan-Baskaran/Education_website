@@ -6,9 +6,9 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./components/store";
-import { createStore } from 'redux';
-import rootReducer from "./components/reducers";
+
+import store from "./components/redux/store";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>

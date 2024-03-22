@@ -7,7 +7,7 @@ import BarGraph from "../components/admin/Bar";
 import { enqueueSnackbar } from "notistack";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {useCookies} from "react-cookie";
-import "react-pro-sidebar/dist/css/styles.css";
+
 import Manage from "../components/admin/Manage";
 import {
   faAdd,
@@ -31,6 +31,13 @@ import { useUserData } from "../components/UserContext";
 import parseJwt from "../components/Decode";
 import { useNavigate } from "react-router-dom";
 const Admin = ({prop}) => {
+  useEffect(() => {
+    // Check if not in test environment
+    if (process.env.NODE_ENV !== 'test') {
+      // Import CSS file dynamically
+      import("react-pro-sidebar/dist/css/styles.css");
+    }
+  }, []);
   const studentListRef = useRef();
   const [cookies,removeCookies,setCookies]=useCookies(['username','type','role','logged','jwtToken','studentname','icon','mang'])
   const navigate=useNavigate();

@@ -1,15 +1,15 @@
-// Example reducers/courseReducer.js
+// src/redux/reducers/courseReducer.js
 
 import {
   FETCH_COURSES_REQUEST,
   FETCH_COURSES_SUCCESS,
-  FETCH_COURSES_FAILURE,
-} from '../redux/actions/authActions';
+  FETCH_COURSES_FAILURE
+} from '../actions/courseActions'
 
 const initialState = {
   courses: [],
   loading: false,
-  error: null,
+  error: null
 };
 
 const courseReducer = (state = initialState, action) => {
@@ -18,19 +18,20 @@ const courseReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        error: null,
+        error: null
       };
     case FETCH_COURSES_SUCCESS:
       return {
         ...state,
         loading: false,
         courses: action.payload,
+        error: null
       };
     case FETCH_COURSES_FAILURE:
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error: action.payload
       };
     default:
       return state;
