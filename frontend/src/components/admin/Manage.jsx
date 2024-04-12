@@ -154,7 +154,7 @@ const Manage = () => {
                 <tr>
                   <th>Course Name</th>
                   <th>Course Description</th>
-                  <th>Started on</th>
+                  <th>Started at</th>
                   <th>Current Progress(%)</th>
                 </tr>
               </thead>
@@ -168,7 +168,7 @@ const Manage = () => {
                       <p>{ongoing[index]?.course_description}</p>
                     </td>
                     <td>
-                      <p>{extractTime(ongoing[index]?.updatedAt)}</p>
+                      <p>{extractTime(progItem?.updatedAt)} on {convertToDate(progItem?.createdAt)}</p>
                     </td>
                     <td>
                       <p>{progItem?.progress}</p>

@@ -32,7 +32,7 @@ const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
     user: "sankaran879@gmail.com",
-    pass: "nvix fmvk ekfz sboa",
+    pass: "aikb rktp ozlf abyy",
   },
 });
 const Student_Purchases = sequelize.define("Student_Purchases", {

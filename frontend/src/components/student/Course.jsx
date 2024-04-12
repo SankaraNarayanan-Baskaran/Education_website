@@ -138,7 +138,7 @@ const Course = () => {
                     >
                       View Course
                     </button>
-                    {courseProgress[course.course_id] === 100 ? (
+                    {/* {courseProgress[course.course_id] === 100 ? (
                       <>
                         {" "}
                         <div>
@@ -163,7 +163,7 @@ const Course = () => {
                       </>
                     ) : (
                       <></>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

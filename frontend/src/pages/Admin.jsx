@@ -379,25 +379,7 @@ const Admin = ({prop}) => {
                       title="Manage Courses"
                       icon={<FontAwesomeIcon icon={faListCheck} />}
                     >
-                      <MenuItem
-                        onClick={() => {
-                          setStudentCourse(true);
-                          handleStudentCourse();
-                        }}
-                        icon={<FontAwesomeIcon icon={faBook} />}
-                      >
-                        Student Courses
-                      </MenuItem>
-                      <MenuItem
-                        onClick={() => {
-                          setInstructorCourse(true);
-                          handleInstructorCourse();
-                          setIsInstructorCoursesRendered(true);
-                        }}
-                        icon={<FontAwesomeIcon icon={faChalkboardUser} />}
-                      >
-                        Instructor Courses
-                      </MenuItem>
+                      
                       <MenuItem
                         onClick={() => {
                           setApprove(true);
@@ -413,24 +395,7 @@ const Admin = ({prop}) => {
               </div>
               <div className="col-lg-9">
                 <div class="row sparkboxes mt-4">
-                  <div class="col-md-3">
-                    <div class="box box1">
-                      <div class="details">
-                        <h3>1213</h3>
-                        <h4>SEARCHES</h4>
-                      </div>
-                      <div id="spark1"></div>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <div class="box box2">
-                      <div class="details">
-                        <h3>422</h3>
-                        <h4>VIEWS</h4>
-                      </div>
-                      <div id="spark2"></div>
-                    </div>
-                  </div>
+                 
                   <div class="col-md-3">
                     <div class="box box3">
                       <div class="details">
@@ -453,22 +418,6 @@ const Admin = ({prop}) => {
 
                 <ChartComponent />
                 <div>
-                  {addpeople ? (
-                    <>
-                      <h5>Add Instructors and Students</h5>
-                      <input
-                        type="file"
-                        accept=".csv"
-                        onChange={handleFileChange}
-                        style={{
-                          border: "1px solid black",
-                        }}
-                      />
-                      <button onClick={handleUpload}>Upload CSV</button>
-                    </>
-                  ) : (
-                    <></>
-                  )}
 
                   <div>
                     {student ? (
@@ -568,6 +517,22 @@ const Admin = ({prop}) => {
                       <></>
                     )}
                     <></>
+                    {addpeople ? (
+                    <>
+                      <h5>Add Instructors and Students</h5>
+                      <input
+                        type="file"
+                        accept=".csv"
+                        onChange={handleFileChange}
+                        style={{
+                          border: "1px solid black",
+                        }}
+                      />
+                      <button onClick={handleUpload}>Upload CSV</button>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                     {approve ? (
                       <>
                         <div ref={isPendingRendered ? pendingRef : null}>

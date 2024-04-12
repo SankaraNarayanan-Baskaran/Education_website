@@ -67,12 +67,13 @@ const StudentsList = () => {
   return (
     <div>
       <Header isAuthorised={false} prop student instr />
+      <h4>Student List</h4>
       {list.map((student, index) => (
         <li key={index}>{student}</li>
       ))}
 
       <>
-        <div class="quiz-container">
+        <div>
           <center>
             <div className="body">
               {/* <h2>Create Quiz</h2>

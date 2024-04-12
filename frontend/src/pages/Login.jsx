@@ -179,6 +179,7 @@ const Login = ({ handleLogin, validateInput }) => {
                   handleLogin();
                 }
               }}
+              type="submit"
             >
               Login
             </button>
